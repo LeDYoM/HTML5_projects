@@ -146,8 +146,8 @@ function JE()
         
         if (obj.fore)
         {
-            context.context.lineWidth = obj.foreSize;
-            context.context.strokeStyle = obj.colorFore;
+            context.context.lineWidth = obj.lineWidth;
+            context.context.strokeStyle = obj.strokeStyle;
         }
     }
 

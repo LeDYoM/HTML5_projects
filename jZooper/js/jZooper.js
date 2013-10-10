@@ -3,23 +3,24 @@ function doPageLoad() {
 
     if (window.blackberry !== null) {
     }
+    
+    var fonts = {
+        titleFont:
+        {
+            fontType: "80 Calibri",
+            textAlign: "center"
+        }
+    };
 
     var scene = {
         background:
         {
             type: "background"
-            //            fillStyle: "blue"
         },
         title: {
             type: "textLabel",
             text: "jZooper",
-            font:
-            {
-                fontType: "",
-                fontSize: "80",
-                fontName: "Calibri",
-                textAlign: "center"
-            },
+            font: fonts.titleFont,
             fillStyle: "blue",
             x: 768 / 2,
             y: 100
@@ -29,9 +30,7 @@ function doPageLoad() {
             text: "Play",
             font:
             {
-                fontType: "",
-                fontSize: "80",
-                fontName: "Calibri",
+                fontType: "80 Calibri",
                 textAlign: "center"
             },
             fillStyle: "red",
@@ -43,9 +42,7 @@ function doPageLoad() {
             text: "Exit",
             font:
             {
-                fontType: "",
-                fontSize: "80",
-                fontName: "Calibri",
+                fontType: "80 Calibri",
                 textAlign: "center"
             },
             fillStyle: "yellow",

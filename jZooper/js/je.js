@@ -46,9 +46,7 @@ function JE()
                 y: 0,
                 font:
                 {
-                    fontType: "",
-                    fontSize: "30",
-                    fontName: "Calibri",
+                    fontType: "30 Calibri",
                     textAlign:"left",
                     textBaseline: "top"
                 },
@@ -98,11 +96,7 @@ function JE()
 
     function drawText(obj,context)
     {
-        var ft = obj.font.fontType;
-        var fs = obj.font.fontSize;
-        var fn = obj.font.fontName;
-        
-        context.context.font = (ft + " " + fs + "px " + fn);
+        context.context.font = obj.font.fontType;
         context.context.textAlign = obj.font.textAlign;
         context.context.textBaseline = obj.font.textBaseline;
         

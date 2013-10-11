@@ -51,7 +51,7 @@ function doPageLoad() {
         }
     };
     
-    var je = new JE();
+    var je = new JE.Core();
     je.Start();
     je.setActiveScene(scene);
 }

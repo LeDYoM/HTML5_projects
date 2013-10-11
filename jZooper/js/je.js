@@ -1,9 +1,11 @@
 // Static drawing object.
+
+var JE = JE || {};
+
 // Main Core object.
-function JE()
+JE.Core = function ()
 {
     // Private properties
-    var this_ = this;
     var activeScene = null;
     var defaultDrawProperties = null;
     var renderContext = null;
@@ -34,7 +36,6 @@ function JE()
         renderContext =
         {
             context: canvas.getContext("2d"),
-            systemDefaults: this_.systemDefaults,
             viewPort: configDefinitions.viewPort
         };
 
@@ -94,12 +95,18 @@ function JE()
         }
     }
 
+    function setFont(font,context)
+    {
+        context.context.font = font.fontType;
+        context.context.textAlign = font.textAlign;
+        context.context.textBaseline = font.textBaseline;
+        
+    }
+    
     function drawText(obj,context)
     {
-        context.context.font = obj.font.fontType;
-        context.context.textAlign = obj.font.textAlign;
-        context.context.textBaseline = obj.font.textBaseline;
-        
+        setFont(obj.font,context);
+
         prepareCommonDrawConfig(obj, context);
         
         if (obj.fill)

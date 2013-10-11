@@ -2,8 +2,78 @@
 
 var JE = JE || {};
 
+JE.Drawing = JE.Drawing || function()
+{
+    function setFont(font,context)
+    {
+        context.context.font = font.fontType;
+        context.context.textAlign = font.textAlign;
+        context.context.textBaseline = font.textBaseline;
+        
+    }
+
+    function drawText(obj,context)
+    {
+        setFont(obj.font,context);
+
+        prepareCommonDrawConfig(obj, context);
+        
+        if (obj.fill)
+        {
+            context.context.fillText(obj.text || "No text", obj.x || 0, obj.y || 0);
+        }
+
+        if (obj.fore)
+        {
+            context.context.strokeText(obj.text || "No text", context.viewPort.getPixelPositionX(obj.x || 0), context.viewPort.getPixelPositionY(obj.y || 0));
+        }
+    }
+
+    function drawQuad(obj,context)
+    {
+
+        context.context.beginPath();        
+        context.context.rect(
+                context.viewPort.getPixelPositionX(obj.x || 0),
+                context.viewPort.getPixelPositionY(obj.y || 0),
+                context.viewPort.getPixelPositionX(obj.width || 0),
+                context.viewPort.getPixelPositionY(obj.height || 0));
+ 
+        context.context.closePath();
+        prepareCommonDrawConfig(obj, context);
+
+        if (obj.fill)
+        {
+            context.context.fill();
+        }
+
+        if (obj.fore)
+        {
+            context.context.stroke();
+        }
+    }
+
+    function prepareCommonDrawConfig(obj, context)
+    {
+        if (obj.fill)
+        {
+            context.context.fillStyle = obj.fillStyle;
+        }
+        
+        if (obj.fore)
+        {
+            context.context.lineWidth = obj.lineWidth;
+            context.context.strokeStyle = obj.strokeStyle;
+        }
+    }
+    
+    this.drawText = drawText;
+    this.drawQuad = drawQuad;
+    
+};
+
 // Main Core object.
-JE.Core = function ()
+JE.Core = JE.Core || function ()
 {
     // Private properties
     var activeScene = null;
@@ -11,6 +81,7 @@ JE.Core = function ()
     var renderContext = null;
     var configDefinitions = null;
     var useConfig = null;
+    var drawing = new JE.Drawing();
 
     function initEnvironment(canvas)
     {
@@ -85,76 +156,13 @@ JE.Core = function ()
                 switch (obj.type)
                 {
                     case "textLabel":
-                        drawText(obj, renderContext);
+                        drawing.drawText(obj, renderContext);
                         break;
                     case "background":
-                        drawQuad(obj, renderContext);
+                        drawing.drawQuad(obj, renderContext);
                         break;
                 }
             }
-        }
-    }
-
-    function setFont(font,context)
-    {
-        context.context.font = font.fontType;
-        context.context.textAlign = font.textAlign;
-        context.context.textBaseline = font.textBaseline;
-        
-    }
-    
-    function drawText(obj,context)
-    {
-        setFont(obj.font,context);
-
-        prepareCommonDrawConfig(obj, context);
-        
-        if (obj.fill)
-        {
-            context.context.fillText(obj.text || "No text", obj.x || 0, obj.y || 0);
-        }
-
-        if (obj.fore)
-        {
-            context.context.strokeText(obj.text || "No text", context.viewPort.getPixelPositionX(obj.x || 0), context.viewPort.getPixelPositionY(obj.y || 0));
-        }
-    }
-
-    function drawQuad(obj,context)
-    {
-
-        context.context.beginPath();        
-        context.context.rect(
-                context.viewPort.getPixelPositionX(obj.x || 0),
-                context.viewPort.getPixelPositionY(obj.y || 0),
-                context.viewPort.getPixelPositionX(obj.width || 0),
-                context.viewPort.getPixelPositionY(obj.height || 0));
- 
-        context.context.closePath();
-        prepareCommonDrawConfig(obj, context);
-
-        if (obj.fill)
-        {
-            context.context.fill();
-        }
-
-        if (obj.fore)
-        {
-            context.context.stroke();
-        }
-    }
-
-    function prepareCommonDrawConfig(obj, context)
-    {
-        if (obj.fill)
-        {
-            context.context.fillStyle = obj.fillStyle;
-        }
-        
-        if (obj.fore)
-        {
-            context.context.lineWidth = obj.lineWidth;
-            context.context.strokeStyle = obj.strokeStyle;
         }
     }
 
@@ -209,4 +217,4 @@ JE.Core = function ()
     // Publish public methods.
     this.Start = Start;
     this.setActiveScene = setActiveScene;
-}
+};

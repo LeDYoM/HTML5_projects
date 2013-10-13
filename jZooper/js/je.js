@@ -4,6 +4,13 @@ var JE = JE || {};
 
 JE.Drawing = JE.Drawing || function()
 {
+    var doDraw = doDraw || {};
+
+    function draw(obj,context)
+    {
+        doDraw[obj.group][obj.type](obj, context);
+    }
+    
     function setFont(font,context)
     {
         context.context.font = font.fontType;
@@ -12,7 +19,7 @@ JE.Drawing = JE.Drawing || function()
         
     }
 
-    function drawText(obj,context)
+    function textLabel(obj,context)
     {
         setFont(obj.font,context);
 
@@ -29,7 +36,7 @@ JE.Drawing = JE.Drawing || function()
         }
     }
 
-    function drawQuad(obj,context)
+    function quad(obj,context)
     {
 
         context.context.beginPath();        
@@ -67,9 +74,22 @@ JE.Drawing = JE.Drawing || function()
         }
     }
     
-    this.drawText = drawText;
-    this.drawQuad = drawQuad;
+    function button(obj, context)
+    {
+        quad(obj.quad,context);
+        textLabel(obj.textLabel,context);
+    }
     
+    this.draw = draw;
+    doDraw.core = {
+        textLabel: textLabel,
+        quad: quad,
+        background: quad
+     };
+     
+     doDraw.ui = {
+       button: button  
+     };
 };
 
 // Main Core object.
@@ -113,27 +133,61 @@ JE.Core = JE.Core || function ()
         useConfig = useConfig || configDefinitions;
 
         defaultDrawProperties = {
-            defaultText: {
-                x: 0,
-                y: 0,
-                font:
-                {
-                    fontType: "30 Calibri",
-                    textAlign:"left",
-                    textBaseline: "top"
+            core:
+            {
+                textLabel: {
+                    x: 0,
+                    y: 0,
+                    font:
+                    {
+                        fontType: "30 Calibri",
+                        textAlign:"left",
+                        textBaseline: "top"
+                    },
+                    fill: true,
+                    fillStyle: "red",
+                    fore: false
                 },
-                fill: true,
-                fillStyle: "red",
-                fore: false
+                background: {
+                    x: 0,
+                    y: 0,
+                    width: renderContext.viewPort.width,
+                    height: renderContext.viewPort.height,
+                    fill: true,
+                    fore: false,
+                    fillStyle: "black"
+                }
             },
-            defaultBackground: {
-                x: 0,
-                y: 0,
-                width: renderContext.viewPort.width,
-                height: renderContext.viewPort.height,
-                fill: true,
-                fore: false,
-                fillStyle: "black"
+            ui:
+            {
+                button:
+                {
+                    textLabel:
+                    {
+                        x: 0,
+                        y: 0,
+                        font:
+                        {
+                            fontType: "30 Calibri",
+                            textAlign:"center",
+                            textBaseline: "top"
+                        },
+                        fill: true,
+                        fillStyle: "white",
+                        fore: false                
+                    },
+                    quad:
+                    {
+                        x: 0,
+                        y: 0,
+                        width: 200,
+                        height: 35,
+                        fill: true,
+                        fore: false,
+                        fillStyle: "gray"
+                    }
+
+                }
             }
         };
 
@@ -152,16 +206,7 @@ JE.Core = JE.Core || function ()
         {
             for (i in activeScene)
             {
-                var obj = activeScene[i];
-                switch (obj.type)
-                {
-                    case "textLabel":
-                        drawing.drawText(obj, renderContext);
-                        break;
-                    case "background":
-                        drawing.drawQuad(obj, renderContext);
-                        break;
-                }
+                drawing.draw(activeScene[i],renderContext);
             }
         }
     }
@@ -192,17 +237,7 @@ JE.Core = JE.Core || function ()
         for (i in obj_)
         {
             var obj = obj_[i];
-            var requestedDefaults = null;
-            switch (obj.type)
-            {
-                case "textLabel":
-                    requestedDefaults = defaultDrawProperties.defaultText;
-                    break;
-                case "background":
-                    requestedDefaults = defaultDrawProperties.defaultBackground;
-                    break;
-            }
-            ObjectUtils.inverseMerge(obj,requestedDefaults);
+            ObjectUtils.inverseMerge(obj_[i],defaultDrawProperties[obj.group][obj.type]);
         }
         
         console.log(ObjectUtils.toStr(obj_));

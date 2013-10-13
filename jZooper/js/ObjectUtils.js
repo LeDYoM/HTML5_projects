@@ -14,12 +14,17 @@ ObjectUtils.merge = function(baseObject,extendObject)
 
 ObjectUtils.inverseMerge = function(baseObject,extendObject)
 {
-    if (baseObject === null || typeof baseObject !== "object")
+    if (typeof baseObject === "undefined")
         return extendObject;
+    
+    if (baseObject === null || typeof baseObject !== "object")
+        {
+        return baseObject;
+        }
 
     for (var attr in extendObject) {
         if (extendObject.hasOwnProperty(attr))
-            baseObject[attr] = baseObject[attr] || ObjectUtils.inverseMerge(baseObject[attr],extendObject[attr]);
+            baseObject[attr] = ObjectUtils.inverseMerge(baseObject[attr],extendObject[attr]);
     }
     return baseObject;
 };

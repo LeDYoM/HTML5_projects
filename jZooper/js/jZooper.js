@@ -45,17 +45,7 @@ function doPageLoad() {
         menutext2: {
             group: "ui",
             type: "button",
-            textLabel:
-            {
-                text: "Exit",
-                x: 768 / 2,
-                y: 380
-            },
-            quad:
-            {
-                x: 768 / 2,
-                y: 380
-            }
+            text: "Peich"
         }
     };
     

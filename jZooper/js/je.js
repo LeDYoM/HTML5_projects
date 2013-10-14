@@ -80,7 +80,7 @@ JE.Drawing = JE.Drawing || function()
         textLabel(obj.textLabel,context);
     }
     
-    this.draw = draw;
+    JE.Drawing.prototype.draw = draw;
     doDraw.core = {
         textLabel: textLabel,
         quad: quad,
@@ -166,6 +166,7 @@ JE.Core = JE.Core || function ()
                     {
                         x: 0,
                         y: 0,
+                        text: parent.toString(),
                         font:
                         {
                             fontType: "30 Calibri",

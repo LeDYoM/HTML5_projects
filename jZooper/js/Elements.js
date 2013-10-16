@@ -1,37 +1,94 @@
-var Elements = Elements || function()
+var PEObject = function()
 {
-    var registeredElements = {};
+    this.typeName = "";
+    var metaType = null;
+    var configured = false;
     
-    Elements.prototype.registerNewElement = function(elementType)
+    PEObject.prototype.configure = function(typeName, metaT, base)
     {
-        registeredElements[elementType.name] = elementType;
-        console.log("Registered name:"+elementType.name);
-        console.log("Registered:"+registeredElements[elementType.name]);
+        if (!configured)
+        {
+            this.typeName = typeName;
+            metaType = metaT;
+          
+            base = base || {};
+            var def = metaType.defaults || {};
+            for (var attr in metaType.defaults) {
+                this[attr] = base[attr] || metaType.defaults[attr];
+            }
+            
+            configured = true;
+        }
+        return this;
     };
-    
-    Elements.prototype.getNew = function(elemName)
-    {
-        console.log("Elem:"+registeredElements);
-        console.log("Creating:"+registeredElements[elemName]);
+};
 
-        var tmp = new registeredElements[elemName]();
-        console.log("Created element from type "+elemName+":"+tmp);
+var MetaElementsManager = MetaElementsManager || function()
+{
+    var registeredElements = {
+        core:
+        {
+            quad:
+            {
+                defaults:
+                {
+                    x: 0,
+                    y: 0,
+                    width: 1,
+                    height: 1,
+                    fill: true,
+                    fore: false,
+                    fillStyle: "black",
+                    foreStyle: "white"
+                }
+            },
+            textLabel:
+            {
+                defaults:
+                {
+                    x: 0,
+                    y: 0,
+                    width: 1,
+                    height: 1,
+                    fill: true,
+                    fore: false,
+                    fillStyle: "black",
+                    foreStyle: "white"
+                }        
+            }
+        }
+    };
+
+    function elementNameArray(typeName)
+    {
+        return typeName.split(".");
+    }
+    
+    function getMetaElement(typeName)
+    {
+        var data = elementNameArray(typeName);
+        var tmp = registeredElements;
+        for (var i=0; i< data.length; ++i)
+        {
+            tmp = tmp[data[i]];
+        }
+        return tmp;
+    }
+    
+    MetaElementsManager.prototype.newElement = function(typeName, base)
+    {
+        var tmp = new PEObject();
+        tmp.configure(typeName,getMetaElement(typeName),base);
+
         return tmp;
     };
+
+    MetaElementsManager.prototype.newElementFromDescription = function(base)
+    {
+        return newElement(base.type,base);
+    };
 };
 
-var BaseElement = BaseElement || function()
-{
-};
-
-
-        
-var ele = new Elements();
-
-ele.registerNewElement(function()
-            {
-                this.name = "core/quad";
-            }
-        );
-
-ele.getNew("core/quad");
+var mem = new MetaElementsManager();
+var obj = mem.newElement("core.quad");
+console.log(obj);

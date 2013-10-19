@@ -3,13 +3,22 @@ var PEObject = function()
     this.typeName = "";
     var metaType = null;
     var configured = false;
+    var context = null;
     
-    PEObject.prototype.configure = function(typeName, metaT, base)
+    PEObject.prototype.setDrawProperties = function()
+    {
+        context.fillStyle = this.fillStyle;
+        context.lineWidth = this.lineWidth;;
+        context.strokeStyle = this.strokeStyle;
+    }
+
+    PEObject.prototype.configure = function(typeName, metaT, base, context)
     {
         if (!configured)
         {
             this.typeName = typeName;
             metaType = metaT;
+            this.context = context;
           
             base = base || {};
             var def = metaType.defaults || {};
@@ -17,14 +26,18 @@ var PEObject = function()
                 this[attr] = base[attr] || metaType.defaults[attr];
             }
             
+            this.render = metaType.methods.render;
+            
             configured = true;
         }
         return this;
-    };
+    };    
 };
 
-var MetaElementsManager = MetaElementsManager || function()
+var MetaElementsManager = MetaElementsManager || function(context)
 {
+    var context = context;
+
     var registeredElements = {
         core:
         {
@@ -33,13 +46,23 @@ var MetaElementsManager = MetaElementsManager || function()
                 defaults:
                 {
                     x: 0,
-                    y: 0,
+                    y: 2,
                     width: 1,
                     height: 1,
                     fill: true,
                     fore: false,
                     fillStyle: "black",
                     foreStyle: "white"
+                },
+                methods:
+                {
+                    render: function()
+                    {
+                        setDrawProperties();
+                        context.beginPath();
+                        context.rect(188, 50, 200, 100);
+                        context.endPath();
+                    }
                 }
             },
             textLabel:
@@ -75,10 +98,10 @@ var MetaElementsManager = MetaElementsManager || function()
         return tmp;
     }
     
-    MetaElementsManager.prototype.newElement = function(typeName, base)
+    MetaElementsManager.prototype.newElement = function(typeName,base)
     {
         var tmp = new PEObject();
-        tmp.configure(typeName,getMetaElement(typeName),base);
+        tmp.configure(typeName,getMetaElement(typeName),base,context);
 
         return tmp;
     };
@@ -86,9 +109,8 @@ var MetaElementsManager = MetaElementsManager || function()
     MetaElementsManager.prototype.newElementFromDescription = function(base)
     {
         return newElement(base.type,base);
-    };
+    };    
 };
 
-var mem = new MetaElementsManager();
+var mem = new MetaElementsManager("fdfdf");
 var obj = mem.newElement("core.quad");
-console.log(obj);

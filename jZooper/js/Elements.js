@@ -9,9 +9,7 @@ var PEObject = function()
     
     PEObject.prototype.setDrawProperties = function()
     {
-        this.context.fillStyle = this.fillStyle;
-        this.context.lineWidth = this.lineWidth;;
-        this.context.strokeStyle = this.strokeStyle;
+        JE.Drawing.setDrawProperties(this,this.context);
     };
 
     PEObject.prototype.setFont = function()

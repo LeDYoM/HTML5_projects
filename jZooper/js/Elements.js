@@ -9,39 +9,27 @@ var PEObject = function()
     
     PEObject.prototype.setDrawProperties = function()
     {
-        JE.Drawing.setDrawProperties(this,this.context);
+        JE.Drawing.setDrawProperties(this.context,this);
     };
 
     PEObject.prototype.setFont = function()
     {
-        this.context.font = this.font;
-        this.context.textAlign = this.textAlign;
-        this.context.textBaseline = this.textBaseline;
+        JE.Drawing.setFont(this.context,this);
     };
 
     PEObject.prototype.drawRect = function()
     {
-        this.context.beginPath();
-        this.context.rect(this.x, this.y, this.width, this.height);
-        this.context.closePath();
+        JE.Drawing.drawRect(this.context,this);
     };
 
     PEObject.prototype.drawText = function()
     {
-        if (this.fill) 
-            this.context.fillText(this.text, this.x, this.y);
-    
-        if (this.stroke)
-            this.context.strokeText(this.text, this.x, this.y);
+        JE.Drawing.drawText(this.context,this);
     };
 
     PEObject.prototype.finishForm = function()
     {
-        if (this.fill) 
-            this.context.fill();
-        
-        if (this.stroke)
-            this.context.stroke();
+        JE.Drawing.finishForm(this.context,this);
     };
 
     PEObject.prototype.configure = function(typeName, metaT, base, context)

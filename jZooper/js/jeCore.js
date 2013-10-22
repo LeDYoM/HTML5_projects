@@ -71,7 +71,8 @@ JE.Core = JE.Core || function ()
         console.log("Canvas size: ("+canvas.width+","+canvas.height+")");
         
         // Start the system.
-        setInterval(Render, 25);
+//        setInterval(Render, 25);
+        setTimeout(Render, 25);
     }
 
     function acquireObject(obj)

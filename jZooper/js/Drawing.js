@@ -35,6 +35,12 @@ var Drawing = Drawing ||
         
         if (obj.stroke)
             context.stroke();
+    },
+    doDrawRect: function(context,obj)
+    {
+        JE.Drawing.setDrawProperties(context,obj);
+        JE.Drawing.drawRect(context,obj);
+        JE.Drawing.finishForm(context,obj);
     }
 };
 

@@ -6,31 +6,6 @@ var PEObject = function()
     var metaType = null;
     var configured = false;
     var context = null;
-    
-    PEObject.prototype.setDrawProperties = function()
-    {
-        JE.Drawing.setDrawProperties(this.context,this);
-    };
-
-    PEObject.prototype.setFont = function()
-    {
-        JE.Drawing.setFont(this.context,this);
-    };
-
-    PEObject.prototype.drawRect = function()
-    {
-        JE.Drawing.drawRect(this.context,this);
-    };
-
-    PEObject.prototype.drawText = function()
-    {
-        JE.Drawing.drawText(this.context,this);
-    };
-
-    PEObject.prototype.finishForm = function()
-    {
-        JE.Drawing.finishForm(this.context,this);
-    };
 
     PEObject.prototype.configure = function(typeName, metaT, base, context)
     {
@@ -44,7 +19,7 @@ var PEObject = function()
             base = base || {};
             var def = metaType.defaults || {};
             for (var attr in metaType.defaults) {
-                this[attr] = base[attr] || metaType.defaults[attr];
+                this[attr] = base[attr] || def[attr];
             }
             
             this.render = metaType.methods.render;
@@ -80,9 +55,7 @@ var MetaElementsManager = MetaElementsManager || function(context)
                 {
                     render: function()
                     {
-                        this.setDrawProperties();
-                        this.drawRect();
-                        this.finishForm();
+                        JE.Drawing.doDrawRect(this.context,this);
                     }
                 }
             },
@@ -108,9 +81,30 @@ var MetaElementsManager = MetaElementsManager || function(context)
                 {
                     render: function()
                     {
-                        this.setDrawProperties();
-                        this.setFont();
-                        this.drawText();
+                        JE.Drawing.setDrawProperties(this.context,this);
+                        JE.Drawing.setFont(this.context,this);
+                        JE.Drawing.drawText(this.context,this);
+                    }
+                }
+            }
+        },
+        ui:
+        {
+            button:
+            {
+                defaults:
+                {
+                    x: 0,
+                    y: 0,
+                    text: "No text"
+                },
+                methods:
+                {
+                    render: function()
+                    {
+                        JE.Drawing.setDrawProperties(this.context,this);
+                        JE.Drawing.drawRect(this.context,this);
+                        JE.Drawing.finishForm(this.context,this);
                     }
                 }
             }

@@ -56,7 +56,7 @@ JE.Core = JE.Core || function ()
         {
             for (i in activeScene)
             {
-                activeScene[i].render();
+                activeScene[i].update();
             }
         }
     }

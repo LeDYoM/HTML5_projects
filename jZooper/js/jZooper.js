@@ -28,6 +28,10 @@ function doPageLoad() {
             strokeStyle: "red",
             x: 768 / 2,
             y: 100
+        },
+        bt: {
+            type: "ui.button",
+            text: "This is button"
         }
 
     };

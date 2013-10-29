@@ -6,53 +6,53 @@ var Drawing = Drawing ||
 
     setDrawProperties: function(obj)
     {
-        context.fillStyle = obj.fillStyle;
-        context.lineWidth = obj.lineWidth;
-        context.strokeStyle = obj.strokeStyle;
+        this.context.fillStyle = obj.fillStyle;
+        this.context.lineWidth = obj.lineWidth;
+        this.context.strokeStyle = obj.strokeStyle;
     },
     setFontType: function(obj)
     {
-        context.font = obj.font;        
+        this.context.font = obj.font;        
     },
     setFont: function(obj)
     {
-        this.setFontType(obj);
-        context.textAlign = obj.textAlign;
-        context.textBaseline = obj.textBaseline;
+        Drawing.setFontType(obj);
+        this.context.textAlign = obj.textAlign;
+        this.context.textBaseline = obj.textBaseline;
     },
     drawRect: function(obj)
     {
-        context.beginPath();
-        context.rect(obj.x, obj.y, obj.width, obj.height);
-        context.closePath();
+        this.context.beginPath();
+        this.context.rect(obj.x, obj.y, obj.width, obj.height);
+        this.context.closePath();
     },
     drawText: function(obj)
     {
         if (obj.fill) 
-            context.fillText(obj.text, obj.x, obj.y);
+            this.context.fillText(obj.text, obj.x, obj.y);
     
         if (obj.stroke)
-            context.strokeText(obj.text, obj.x, obj.y);
+            this.context.strokeText(obj.text, obj.x, obj.y);
     },
     finishForm: function(obj)
     {
         if (obj.fill) 
-            context.fill();
+            this.context.fill();
         
         if (obj.stroke)
-            context.stroke();
+            this.context.stroke();
     },
     doDrawRect: function(obj)
     {
-        JE.Drawing.setDrawProperties(context,obj);
-        JE.Drawing.drawRect(context,obj);
-        JE.Drawing.finishForm(context,obj);
+        this.setDrawProperties(obj);
+        this.drawRect(obj);
+        this.finishForm(obj);
     },
-    doDrawText: function(context,obj)
+    doDrawText: function(obj)
     {
-        JE.Drawing.setDrawProperties(context,obj);
-        JE.Drawing.setFont(context,obj);
-        JE.Drawing.drawText(context,obj);
+        this.setDrawProperties(obj);
+        this.setFont(obj);
+        this.drawText(obj);
     }
 
 };

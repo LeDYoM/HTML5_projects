@@ -40,6 +40,7 @@ JE.Core = JE.Core || function ()
         };
 
         mem = new JE.MetaElementsManager(renderContext.context);
+        JE.Drawing.context = renderContext.context;
         useConfig = useConfig || configDefinitions;
         setCanvasSize(canvas, useConfig.width, useConfig.height);        
     }

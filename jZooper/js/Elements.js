@@ -5,7 +5,6 @@ var PEObject = function()
     var typeName = "";
     var metaType = null;
     var configured = false;
-    var context = null;
     var needsUpdate = true;
 
     PEObject.prototype.update = function()
@@ -23,13 +22,12 @@ var PEObject = function()
         this.render();
     };
 
-    PEObject.prototype.configure = function(typeName, metaT, base, context)
+    PEObject.prototype.configure = function(typeName, metaT, base)
     {
         if (!configured)
         {
             PEObject.typeName = typeName;
             metaType = metaT;
-            PEObject.context = context;
           
             base = base || {};
             var def = metaType.defaults || {};
@@ -71,7 +69,7 @@ var MetaElementsManager = MetaElementsManager || function(context)
                 {
                     render: function()
                     {
-                        JE.Drawing.doDrawRect(this.context,this);
+                        JE.Drawing.doDrawRect(this);
                     }
                 }
             },
@@ -97,7 +95,7 @@ var MetaElementsManager = MetaElementsManager || function(context)
                 {
                     render: function()
                     {
-                        JE.Drawing.doDrawText(this.context,this);
+                        JE.Drawing.doDrawText(this);
                     }
                 }
             }
@@ -161,8 +159,8 @@ var MetaElementsManager = MetaElementsManager || function(context)
                     },
                     render: function()
                     {
-                        JE.Drawing.doDrawRect(this.context,this);
-                        JE.Drawing.doDrawText(this.context,this);
+                        JE.Drawing.doDrawRect(this);
+                        JE.Drawing.doDrawText(this);
                     }
                 }
             }

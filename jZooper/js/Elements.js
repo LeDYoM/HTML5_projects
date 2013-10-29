@@ -7,26 +7,26 @@ var PEObject = function()
     var configured = false;
     var needsUpdate = true;
 
-    PEObject.prototype.update = function()
-    {       
+    this.update = function()
+    {
         if (needsUpdate)
         {
-            console.log(needsUpdate);
 
             if (this.preRender)
             {
+
                 this.preRender();
             }
-            needsUpdate = false;
+            this.needsUpdate = false;
         }
         this.render();
     };
 
-    PEObject.prototype.configure = function(typeName, metaT, base)
+    this.configure = function(typeName, metaT, base)
     {
         if (!configured)
         {
-            PEObject.typeName = typeName;
+            typeName = typeName;
             metaType = metaT;
           
             base = base || {};
@@ -38,7 +38,7 @@ var PEObject = function()
             this.render = metaType.methods.render;
             this.preRender = metaType.methods.preRender;
             
-            configured = true;
+            this.configured = true;
         }
         return this;
     };

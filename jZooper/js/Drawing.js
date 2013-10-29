@@ -53,6 +53,11 @@ var Drawing = Drawing ||
         this.setDrawProperties(obj);
         this.setFont(obj);
         this.drawText(obj);
+    },
+    
+    meauseText: function(txt)
+    {
+        return this.context.measureText(txt);
     }
 
 };

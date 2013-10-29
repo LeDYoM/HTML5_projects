@@ -26,9 +26,9 @@ var PEObject = function()
     {
         if (!configured)
         {
-            typeName = typeName;
+            PEObject.typeName = typeName;
             metaType = metaT;
-          
+
             base = base || {};
             var def = metaType.defaults || {};
             for (var attr in metaType.defaults) {
@@ -145,7 +145,7 @@ var MetaElementsManager = MetaElementsManager || function(context)
                         console.log(this);
                         this.private = {};
                         JE.Drawing.setFontType({font: "30px Arial"});
-                        this.private.textw = this.context.measureText(txt).width;
+                        this.private.textw = JE.Drawing.meauseText(txt).width;
                         this.private.texth = 30;
                         
                         // Set up the quad

@@ -149,8 +149,8 @@ var MetaElementsManager = MetaElementsManager || function(context)
                         
                         // Set up the quad
                         this.private.quad = this.metaType.privateDefaults.quad;
-                        this.private.quad.w = this.private.textw + 100;
-                        this.private.quad.h = this.private.texth + 20;
+                        this.private.quad.width = this.private.textw + 100;
+                        this.private.quad.height = this.private.texth + 20;
                         
                         // Set up the text label
                         this.private.text = this.metaType.privateDefaults.text;

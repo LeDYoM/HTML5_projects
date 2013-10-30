@@ -112,6 +112,10 @@ var MetaElementsManager = MetaElementsManager || function(context)
                 },
                 privateDefaults:
                 {
+                    incrementWidth: 100,
+                    incrementHeight: 20,
+                    fontSize: 60,
+                    fontType: "Arial",
                     quad:
                     {
                         x: 0,
@@ -142,23 +146,25 @@ var MetaElementsManager = MetaElementsManager || function(context)
                 {
                     preRender: function()
                     {
+                        var pd = this.metaType.privateDefaults;
                         this.private = {};
-                        JE.Drawing.setFontType({font: "30px Arial"});
+                        JE.Drawing.setFontType({font: pd.fontSize+"px " + pd.fontType});
                         this.private.textw = JE.Drawing.meauseText(this.text).width;
-                        this.private.texth = 30;
+                        this.private.texth = pd.fontSize;
                         
                         // Set up the quad
-                        this.private.quad = this.metaType.privateDefaults.quad;
-                        this.private.quad.width = this.private.textw + 100;
-                        this.private.quad.height = this.private.texth + 20;
+                        this.private.quad =pd.quad;
+                        this.private.quad.width = this.private.textw + pd.incrementWidth;
+                        this.private.quad.height = this.private.texth + pd.incrementHeight;
                         
                         // Set up the text label
-                        this.private.text = this.metaType.privateDefaults.text;
+                        this.private.text = pd.text;
                         this.private.text.text = this.text;
+                        this.private.text.x = this.private.quad.x + (this.private.quad.width / 2);
+                        this.private.text.y = this.private.quad.y + (this.private.quad.height / 2);
                     },
                     render: function()
                     {
-                                                                        console.log(this);
                         JE.Drawing.doDrawRect(this.private.quad);
                         JE.Drawing.doDrawText(this.private.text);
                     }

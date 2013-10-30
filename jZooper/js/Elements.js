@@ -2,14 +2,14 @@ var JE = JE || {};
 
 var PEObject = function()
 {
-    var typeName = "";
-    var metaType = null;
-    var configured = false;
-    var needsUpdate = true;
+    this.typeName = "";
+    this.metaType = null;
+    this.configured = false;
+    this.needsUpdate = true;
 
     this.update = function()
     {
-        if (needsUpdate)
+        if (this.needsUpdate)
         {
 
             if (this.preRender)
@@ -24,19 +24,19 @@ var PEObject = function()
 
     this.configure = function(typeName, metaT, base)
     {
-        if (!configured)
+        if (!this.configured)
         {
-            PEObject.typeName = typeName;
-            metaType = metaT;
+            this.typeName = typeName;
+            this.metaType = metaT;
 
             base = base || {};
-            var def = metaType.defaults || {};
-            for (var attr in metaType.defaults) {
+            var def = this.metaType.defaults || {};
+            for (var attr in this.metaType.defaults) {
                 this[attr] = base[attr] || def[attr];
             }
             
-            this.render = metaType.methods.render;
-            this.preRender = metaType.methods.preRender;
+            this.render = this.metaType.methods.render;
+            this.preRender = this.metaType.methods.preRender;
             
             this.configured = true;
         }
@@ -142,10 +142,9 @@ var MetaElementsManager = MetaElementsManager || function(context)
                 {
                     preRender: function()
                     {
-                        console.log(this);
                         this.private = {};
                         JE.Drawing.setFontType({font: "30px Arial"});
-                        this.private.textw = JE.Drawing.meauseText(txt).width;
+                        this.private.textw = JE.Drawing.meauseText(this.text).width;
                         this.private.texth = 30;
                         
                         // Set up the quad
@@ -159,8 +158,9 @@ var MetaElementsManager = MetaElementsManager || function(context)
                     },
                     render: function()
                     {
-                        JE.Drawing.doDrawRect(this);
-                        JE.Drawing.doDrawText(this);
+                                                                        console.log(this);
+                        JE.Drawing.doDrawRect(this.private.quad);
+                        JE.Drawing.doDrawText(this.private.text);
                     }
                 }
             }

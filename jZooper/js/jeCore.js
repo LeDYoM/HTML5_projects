@@ -62,6 +62,17 @@ JE.Core = JE.Core || function ()
             }
         }
     }
+    
+    function nextScene()
+    {
+        if (this.programData.nextScene)
+        {
+            var scene = this.programData.nextScene();
+            console.log(scene);
+            setActiveScene(scene);
+        }
+    }
+
 
     this.Start = function ()
     {
@@ -71,19 +82,15 @@ JE.Core = JE.Core || function ()
 
         initEnvironment(canvas);
         console.log("Canvas size: ("+canvas.width+","+canvas.height+")");
+                console.log(this);
+
+        nextScene();
                
         // Start the system.
 //        setInterval(Render, 25);
         setTimeout(Render, 25);
     };
 
-    function nextScene()
-    {
-        if (this.programData.nextScene)
-        {
-            var scene = this.programData.nextScene();
-        }
-    }
     function acquireObject(obj)
     {
         return ObjectUtils.clone(obj);

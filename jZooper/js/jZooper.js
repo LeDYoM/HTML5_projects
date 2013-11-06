@@ -39,11 +39,15 @@ function doPageLoad() {
                     text: "This is button"
                 }
             }
+        },
+        nextScene: function()
+        {
+            return this.scenes.menu;
         }
     };
-    
+
+    je.setProgramData(program);
     je.Start();
-    je.setActiveScene(scene);
 }
 var je = new JE.Core();
 

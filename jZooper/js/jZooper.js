@@ -45,10 +45,10 @@ function doPageLoad() {
             return this.scenes.menu;
         }
     };
-
+    var je = new JECore();
     je.setProgramData(program);
     je.Start();
+    je.programData;
 }
-var je = new JE.Core();
 
 window.addEventListener("load", doPageLoad, false);

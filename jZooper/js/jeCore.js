@@ -1,21 +1,16 @@
-// Static drawing object.
-
-var JE = JE || {};
-
 // Main Core object.
-JE.Core = JE.Core || function ()
+function JECore()
 {
     // Private properties
-    this.programData = null;
+    var that_ = this;
+    var programData = null;
     var activeScene = null;
     var renderContext = null;
-    var configDefinitions = null;
-    var useConfig = null;
     var mem = null;
 
-    function initEnvironment(canvas)
+    function initEnvironment (canvas)
     {
-        configDefinitions = {
+        that_.configDefinitions = {
             width: 768,
             height: 1280,
             useTouch: true,
@@ -37,14 +32,14 @@ JE.Core = JE.Core || function ()
         renderContext =
         {
             context: canvas.getContext("2d"),
-            viewPort: configDefinitions.viewPort
+            viewPort: that_.configDefinitions.viewPort
         };
 
         mem = new JE.MetaElementsManager(renderContext.context);
         JE.Drawing.context = renderContext.context;
-        useConfig = useConfig || configDefinitions;
-        setCanvasSize(canvas, useConfig.width, useConfig.height);        
-    }
+        that_.useConfig = that_.useConfig || that_.configDefinitions;
+        setCanvasSize(canvas, that_.useConfig.width, that_.useConfig.height);        
+    };
 
     function setCanvasSize(canvas,w,h)
     {
@@ -54,37 +49,35 @@ JE.Core = JE.Core || function ()
 
     function Render()
     {
-        if (activeScene)
+        console.log(this);
+        if (that_.activeScene)
         {
-            for (i in activeScene)
+            for (i in that_.activeScene)
             {
-                activeScene[i].update();
+                that_.activeScene[i].update();
             }
         }
     }
     
-    function nextScene()
+    that_.nextScene = function ()
     {
-        if (this.programData.nextScene)
+        if (that_.programData.nextScene)
         {
-            var scene = this.programData.nextScene();
+            var scene = that_.programData.nextScene();
             console.log(scene);
-            setActiveScene(scene);
+            that_.setActiveScene(scene);
         }
-    }
-
+    };
 
     this.Start = function ()
     {
         //Create a canvas
         var canvas = document.createElement("canvas");
         document.getElementById("canvas").appendChild(canvas);      
-
         initEnvironment(canvas);
         console.log("Canvas size: ("+canvas.width+","+canvas.height+")");
-                console.log(this);
 
-        nextScene();
+        that_.nextScene();
                
         // Start the system.
 //        setInterval(Render, 25);
@@ -96,13 +89,13 @@ JE.Core = JE.Core || function ()
         return ObjectUtils.clone(obj);
     }
 
-    function setActiveScene(scene)
+    that_.setActiveScene = function(scene)
     {
-        activeScene = mem.preprocessElementArray(acquireObject(scene));
-    }
+        that_.activeScene = mem.preprocessElementArray(acquireObject(scene));
+    };
     
     this.setProgramData = function(pData)
     {
-        this.programData = acquireObject(pData);
+        that_.programData = acquireObject(pData);
     };
 };

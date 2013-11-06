@@ -3,42 +3,36 @@ function JECore()
 {
     // Private properties
     var that_ = this;
-    var programData = null;
-    var activeScene = null;
-    var renderContext = null;
-    var mem = null;
+    var configDefinitions = useConfig = {
+        width: 768,
+        height: 1280,
+        useTouch: true,
+        viewPort:
+        {
+            width: 768,
+            height: 1280,
+            getPixelPositionX: function(x)
+            {
+                return x / (this.width / canvas.width);
+            },
+            getPixelPositionY: function(y)
+            {
+                return y / (this.height / canvas.height);
+            }
+        }
+    };
 
     function initEnvironment (canvas)
     {
-        that_.configDefinitions = {
-            width: 768,
-            height: 1280,
-            useTouch: true,
-            viewPort:
-            {
-                width: 768,
-                height: 1280,
-                getPixelPositionX: function(x)
-                {
-                    return x / (this.width / canvas.width);
-                },
-                getPixelPositionY: function(y)
-                {
-                    return y / (this.height / canvas.height);
-                }
-            }
-        };
-
         renderContext =
         {
             context: canvas.getContext("2d"),
-            viewPort: that_.configDefinitions.viewPort
+            viewPort: configDefinitions.viewPort
         };
 
         mem = new JE.MetaElementsManager(renderContext.context);
         JE.Drawing.context = renderContext.context;
-        that_.useConfig = that_.useConfig || that_.configDefinitions;
-        setCanvasSize(canvas, that_.useConfig.width, that_.useConfig.height);        
+        setCanvasSize(canvas, useConfig.width, useConfig.height);        
     };
 
     function setCanvasSize(canvas,w,h)
@@ -49,7 +43,6 @@ function JECore()
 
     function Render()
     {
-        console.log(this);
         if (that_.activeScene)
         {
             for (i in that_.activeScene)

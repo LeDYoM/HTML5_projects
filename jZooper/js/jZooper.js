@@ -48,7 +48,6 @@ function doPageLoad() {
     var je = new JECore();
     je.setProgramData(program);
     je.Start();
-    je.programData;
 }
 
 window.addEventListener("load", doPageLoad, false);

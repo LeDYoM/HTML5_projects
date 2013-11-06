@@ -6,6 +6,7 @@ var JE = JE || {};
 JE.Core = JE.Core || function ()
 {
     // Private properties
+    this.programData = null;
     var activeScene = null;
     var renderContext = null;
     var configDefinitions = null;
@@ -61,8 +62,19 @@ JE.Core = JE.Core || function ()
             }
         }
     }
+    
+    function nextScene()
+    {
+        if (this.programData.nextScene)
+        {
+            var scene = this.programData.nextScene();
+            console.log(scene);
+            setActiveScene(scene);
+        }
+    }
 
-    function Start()
+
+    this.Start = function ()
     {
         //Create a canvas
         var canvas = document.createElement("canvas");
@@ -70,11 +82,14 @@ JE.Core = JE.Core || function ()
 
         initEnvironment(canvas);
         console.log("Canvas size: ("+canvas.width+","+canvas.height+")");
-        
+                console.log(this);
+
+        nextScene();
+               
         // Start the system.
 //        setInterval(Render, 25);
         setTimeout(Render, 25);
-    }
+    };
 
     function acquireObject(obj)
     {
@@ -85,8 +100,9 @@ JE.Core = JE.Core || function ()
     {
         activeScene = mem.preprocessElementArray(acquireObject(scene));
     }
-
-    // Publish public methods.
-    this.Start = Start;
-    this.setActiveScene = setActiveScene;
+    
+    this.setProgramData = function(pData)
+    {
+        this.programData = acquireObject(pData);
+    };
 };

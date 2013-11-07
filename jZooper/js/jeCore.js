@@ -3,6 +3,9 @@ function JECore()
 {
     // Private properties
     var that_ = this;
+    var activeScene;
+    var programData = null;
+    
     var configDefinitions = useConfig = {
         width: 768,
         height: 1280,
@@ -10,15 +13,7 @@ function JECore()
         viewPort:
         {
             width: 768,
-            height: 1280,
-            getPixelPositionX: function(x)
-            {
-                return x / (this.width / canvas.width);
-            },
-            getPixelPositionY: function(y)
-            {
-                return y / (this.height / canvas.height);
-            }
+            height: 1280
         }
     };
 
@@ -43,26 +38,32 @@ function JECore()
 
     function Render()
     {
-        if (that_.activeScene)
+        console.log(activeScene);
+        if (activeScene)
         {
-            for (i in that_.activeScene)
+            for (i in activeScene)
             {
-                that_.activeScene[i].update();
+                activeScene[i].update();
             }
         }
     }
     
-    that_.nextScene = function ()
+    function nextScene()
     {
-        if (that_.programData.nextScene)
+        if (programData.nextScene)
         {
-            var scene = that_.programData.nextScene();
+            var scene = programData.nextScene();
             console.log(scene);
-            that_.setActiveScene(scene);
+            setActiveScene(scene);
         }
     };
 
     this.Start = function ()
+    {
+        privateStart();
+    };
+    
+    function privateStart()
     {
         //Create a canvas
         var canvas = document.createElement("canvas");
@@ -70,11 +71,22 @@ function JECore()
         initEnvironment(canvas);
         console.log("Canvas size: ("+canvas.width+","+canvas.height+")");
 
-        that_.nextScene();
-               
+        nextScene();
+
         // Start the system.
 //        setInterval(Render, 25);
-        setTimeout(Render, 25);
+        setTimeout(
+                function ()
+                {
+                    if (activeScene)
+                    {
+                        for (i in activeScene)
+                        {
+                            activeScene[i].update();
+                        }
+                    }
+                }
+                , 25);
     };
 
     function acquireObject(obj)
@@ -82,13 +94,13 @@ function JECore()
         return ObjectUtils.clone(obj);
     }
 
-    that_.setActiveScene = function(scene)
+    function setActiveScene(scene)
     {
-        that_.activeScene = mem.preprocessElementArray(acquireObject(scene));
+        activeScene = mem.preprocessElementArray(acquireObject(scene));
     };
     
     this.setProgramData = function(pData)
     {
-        that_.programData = acquireObject(pData);
+        programData = acquireObject(pData);
     };
 };

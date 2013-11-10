@@ -38,6 +38,22 @@ function doPageLoad() {
                     type: "ui.button",
                     text: "This is button"
                 }
+            },
+            playLevel:
+            {
+                tile:
+                {
+                    type: "core.quad",
+                    x: 100,
+                    y: 100,
+                    width: 200,
+                    height: 250,
+                    fill: true,
+                    stroke: true,
+                    fillStyle: "black",
+                    lineWidth: 7,
+                    strokeStyle: "red"                    
+                }
             }
         },
         nextScene: function()

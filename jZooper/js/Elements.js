@@ -215,5 +215,3 @@ var MetaElementsManager = MetaElementsManager || function(context)
 };
 
 JE.MetaElementsManager = JE.MetaElementsManager || MetaElementsManager;
-
-//var mem = new MetaElementsManager("fdfdf");

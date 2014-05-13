@@ -1,0 +1,24 @@
+.menu {
+    background-color:#FFD700;
+    width:10%;
+    height:100vw;
+    float:left;
+}
+
+.containerminiApp {
+    background-color:#eeeeee;
+    float: left;    
+}
+
+.containerminiAppMenu {
+    background-color: #ff1111
+}
+
+.stepsInput {
+    width: 50px;
+}
+
+.sizeBoard
+{
+    width: 50px;
+}

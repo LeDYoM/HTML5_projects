@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Ismael González Burgos' personal Website</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="main.css" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+        <script type="text/javascript" src="minidom.js"></script>
+        <script type="text/javascript" src="sfme/sfme.js"></script>
+
+        <script>
+            var grController = null;
+            function initialized()
+            {
+                grController = new GrowingController();
+                grController.init(MiniDom.byId("container"),MiniDom.byId("miniAppMenu"),10,10);
+            }
+            function initLife()
+            {
+                MiniDom.loadScript("growing.js", initialized);
+            }
+            
+        </script>
+        <h2>Welcome to my site</h2>
+        <div class="menu">
+            <b>Menu</b>
+            <ul>
+                <li><a href="#" onclick="initLife();">HTML5 Life</a></li>
+                <li><a href="#" onclick="loadsmf();">HTML5 Game Engine</a></li>
+            </ul>
+        </div>
+        <div class='containerminiAppMenu' id='miniAppMenu'>
+        </div>
+
+        <div class="containerminiApp" id="container" >            
+        </div>
+    </body>
+</html>

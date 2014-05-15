@@ -70,7 +70,11 @@ cns("sfme.internals", { loadjscssfile: function (filename, filetype, callback)
             cns("sfme.internals").loadexecutejscssfile("sfme/sfmecore.js","js", function (e)
             {
                 e;
-                callback();
+                cns("sfme.core").doSomething();
+                if (callback)
+                {
+                    callback();
+                }
             });
         }
     };

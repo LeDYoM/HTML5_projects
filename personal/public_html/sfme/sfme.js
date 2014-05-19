@@ -63,14 +63,14 @@ cns("sfme.internals", { loadjscssfile: function (filename, filetype, callback)
 (function()
 {
     var sCounter = 0;
-    window.loadsmf = function(config,callback)
+    window.loadsmf = function(options,callback)
     {
         if (sCounter === 0)
         {
             cns("sfme.internals").loadexecutejscssfile("sfme/sfmecore.js","js", function (e)
             {
                 e;
-                cns("sfme.core").doSomething();
+                cns("sfme.core").init(options);
                 if (callback)
                 {
                     callback();

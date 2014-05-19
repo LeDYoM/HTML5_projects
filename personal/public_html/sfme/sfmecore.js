@@ -60,22 +60,62 @@
 
 (function()
 {
+    this.verbose =  function(text)
+    {
+        window.console.log(text);
+    };
+}
+).apply(cns("sfme.log"));
+
+(function()
+{
     var utils = cns("sfme.utils");
+    var log = cns("sfme.log");
+    
     this.ready = false;
     this.canvas = null;
+    this.capabilities = { };
 
+    function checkStoreCapabilities(canvasObject, capabilitiesObject)
+    {
+        var tempCanvas = document.createElement("canvas");
+        capabilitiesObject.canvasSupport = tempCanvas !== null;
+        log.verbose("canvas available..."+(capabilitiesObject.canvasSupport ? "Ok" : "Failed"));
+        
+        capabilitiesObject.canvas2d = tempCanvas.getContext("2d") !== null;
+        log.verbose("canvas 2d..."+(capabilitiesObject.canvas2d ? "Ok" : "Failed"));
+        
+        capabilitiesObject.text2d = capabilitiesObject.canvas2d && tempCanvas.getContext("2d").fillText === "Function";
+        log.verbose("canvas 2d text..."+(capabilitiesObject.text2d ? "Ok" : "Failed"));
+
+        // Create a new temp canvas.
+        tempCanvas = document.createElement("canvas");
+        capabilitiesObject.webGL = tempCanvas.getContext("webGL") !== null;
+        log.verbose("canvas webGL..."+(capabilitiesObject.webGL ? "Ok" : "Failed"));
+    }
     this.init = function(options)
     {
         options = options || { };
+        var t = utils.typeName(options.container);
         
-        if (utils.isType(options.canvas, "canvas"))
+        if (utils.isType(options.container, "HTMLDivElement"))
         {
-            // There is a valid canvas object. We can use it.
-            this.canvas = options.canvas;
-        } else
+            // Set properties or defaults...
+            options.width = options.width || 800;
+            options.height = options.height || 600;
+            
+            log.verbose("Going to create canvas under element "+options.container+"...");
+            log.verbose("Canvas size will be: "+options.width+"X"+options.height);
+            this.canvas = createCanvas(options.container,"canvas", options.width, options.height);
+            
+            log.verbose("Object canvas created...");
+            log.verbose("Retrieving capabilities...");
+            checkStoreCapabilities(this.canvas, this.capabilities);
+        }
+        else
         {
             // There is no canvas object. Let's create it.
-            var parent = (utils.isType(options.parent, "div")) ? options.parent : utils.byTagName("body");
+            log.verbose("Error in options.container:"+options.container);
             
             
         }

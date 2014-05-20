@@ -61,6 +61,20 @@ function cns(namespace, obj_) {
         }
         return fileref;
     };
+    var loadedScripts = [];
+    
+    this.require = function (file,callback)
+    {
+        if (loadedScripts.indexOf(file) !== -1)
+        {
+            loadedScripts.push(file);
+            this.loadexecutejscssfile(file,"js", callback);
+        }
+        else
+        {
+            callback();
+        }
+    };
 }).apply(cns("sfme.internals"));
 
 (function()

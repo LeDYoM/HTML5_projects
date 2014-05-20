@@ -26,7 +26,9 @@ function cns(namespace, obj_) {
     return parent;
 }
 
-cns("sfme.internals", { loadjscssfile: function (filename, filetype, callback)
+(function()
+{
+    this.loadjscssfile = function (filename, filetype, callback)
     {
         var fileref = null;
         if (filetype === "js")
@@ -48,7 +50,8 @@ cns("sfme.internals", { loadjscssfile: function (filename, filetype, callback)
             fileref.onload = callback;
         }
         return fileref;
-    }, loadexecutejscssfile: function(filename, filetype, callback)
+    };
+    this.loadexecutejscssfile = function(filename, filetype, callback)
     {
         var fileref = this.loadjscssfile(filename, filetype, callback);
 
@@ -57,8 +60,8 @@ cns("sfme.internals", { loadjscssfile: function (filename, filetype, callback)
             document.getElementsByTagName("head")[0].appendChild(fileref);
         }
         return fileref;
-    }
-});
+    };
+}).apply(cns("sfme.internals"));
 
 (function()
 {

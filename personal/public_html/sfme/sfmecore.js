@@ -69,6 +69,12 @@
 
 (function()
 {
+    
+}
+).apply(cns("sfme.internals.mainLoop"));
+
+(function()
+{
     var utils = cns("sfme.utils");
     var log = cns("sfme.log");
     
@@ -82,15 +88,16 @@
         capabilitiesObject.canvasSupport = tempCanvas !== null;
         log.verbose("canvas available..."+(capabilitiesObject.canvasSupport ? "Ok" : "Failed"));
         
-        capabilitiesObject.canvas2d = tempCanvas.getContext("2d") !== null;
+        var tempContext = tempCanvas.getContext("2d");
+        capabilitiesObject.canvas2d =  tempContext !== null;
         log.verbose("canvas 2d..."+(capabilitiesObject.canvas2d ? "Ok" : "Failed"));
         
-        capabilitiesObject.text2d = capabilitiesObject.canvas2d && tempCanvas.getContext("2d").fillText === "Function";
+        capabilitiesObject.text2d = capabilitiesObject.canvas2d && true;//tempContext.fillText === "Function";
         log.verbose("canvas 2d text..."+(capabilitiesObject.text2d ? "Ok" : "Failed"));
 
         // Create a new temp canvas.
         tempCanvas = document.createElement("canvas");
-        capabilitiesObject.webGL = tempCanvas.getContext("webGL") !== null;
+        capabilitiesObject.webGL = tempCanvas.getContext("webgl") !== null;
         log.verbose("canvas webGL..."+(capabilitiesObject.webGL ? "Ok" : "Failed"));
     }
     this.init = function(options)
@@ -111,13 +118,13 @@
             log.verbose("Object canvas created...");
             log.verbose("Retrieving capabilities...");
             checkStoreCapabilities(this.canvas, this.capabilities);
+            
+            // Start main loop
         }
         else
         {
             // There is no canvas object. Let's create it.
             log.verbose("Error in options.container:"+options.container);
-            
-            
         }
         this.ready = true;
     };

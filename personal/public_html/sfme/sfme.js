@@ -99,19 +99,59 @@ function cns(namespace, obj_) {
 (function()
 {
     var sCounter = 0;
-    window.loadsmf = function(options,callback)
+    window.loadsmf = function(options)
     {
         if (sCounter === 0)
         {
-            cns("sfme.internals").loadScriptLibrary(["sfme/sfmecore.js", "sfme/utils.js"], function (e)
+            cns("sfme.internals").loadScriptLibrary(["sfme/sfmecore.js", "sfme/utils.js", "sfme/webglw.js"], function (e)
             {
                 e;
                 cns("sfme.core").init(options);
-                if (callback)
-                {
-                    callback();
-                }
             });
         }
     };
+    window.updateFrame = function()
+    {
+	// Clear the canvas
+	gl.clear(gl.COLOR_BUFFER_BIT);
+	
+            // Do a complete rotation every 10 seconds.
+        var time = Date.now() % 10000;
+        var angleInDegrees = (360.0 / 10000.0) * time;
+        var angleInRadians = angleInDegrees / 57.2957795;
+
+        var xyz = vec3.create();
+
+        // Draw the triangle facing straight on.
+        mat4.identity(modelMatrix);
+        mat4.rotateZ(modelMatrix, angleInRadians);           
+        drawTriangle(triangleColorBufferObject1);
+
+        // Draw one translated a bit down and rotated to be flat on the ground.
+        mat4.identity(modelMatrix);
+        xyz[0] = 0; xyz[1] = -1; xyz[2] = 0;
+        mat4.translate(modelMatrix, xyz);
+        mat4.rotateX(modelMatrix, 90 / 57.2957795);
+        xyz[0] = 0; xyz[1] = 0; xyz[2] = 1;
+        mat4.rotate(modelMatrix, angleInRadians, xyz);           
+        drawTriangle(triangleColorBufferObject2);
+
+        // Draw one translated a bit to the right and rotated to be facing to the left.
+        mat4.identity(modelMatrix);
+        xyz[0] = 1; xyz[1] = 0; xyz[2] = 0;
+        mat4.translate(modelMatrix, xyz);
+        mat4.rotateY(modelMatrix, 90 / 57.2957795);
+        xyz[0] = 0; xyz[1] = 0; xyz[2] = 1;
+        mat4.rotate(modelMatrix, angleInRadians, xyz);     
+        drawTriangle(triangleColorBufferObject3);
+    
+        // Send the commands to WebGL
+	gl.flush();
+	
+	// Request another frame
+	window.requestAnimFrame(render, canvas);
+}
+
+
+    }
 })();

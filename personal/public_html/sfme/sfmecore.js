@@ -1,4 +1,4 @@
-cns("sfme.internals").require("utils.js",
+
 (function()
 {
     var utils = cns("sfme.utils");
@@ -65,4 +65,4 @@ cns("sfme.internals").require("utils.js",
         return temp;
     }    
 }
-).apply(cns("sfme.core")));
+).apply(cns("sfme.core"));

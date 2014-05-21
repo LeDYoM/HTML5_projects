@@ -28,6 +28,7 @@ function cns(namespace, obj_) {
 
 (function()
 {
+    var this_ = this;
     this.loadjscssfile = function (filename, filetype, callback)
     {
         var fileref = null;
@@ -63,18 +64,37 @@ function cns(namespace, obj_) {
     };
     var loadedScripts = [];
     
-    this.require = function (file,callback)
+    this.loadScript = function (file,callback)
     {
         if (loadedScripts.indexOf(file) !== -1)
+        {
+            callback();
+        }
+        else
         {
             loadedScripts.push(file);
             this.loadexecutejscssfile(file,"js", callback);
         }
-        else
-        {
-            callback();
-        }
     };
+    this.loadScriptLibrary = function(fileList, callback)
+    {
+        var fl = fileList.length;
+        var loadedCounter = 0;
+       
+        fileList.forEach(function(file)
+        {
+            this_.loadScript(file, function()
+            {
+                console.log("loadedCounter:"+loadedCounter);
+                loadedCounter++;
+                if (loadedCounter >= fl)
+                {
+                    callback();
+                }
+            });
+        });
+    };
+    
 }).apply(cns("sfme.internals"));
 
 (function()
@@ -84,8 +104,9 @@ function cns(namespace, obj_) {
     {
         if (sCounter === 0)
         {
-            cns("sfme.internals").loadexecutejscssfile("sfme/sfmecore.js","js", function (e)
+            cns("sfme.internals").loadScriptLibrary(["sfme/sfmecore.js", "sfme/utils.js"], function (e)
             {
+                console.log("Loaded completed!");
                 e;
                 cns("sfme.core").init(options);
                 if (callback)

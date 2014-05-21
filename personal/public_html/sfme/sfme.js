@@ -85,7 +85,6 @@ function cns(namespace, obj_) {
         {
             this_.loadScript(file, function()
             {
-                console.log("loadedCounter:"+loadedCounter);
                 loadedCounter++;
                 if (loadedCounter >= fl)
                 {
@@ -106,7 +105,6 @@ function cns(namespace, obj_) {
         {
             cns("sfme.internals").loadScriptLibrary(["sfme/sfmecore.js", "sfme/utils.js"], function (e)
             {
-                console.log("Loaded completed!");
                 e;
                 cns("sfme.core").init(options);
                 if (callback)

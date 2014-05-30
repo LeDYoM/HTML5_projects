@@ -7,8 +7,34 @@
         <link href="main.css" rel="stylesheet" type="text/css">
     </head>
     <body>
+        <script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
+
         <script type="text/javascript" src="minidom.js"></script>
         <script type="text/javascript" src="sfme/sfme.js"></script>
+<script id="shader-fs" type="x-shader/x-fragment">
+    precision mediump float;
+
+    varying vec4 vColor;
+
+    void main(void) {
+        gl_FragColor = vColor;
+    }
+</script>
+
+<script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+    attribute vec4 aVertexColor;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    varying vec4 vColor;
+
+    void main(void) {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        vColor = aVertexColor;
+    }
+</script>
 
         <script>
             var grController = null;
@@ -28,7 +54,10 @@
             <b>Menu</b>
             <ul>
                 <li><a href="#" onclick="initLife();">HTML5 Life</a></li>
-                <li><a href="#" onclick="loadsmf({container:document.getElementById('container')});">HTML5 Game Engine</a></li>
+                <li><a href="#" onclick="loadsmf(
+                            {container:document.getElementById('container'),
+                             addProgram: 'example1/example1.js'
+                    });">HTML5 Game Engine</a></li>
             </ul>
         </div>
         <div class='containerminiAppMenu' id='miniAppMenu'>

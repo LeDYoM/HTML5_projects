@@ -64,15 +64,11 @@
     {
         window.console.log(text);
     };
+    
+    this.debug =  function(text)
+    {
+        window.console.log(text);
+    };
+    
 }
 ).apply(cns("sfme.log"));
-
-(function()
-{
-    var requestId = 0;
-    this.update = function()
-    {
-        
-    }
-}
-).apply(cns("sfme.internals.mainLoop"));

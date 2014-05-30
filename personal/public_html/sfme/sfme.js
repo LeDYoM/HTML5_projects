@@ -76,14 +76,14 @@ function cns(namespace, obj_) {
             this.loadexecutejscssfile(file,"js", callback);
         }
     };
-    this.loadScriptLibrary = function(fileList, callback)
+    this.loadScriptLibrary = function(directory, fileList, callback)
     {
         var fl = fileList.length;
         var loadedCounter = 0;
        
         fileList.forEach(function(file)
         {
-            this_.loadScript(file, function()
+            this_.loadScript(directory + "/" + file, function()
             {
                 loadedCounter++;
                 if (loadedCounter >= fl)
@@ -94,6 +94,33 @@ function cns(namespace, obj_) {
         });
     };
     
+    this.loadFile = function(file, callback)
+    {
+        var XMLHttpRequestObject = false; 
+ 
+        if (window.XMLHttpRequest)
+        {
+            XMLHttpRequestObject = new XMLHttpRequest();
+        } else if (window.ActiveXObject) {
+            XMLHttpRequestObject = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        if(XMLHttpRequestObject) 
+        {
+            XMLHttpRequestObject.open("GET", file); 
+ 
+            XMLHttpRequestObject.onreadystatechange = function()
+            { 
+                if (XMLHttpRequestObject.readyState === 4 && XMLHttpRequestObject.status === 200)
+                {
+                    callback(XMLHttpRequestObject.responseText);
+                }
+            };
+ 
+            XMLHttpRequestObject.send(null); 
+        }
+    };
+
 }).apply(cns("sfme.internals"));
 
 (function()
@@ -103,55 +130,13 @@ function cns(namespace, obj_) {
     {
         if (sCounter === 0)
         {
-            cns("sfme.internals").loadScriptLibrary(["sfme/sfmecore.js", "sfme/utils.js", "sfme/webglw.js"], function (e)
+            cns("sfme.internals").loadScriptLibrary("sfme",["sfmecore.js", "utils.js", 
+                "smanager.js","webglw.js", "pmanager.js"],
+            function (e)
             {
                 e;
                 cns("sfme.core").init(options);
             });
         }
     };
-    window.updateFrame = function()
-    {
-	// Clear the canvas
-	gl.clear(gl.COLOR_BUFFER_BIT);
-	
-            // Do a complete rotation every 10 seconds.
-        var time = Date.now() % 10000;
-        var angleInDegrees = (360.0 / 10000.0) * time;
-        var angleInRadians = angleInDegrees / 57.2957795;
-
-        var xyz = vec3.create();
-
-        // Draw the triangle facing straight on.
-        mat4.identity(modelMatrix);
-        mat4.rotateZ(modelMatrix, angleInRadians);           
-        drawTriangle(triangleColorBufferObject1);
-
-        // Draw one translated a bit down and rotated to be flat on the ground.
-        mat4.identity(modelMatrix);
-        xyz[0] = 0; xyz[1] = -1; xyz[2] = 0;
-        mat4.translate(modelMatrix, xyz);
-        mat4.rotateX(modelMatrix, 90 / 57.2957795);
-        xyz[0] = 0; xyz[1] = 0; xyz[2] = 1;
-        mat4.rotate(modelMatrix, angleInRadians, xyz);           
-        drawTriangle(triangleColorBufferObject2);
-
-        // Draw one translated a bit to the right and rotated to be facing to the left.
-        mat4.identity(modelMatrix);
-        xyz[0] = 1; xyz[1] = 0; xyz[2] = 0;
-        mat4.translate(modelMatrix, xyz);
-        mat4.rotateY(modelMatrix, 90 / 57.2957795);
-        xyz[0] = 0; xyz[1] = 0; xyz[2] = 1;
-        mat4.rotate(modelMatrix, angleInRadians, xyz);     
-        drawTriangle(triangleColorBufferObject3);
-    
-        // Send the commands to WebGL
-	gl.flush();
-	
-	// Request another frame
-	window.requestAnimFrame(render, canvas);
-}
-
-
-    }
 })();

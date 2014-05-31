@@ -6,36 +6,74 @@
     this.ready = false;
     this.vshaders = [];
     this.fshaders = [];
+    this.shaderPrograms = [];
+    var gl = null;
     
-    this.init = function(gl)
+    
+    this.init = function(gl_)
     {
-        this.vshaders.push({id:"standard",shader:this.loadShaderFromDocument(gl,"shader-vs")});
-        this.fshaders.push({id:"standard",shader:this.loadShaderFromDocument(gl,"shader-fs")});
+        gl = gl_;
+        this.vshaders["standard"] = this.loadShaderFromDocument("shader-vs");
+        this.fshaders["standard"] = this.loadShaderFromDocument("shader-fs");
+        this.shaderPrograms["standard"] = createProgram("standard","standard");
+        useProgram("standard");
+        
         this.ready = true;
     };
+    
+    function createProgram(vShaderIndex,fShaderIndex)
+    {
+        var fragmentShader = this_.fshaders[fShaderIndex];
+        var vertexShader = this_.vshaders[vShaderIndex];
+
+        var shaderProgram = gl.createProgram();
+        gl.attachShader(shaderProgram, vertexShader);
+        gl.attachShader(shaderProgram, fragmentShader);
+        gl.linkProgram(shaderProgram);
+
+        if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+            alert("Could not initialise shaders");
+        }
+        return shaderProgram;
+    }
+    
+    function useProgram(programIndex)
+    {
+        var shaderProgram = this_.shaderPrograms[programIndex];
+        gl.useProgram(shaderProgram);
+
+        shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
+        gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+        shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
+        gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
+
+        shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+        shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+    }
     
     this.loadShaderFromFile = function(fName,type)
     {
         loader.loadFile(fName, function(shaderSource)
         {
             log.debug(shaderSource);
-            return this.loadShaderFromSource(gl,type,shaderSource);
+            return this_.loadShaderFromSource(type,shaderSource);
         });
     };
     
-    function createFragmentShader(gl)
+    function createFragmentShader()
     {
         var shader  = gl.createShader(gl.FRAGMENT_SHADER);
         return shader;
     }
     
-    function createVertexShader(gl)
+    function createVertexShader()
     {
         var shader = gl.createShader(gl.VERTEX_SHADER);
         return shader;
     }
     
-    function createShaderFromSource(gl,shader,source)
+    function createShaderFromSource(shader,source)
     {
         gl.shaderSource(shader, source);
         gl.compileShader(shader);
@@ -48,7 +86,7 @@
         return shader;
     }
     
-    this.loadShaderFromDocument = function(gl, id)
+    this.loadShaderFromDocument = function(id)
     {
         var shaderScript = document.getElementById(id);
         if (!shaderScript)
@@ -67,25 +105,26 @@
             k = k.nextSibling;
         }
         
-        return this.loadShaderFromSource(gl,shaderScript.type,str);
+        return this.loadShaderFromSource(shaderScript.type,str);
     };
     
-    this.loadShaderFromSource = function(gl,type,sourceCode)
+    this.loadShaderFromSource = function(type,sourceCode)
     {
         var shader;
         if (type === "x-shader/x-fragment")
         {
-            shader = createFragmentShader(gl);
+            shader = createFragmentShader();
         }
         else if (type === "x-shader/x-vertex")
         {
-            shader = createVertexShader(gl);
-        } else
+            shader = createVertexShader();
+        }
+        else
         {
             return null;
         }
 
-        return createShaderFromSource(gl, shader,sourceCode);
+        return createShaderFromSource(shader,sourceCode);
     };
 }
 ).apply(cns("sfme.internals.shaderManager"));

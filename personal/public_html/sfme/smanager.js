@@ -4,8 +4,6 @@
     var log = cns("sfme.log");
     var this_ = this;
     this.ready = false;
-    this.vshaders = [];
-    this.fshaders = [];
     this.shaderPrograms = [];
     this.activeShader = null;
     var gl = null;

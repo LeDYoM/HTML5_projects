@@ -1,9 +1,10 @@
 (function()
 {
+    "use strict";
     var loader = cns("sfme.internals");
     var log = cns("sfme.log");
     var this_ = this;
-    this.ready = false;
+    var ready = false;
     var shaderPrograms = [];
     this.activeShader = null;
     var gl = null;
@@ -14,17 +15,17 @@
 
         return new Promise(function(resolve,reject)
         {
-            this_.loadShadersFromFile(["sfme/shaders/standard.vs", "sfme/shaders/standard.fs"],
+            loadShadersFromFile(["sfme/shaders/standard.vs", "sfme/shaders/standard.fs"],
                 ["x-shader/x-vertex","x-shader/x-fragment"]).then(
                 function(values)
                 {
                     log.debug("Shaders loaded");
                     shaderPrograms["standard"] = createProgram(values[0],values[1]);
                     useProgram("standard");
-                    this_.enableShader("standard");
+                    enableShader("standard");
                     log.debug("standard shader:"+this_.activeShader);
 
-                    this_.ready = true;
+                    ready = true;
                     resolve();
                 },
                 function ()
@@ -34,12 +35,12 @@
         });
     };
     
-    this.enableShader = function(id)
+    function enableShader(id)
     {
         this_.activeShader = shaderPrograms[id] || null;
     };
     
-    this.activateVertexShader = function(obj)
+    function activateVertexShader(obj)
     {
         if (this_.activeShader)
         {
@@ -47,15 +48,15 @@
         }
     };
     
-    this.activateFragmentShader = function(obj)
+    function activateFragmentShader(obj)
     {
         if (this_.activeShader)
         {
             gl.vertexAttribPointer(this_.activeShader.vertexColorAttribute, obj.vertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
         }
     };
-    
-    this.setUniforms = function(pMatrix,mvMatrix)
+
+    function setUniforms(pMatrix,mvMatrix)
     {
         if (this_.activeShader)
         {
@@ -92,31 +93,31 @@
         shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
     }
     
-    this.loadShadersFromFile = function(fNameList,typeList)
+    function loadShadersFromFile(fNameList,typeList)
     {
         var prArray = [];
 
         for (var i=0;i<fNameList.length;++i)
         {
-            prArray.push(this.loadShaderFromFile(fNameList[i],typeList[i]));
+            prArray.push(loadShaderFromFile(fNameList[i],typeList[i]));
         }
  
         return Promise.all(prArray);
     };
     
-    this.loadShaderFromFile = function(fName,type)
+    function loadShaderFromFile(fName,type)
     {
         return new Promise(function(resolve, reject)
         {
             loader.loadFile(fName).then(function(shaderSource)
             {
                 log.debug(shaderSource);
-                var shader = this_.loadShaderFromSource(type,shaderSource);
+                var shader = loadShaderFromSource(type,shaderSource);
                 resolve(shader);
             },
             function() { reject(); });
         });
-    };
+    }
     
     function createFragmentShader()
     {
@@ -143,7 +144,7 @@
         return shader;
     }
     
-    this.loadShaderFromDocument = function(id)
+    function loadShaderFromDocument(id)
     {
         var shaderScript = document.getElementById(id);
         if (!shaderScript)
@@ -162,10 +163,10 @@
             k = k.nextSibling;
         }
         
-        return this.loadShaderFromSource(shaderScript.type,str);
-    };
+        return loadShaderFromSource(shaderScript.type,str);
+    }
     
-    this.loadShaderFromSource = function(type,sourceCode)
+    function loadShaderFromSource(type,sourceCode)
     {
         var shader;
         if (type === "x-shader/x-fragment")
@@ -182,6 +183,11 @@
         }
 
         return createShaderFromSource(shader,sourceCode);
-    };
+    }
+    
+    this.activateVertexShader = activateVertexShader;
+    this.activateFragmentShader = activateFragmentShader;
+    this.setUniforms = setUniforms;
+
 }
 ).apply(cns("sfme.internals.shaderManager"));

@@ -115,7 +115,8 @@
                 log.debug(shaderSource);
                 var shader = this_.loadShaderFromSource(type,shaderSource);
                 resolve(shader);
-            },reject);
+            },
+            function() { reject(); });
         });
     };
     

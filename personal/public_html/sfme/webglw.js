@@ -1,5 +1,6 @@
 (function()
 {
+    "use strict";
     var gl;
     var glActive = false;
     var this_ = this;
@@ -30,11 +31,12 @@
     function initGL() 
     {
         try {
-            gl = this.canvas.getContext("webgl");
+            gl = this_.canvas.getContext("webgl");
             glActive = !!gl;
-            gl.viewportWidth = this.canvas.width;
-            gl.viewportHeight = this.canvas.height;
+            gl.viewportWidth = this_.canvas.width;
+            gl.viewportHeight = this_.canvas.height;
         } catch(e) {
+            alert("Error initializing 3d webgl canvas:"+e);
         }
     
         return glActive;
@@ -43,15 +45,24 @@
     function webGLStart()
     {
         initGL();
-        sManager.init(gl);
-        initBuffers();
-
-        if (glActive)
+        
+        return new Promise(function(resolve,reject)
         {
-            gl.clearColor(0.0, 0.0, 0.0, 1.0);
-            gl.enable(gl.DEPTH_TEST);
-        }
-        return glActive;
+            sManager.init(gl).then(
+            function()
+            {
+                if (glActive)
+                {
+                    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+                    gl.enable(gl.DEPTH_TEST);
+                    resolve();
+                }
+                else
+                {
+                    reject();
+                }
+            },function() {reject();});
+        });
     }
 
     this.init = function(options)
@@ -69,6 +80,8 @@
         checkStoreCapabilities();
 
         webGLStart();
+        initBuffers();
+
         startFrameLoop();
     };
 
@@ -76,7 +89,6 @@
 
     function startFrameLoop()
     {
-        initBuffers();
         requestId = window.requestAnimationFrame(this_.updateFrame);
     }
     
@@ -159,21 +171,26 @@
             0.5, 0.5, 1.0, 1.0
         ]
         ));
-
     }
 
     function renderObj(obj)
     {
-        var shaderProgram = sManager.shaderPrograms["standard"];
         gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexPositionBuffer);
-        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, obj.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        sManager.activateVertexShader(obj);
+//        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, obj.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexColorBuffer);
-        gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, obj.vertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        sManager.activateFragmentShader(obj);
+//        gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, obj.vertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-        gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
-        gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, obj.vertexPositionBuffer.numItems);        
+        sManager.setUniforms(pMatrix, mvMatrix);
+//        gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+//        gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+
+        if (sManager.activeShader)
+        {
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, obj.vertexPositionBuffer.numItems);
+        }
     }
 
     function drawScene()

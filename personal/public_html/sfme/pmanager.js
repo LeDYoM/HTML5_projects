@@ -12,12 +12,10 @@
     {
         this.ready = true;
     };
-    
-    
 
     this.loadProgram = function(programDir,fileDesc)
     {
-        loader.loadFile(programDir+"/"+fileDesc, function(jsonText)
+        loader.loadFile(programDir+"/"+fileDesc).then(function(jsonText)
         {
             log.debug(jsonText);
 

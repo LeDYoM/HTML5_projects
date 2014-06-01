@@ -7,25 +7,67 @@
     this.vshaders = [];
     this.fshaders = [];
     this.shaderPrograms = [];
+    this.activeShader = null;
     var gl = null;
-    
     
     this.init = function(gl_)
     {
         gl = gl_;
-        this.vshaders["standard"] = this.loadShaderFromDocument("shader-vs");
-        this.fshaders["standard"] = this.loadShaderFromDocument("shader-fs");
-        this.shaderPrograms["standard"] = createProgram("standard","standard");
-        useProgram("standard");
-        
-        this.ready = true;
+
+        return new Promise(function(resolve,reject)
+        {
+            this_.loadShadersFromFile(["sfme/shaders/standard.vs", "sfme/shaders/standard.fs"],
+                ["x-shader/x-vertex","x-shader/x-fragment"]).then(
+                function(values)
+                {
+                    log.debug("Shaders loaded");
+                    this_.shaderPrograms["standard"] = createProgram(values[0],values[1]);
+                    useProgram("standard");
+                    this_.enableShader("standard");
+                    log.debug("standard shader:"+this_.activeShader);
+
+                    this_.ready = true;
+                    resolve();
+                },
+                function ()
+                {
+                    reject();
+                });
+        });
     };
     
-    function createProgram(vShaderIndex,fShaderIndex)
+    this.enableShader = function(id)
     {
-        var fragmentShader = this_.fshaders[fShaderIndex];
-        var vertexShader = this_.vshaders[vShaderIndex];
-
+        this.activeShader = this.shaderPrograms[id] || null;
+    };
+    
+    this.activateVertexShader = function(obj)
+    {
+        if (this.activeShader)
+        {
+            gl.vertexAttribPointer(this.activeShader.vertexPositionAttribute, obj.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        }
+    };
+    
+    this.activateFragmentShader = function(obj)
+    {
+        if (this.activeShader)
+        {
+            gl.vertexAttribPointer(this.activeShader.vertexColorAttribute, obj.vertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        }
+    };
+    
+    this.setUniforms = function(pMatrix,mvMatrix)
+    {
+        if (this.activeShader)
+        {
+            gl.uniformMatrix4fv(this.activeShader.pMatrixUniform, false, pMatrix);
+            gl.uniformMatrix4fv(this.activeShader.mvMatrixUniform, false, mvMatrix);
+        }
+    };
+ 
+    function createProgram(vertexShader,fragmentShader)
+    {
         var shaderProgram = gl.createProgram();
         gl.attachShader(shaderProgram, vertexShader);
         gl.attachShader(shaderProgram, fragmentShader);
@@ -52,12 +94,28 @@
         shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
     }
     
+    this.loadShadersFromFile = function(fNameList,typeList)
+    {
+        var prArray = [];
+
+        for (var i=0;i<fNameList.length;++i)
+        {
+            prArray.push(this.loadShaderFromFile(fNameList[i],typeList[i]));
+        }
+ 
+        return Promise.all(prArray);
+    };
+    
     this.loadShaderFromFile = function(fName,type)
     {
-        loader.loadFile(fName, function(shaderSource)
+        return new Promise(function(resolve, reject)
         {
-            log.debug(shaderSource);
-            return this_.loadShaderFromSource(type,shaderSource);
+            loader.loadFile(fName).then(function(shaderSource)
+            {
+                log.debug(shaderSource);
+                var shader = this_.loadShaderFromSource(type,shaderSource);
+                resolve(shader);
+            },reject);
         });
     };
     

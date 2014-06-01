@@ -4,7 +4,7 @@
     var log = cns("sfme.log");
     var this_ = this;
     this.ready = false;
-    this.shaderPrograms = [];
+    var shaderPrograms = [];
     this.activeShader = null;
     var gl = null;
     
@@ -19,7 +19,7 @@
                 function(values)
                 {
                     log.debug("Shaders loaded");
-                    this_.shaderPrograms["standard"] = createProgram(values[0],values[1]);
+                    shaderPrograms["standard"] = createProgram(values[0],values[1]);
                     useProgram("standard");
                     this_.enableShader("standard");
                     log.debug("standard shader:"+this_.activeShader);
@@ -36,31 +36,31 @@
     
     this.enableShader = function(id)
     {
-        this.activeShader = this.shaderPrograms[id] || null;
+        this_.activeShader = shaderPrograms[id] || null;
     };
     
     this.activateVertexShader = function(obj)
     {
-        if (this.activeShader)
+        if (this_.activeShader)
         {
-            gl.vertexAttribPointer(this.activeShader.vertexPositionAttribute, obj.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+            gl.vertexAttribPointer(this_.activeShader.vertexPositionAttribute, obj.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
         }
     };
     
     this.activateFragmentShader = function(obj)
     {
-        if (this.activeShader)
+        if (this_.activeShader)
         {
-            gl.vertexAttribPointer(this.activeShader.vertexColorAttribute, obj.vertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+            gl.vertexAttribPointer(this_.activeShader.vertexColorAttribute, obj.vertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
         }
     };
     
     this.setUniforms = function(pMatrix,mvMatrix)
     {
-        if (this.activeShader)
+        if (this_.activeShader)
         {
-            gl.uniformMatrix4fv(this.activeShader.pMatrixUniform, false, pMatrix);
-            gl.uniformMatrix4fv(this.activeShader.mvMatrixUniform, false, mvMatrix);
+            gl.uniformMatrix4fv(this_.activeShader.pMatrixUniform, false, pMatrix);
+            gl.uniformMatrix4fv(this_.activeShader.mvMatrixUniform, false, mvMatrix);
         }
     };
  
@@ -79,7 +79,7 @@
     
     function useProgram(programIndex)
     {
-        var shaderProgram = this_.shaderPrograms[programIndex];
+        var shaderProgram = shaderPrograms[programIndex];
         gl.useProgram(shaderProgram);
 
         shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");

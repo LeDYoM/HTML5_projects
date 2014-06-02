@@ -124,19 +124,7 @@
             function() { reject(); });
         });
     }
-    
-    function createFragmentShader()
-    {
-        var shader  = gl.createShader(gl.FRAGMENT_SHADER);
-        return shader;
-    }
-    
-    function createVertexShader()
-    {
-        var shader = gl.createShader(gl.VERTEX_SHADER);
-        return shader;
-    }
-    
+   
     function createShaderFromSource(shader,source)
     {
         gl.shaderSource(shader, source);
@@ -177,11 +165,11 @@
         var shader;
         if (type === "x-shader/x-fragment")
         {
-            shader = createFragmentShader();
+            shader = gl.createShader(gl.FRAGMENT_SHADER);
         }
         else if (type === "x-shader/x-vertex")
         {
-            shader = createVertexShader();
+            shader = gl.createShader(gl.VERTEX_SHADER);
         }
         else
         {

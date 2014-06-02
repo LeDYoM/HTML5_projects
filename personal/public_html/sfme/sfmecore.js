@@ -5,6 +5,7 @@
     var log = cns("sfme.log");
     var wgl = cns("sfme.internals.webgl");
     var pManager = cns("sfme.internals.programmanager");
+    var scnManager =cns("sfme.internals.sceneManager");
     this.ready = false;
    
     this.init = function(options)
@@ -22,6 +23,8 @@
             // There is no canvas object. Let's create it.
             log.verbose("Error in options.container:"+options.container);
         }
+        
+        scnManager.init();
         
         pManager.init();
         pManager.loadProgram("example1","example1.json");

@@ -167,7 +167,7 @@ function cns(namespace, obj_) {
         if (sCounter === 0)
         {
             cns("sfme.internals").loadScriptLibrary("sfme",["sfmecore.js", "utils.js", 
-                "smanager.js","webglw.js", "pmanager.js"],
+                "smanager.js","webglw.js", "pmanager.js", "scnManager.js"],
             function (e)
             {
                 e;

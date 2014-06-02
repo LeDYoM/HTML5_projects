@@ -107,28 +107,86 @@
     var mvMatrix = mat4.create();
     var pMatrix = mat4.create();
 
-    function createObject(numVertex,vertex,colors)
+    function createObject(obj_)
     {
-        var obj = {};
-        obj.vertexPositionBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexPositionBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertex), gl.STATIC_DRAW);
-        obj.vertexPositionBuffer.itemSize = 3;
-        obj.vertexPositionBuffer.numItems = numVertex;
+        obj_.renderObject = {};
+        obj_.renderObject.numVertex = Math.floor(obj_.vertex.length / 3);
+        obj_.renderObject.vertexPositionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, obj_.renderObject.vertexPositionBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(obj_.vertex), gl.STATIC_DRAW);
+        obj_.renderObject.vertexPositionBuffer.itemSize = 3;
+        obj_.renderObject.vertexPositionBuffer.numItems = obj_.renderObject.numVertex;
 
-        obj.vertexColorBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexColorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
-        obj.vertexColorBuffer.itemSize = 4;
-        obj.vertexColorBuffer.numItems = numVertex;
+        obj_.renderObject.vertexColorBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, obj_.renderObject.vertexColorBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(obj_.colors), gl.STATIC_DRAW);
+        obj_.renderObject.vertexColorBuffer.itemSize = 4;
+        obj_.renderObject.vertexColorBuffer.numItems = obj_.renderObject.numVertex;
 
-        return obj;
+        return obj_.renderObject;
     };
-    
-    var scene = [];
+
+    var activeScene = null;
+
+    function defineScene(sceneDefinition)
+    {
+        var newScene = sceneDefinition;
+        
+        try
+        {
+            // TODO: Generate sceneId.
+            newScene.sceneId = 0;
+
+            for (var i=0;i<newScene.objects.length;++i)
+            {
+                createObject(newScene.objects[i]);
+
+            }
+            if (!activeScene)
+            {
+                activeScene = newScene;
+            }
+        } catch (e)
+        {
+            throw ("Error creating scene:"+e);
+        }
+        return newScene;
+    }
 
     function initBuffers() 
     {
+        defineScene({
+            objects: [
+                {
+                    id: "triangle",
+                    vertex: [
+                        0.0,  1.0,  0.0,
+                       -1.0, -1.0,  0.0,
+                        1.0, -1.0,  0.0
+                    ],
+                    colors: [
+                        1.0, 0.0, 0.0, 1.0,
+                        0.0, 1.0, 0.0, 1.0,
+                        0.0, 0.0, 1.0, 1.0
+                    ]
+                },
+                {
+                    id: "quad",
+                    vertex: [
+                        1.0,  1.0,  0.0,
+                       -1.0,  1.0,  0.0,
+                        1.0, -1.0,  0.0,
+                       -1.0, -1.0,  0.0
+                    ],
+                    colors: [
+                        0.5, 0.5, 1.0, 1.0,
+                        0.5, 0.5, 1.0, 1.0,
+                        0.5, 0.5, 1.0, 1.0,
+                        0.5, 0.5, 1.0, 1.0
+                    ]
+                }
+        ]});
+/*
         scene.push(createObject(3,
         [
              0.0,  1.0,  0.0,
@@ -156,6 +214,7 @@
             0.5, 0.5, 1.0, 1.0
         ]
         ));
+        */
     }
 
     function renderObj(obj)
@@ -188,10 +247,14 @@
     }
     
     function renderScene()
-    {   
-        for (var i=0;i<scene.length;++i)
+    {
+        if (activeScene)
         {
-            renderObj(scene[i]);
+//            console.log("HEY:"+activeScene.objects.length);
+            for (var i=0;i<activeScene.objects.length;++i)
+            {
+                renderObj(activeScene.objects[i].renderObject);
+            }
         }
     }
     

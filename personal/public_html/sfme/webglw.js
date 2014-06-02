@@ -122,7 +122,7 @@
     var mvMatrix = mat4.create();
     var pMatrix = mat4.create();
 
-    this.createObject = function(numVertex,vertex,colors)
+    function createObject(numVertex,vertex,colors)
     {
         var obj = {};
         obj.vertexPositionBuffer = gl.createBuffer();
@@ -144,7 +144,7 @@
 
     function initBuffers() 
     {
-        scene.push(this_.createObject(3,
+        scene.push(createObject(3,
         [
              0.0,  1.0,  0.0,
             -1.0, -1.0,  0.0,
@@ -157,7 +157,7 @@
         ]
         ));
 
-        scene.push(this_.createObject(4,
+        scene.push(createObject(4,
         [
              1.0,  1.0,  0.0,
             -1.0,  1.0,  0.0,
@@ -177,15 +177,11 @@
     {
         gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexPositionBuffer);
         sManager.activateVertexShader(obj);
-//        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, obj.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexColorBuffer);
         sManager.activateFragmentShader(obj);
-//        gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, obj.vertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
         sManager.setUniforms(pMatrix, mvMatrix);
-//        gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
-//        gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
 
         if (sManager.activeShader)
         {

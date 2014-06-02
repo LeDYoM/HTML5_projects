@@ -6,8 +6,14 @@
     var this_ = this;
     var ready = false;
     var shaderPrograms = [];
-    this.activeShader = null;
+    var activeShader = null;
     var gl = null;
+    
+    function isReady()
+    {
+        return ready;
+    }
+    this.isReady = isReady;
     
     this.init = function(gl_)
     {
@@ -23,7 +29,7 @@
                     shaderPrograms["standard"] = createProgram(values[0],values[1]);
                     useProgram("standard");
                     enableShader("standard");
-                    log.debug("standard shader:"+this_.activeShader);
+                    log.debug("standard shader:"+activeShader);
 
                     ready = true;
                     resolve();
@@ -37,31 +43,31 @@
     
     function enableShader(id)
     {
-        this_.activeShader = shaderPrograms[id] || null;
+        activeShader = shaderPrograms[id] || null;
     };
     
     function activateVertexShader(obj)
     {
-        if (this_.activeShader)
+        if (activeShader)
         {
-            gl.vertexAttribPointer(this_.activeShader.vertexPositionAttribute, obj.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+            gl.vertexAttribPointer(activeShader.vertexPositionAttribute, obj.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
         }
     };
     
     function activateFragmentShader(obj)
     {
-        if (this_.activeShader)
+        if (activeShader)
         {
-            gl.vertexAttribPointer(this_.activeShader.vertexColorAttribute, obj.vertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+            gl.vertexAttribPointer(activeShader.vertexColorAttribute, obj.vertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
         }
     };
 
     function setUniforms(pMatrix,mvMatrix)
     {
-        if (this_.activeShader)
+        if (activeShader)
         {
-            gl.uniformMatrix4fv(this_.activeShader.pMatrixUniform, false, pMatrix);
-            gl.uniformMatrix4fv(this_.activeShader.mvMatrixUniform, false, mvMatrix);
+            gl.uniformMatrix4fv(activeShader.pMatrixUniform, false, pMatrix);
+            gl.uniformMatrix4fv(activeShader.mvMatrixUniform, false, mvMatrix);
         }
     };
  

@@ -183,7 +183,7 @@
 
         sManager.setUniforms(pMatrix, mvMatrix);
 
-        if (sManager.activeShader)
+        if (sManager.isReady())
         {
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, obj.vertexPositionBuffer.numItems);
         }

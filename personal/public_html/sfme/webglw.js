@@ -102,9 +102,10 @@
 	// Clear the canvas
         var time = Date.now();
 
-        drawScene();
-  	gl.flush();
-	
+        startRender();
+        renderScene();
+        endRender();
+
 	// Request another frame
 	requestId = window.requestAnimationFrame(this_.updateFrame);
     };
@@ -189,7 +190,7 @@
         }
     }
 
-    function drawScene()
+    function startRender()
     {
         gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -200,12 +201,20 @@
 
         mat4.translate(mvMatrix, [-1.5, 0.0, -7.0]);
         mat4.translate(mvMatrix, [3.0, 0.0, 0.0]);
-        
+    }
+    
+    function renderScene()
+    {   
         for (var i=0;i<scene.length;++i)
         {
             renderObj(scene[i]);
         }
-    }    
+    }
+    
+    function endRender()
+    {
+  	gl.flush();
+    }
 }
 ).apply(cns("sfme.internals.webgl"));
 

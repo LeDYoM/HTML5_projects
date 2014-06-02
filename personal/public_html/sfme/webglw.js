@@ -81,23 +81,9 @@
 
         webGLStart();
         initBuffers();
-
-        startFrameLoop();
     };
 
-    var requestId = 0;
-
-    function startFrameLoop()
-    {
-        requestId = window.requestAnimationFrame(this_.updateFrame);
-    }
-    
-    function stopFrameLoop()
-    {
-        window.cancelFrameRequest(requestId);
-    }
-   
-    this.updateFrame = function()
+    function updateFrame()
     {
 	// Clear the canvas
         var time = Date.now();
@@ -105,10 +91,8 @@
         startRender();
         renderScene();
         endRender();
-
-	// Request another frame
-	requestId = window.requestAnimationFrame(this_.updateFrame);
-    };
+    }
+    this.updateFrame = updateFrame;
     
     function createCanvas(parent,id_,w_,h_)
     {

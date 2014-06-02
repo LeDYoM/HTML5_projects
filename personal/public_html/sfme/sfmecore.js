@@ -27,7 +27,26 @@
         pManager.loadProgram("example1","example1.json");
         
         this.ready = true;
+        
+        startFrameLoop();
     };
     
+    var requestId = 0;
+
+    function updateFrame()
+    {
+        wgl.updateFrame();
+        startFrameLoop();
+    }
+    
+    function startFrameLoop()
+    {
+        requestId = window.requestAnimationFrame(updateFrame);
+    }
+    
+    function stopFrameLoop()
+    {
+        window.cancelFrameRequest(requestId);
+    }
 }
 ).apply(cns("sfme.core"));

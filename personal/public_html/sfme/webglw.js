@@ -6,6 +6,7 @@
     var this_ = this;
     var log = cns("sfme.log");
     var sManager = cns("sfme.internals.shaderManager");
+    var scnManager = cns("sfme.internals.sceneManager");
     var capabilities = {};
     this.canvas = null;
 
@@ -89,7 +90,7 @@
         var time = Date.now();
 
         startRender();
-        renderScene();
+        scnManager.renderScene();
         endRender();
     }
     this.updateFrame = updateFrame;
@@ -124,38 +125,12 @@
         obj_.renderObject.vertexColorBuffer.numItems = obj_.renderObject.numVertex;
 
         return obj_.renderObject;
-    };
-
-    var activeScene = null;
-
-    function defineScene(sceneDefinition)
-    {
-        var newScene = sceneDefinition;
-        
-        try
-        {
-            // TODO: Generate sceneId.
-            newScene.sceneId = 0;
-
-            for (var i=0;i<newScene.objects.length;++i)
-            {
-                createObject(newScene.objects[i]);
-
-            }
-            if (!activeScene)
-            {
-                activeScene = newScene;
-            }
-        } catch (e)
-        {
-            throw ("Error creating scene:"+e);
-        }
-        return newScene;
     }
+    this.createObject = createObject;
 
     function initBuffers() 
     {
-        defineScene({
+        scnManager.defineScene({
             objects: [
                 {
                     id: "triangle",
@@ -232,6 +207,7 @@
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, obj.vertexPositionBuffer.numItems);
         }
     }
+    this.renderObj = renderObj;
 
     function startRender()
     {
@@ -245,19 +221,7 @@
         mat4.translate(mvMatrix, [-1.5, 0.0, -7.0]);
         mat4.translate(mvMatrix, [3.0, 0.0, 0.0]);
     }
-    
-    function renderScene()
-    {
-        if (activeScene)
-        {
-//            console.log("HEY:"+activeScene.objects.length);
-            for (var i=0;i<activeScene.objects.length;++i)
-            {
-                renderObj(activeScene.objects[i].renderObject);
-            }
-        }
-    }
-    
+       
     function endRender()
     {
   	gl.flush();

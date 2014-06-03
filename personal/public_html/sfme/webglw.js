@@ -54,7 +54,7 @@
             {
                 if (glActive)
                 {
-                    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+                    gl.clearColor(1.0, 0.0, 0.0, 1.0);
                     gl.enable(gl.DEPTH_TEST);
                     resolve();
                 }
@@ -160,24 +160,33 @@
             {
                 mat4.translate(mvMatrix, obj.position);
             }
-            var shaderProgram = sManager.getActiveShader();
-            
-            gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexPositionBuffer);
-            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, obj.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+            var shaderProgram = sManager.getShader(obj.material);
+           
+            if (shaderProgram.vertexPositionAttribute > -1)
+            {
+                gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexPositionBuffer);
+                gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, obj.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+            }
 
-//            gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexColorBuffer);
-//            gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, obj.vertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
-            
-            gl.bindBuffer(gl.ARRAY_BUFFER, obj.cubeVertexTextureCoordBuffer);
-            gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, obj.cubeVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+            if (shaderProgram.vertexColorAttribute > -1)
+            {
+                gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexColorBuffer);
+                gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, obj.vertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+            }
 
-            gl.activeTexture(gl.TEXTURE0);
-            gl.bindTexture(gl.TEXTURE_2D, neheTexture);
-            gl.uniform1i(shaderProgram.samplerUniform, 0);
+            if (shaderProgram.textureCoordAttribute > -1)
+            {
+                gl.bindBuffer(gl.ARRAY_BUFFER, obj.cubeVertexTextureCoordBuffer);
+                gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, obj.cubeVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+                gl.activeTexture(gl.TEXTURE0);
+                gl.bindTexture(gl.TEXTURE_2D, neheTexture);
+                gl.uniform1i(shaderProgram.samplerUniform, 0);
 
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.cubeVertexIndexBuffer);
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.cubeVertexIndexBuffer);
+            }
 
-            sManager.setUniforms(pMatrix, mvMatrix);
+            gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+            gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
 
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, obj.vertexPositionBuffer.numItems);
             mvPopMatrix();
@@ -203,6 +212,8 @@
     {
         gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
 
         mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
 

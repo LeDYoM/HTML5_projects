@@ -6,7 +6,6 @@
     var this_ = this;
     var ready = false;
     var shaderPrograms = [];
-    var activeShader = null;
     var gl = null;
     
     function isReady()
@@ -18,20 +17,34 @@
     this.init = function(gl_)
     {
         gl = gl_;
-
+        
+        loadBuiltInShaders().then(function()
+        {
+            ready = true;
+        });
+    };
+    
+    function loadBuiltInShaders()
+    {
+        var promises = [];
+        promises.push(loadShader("color_pass","sfme/shaders"));
+        promises.push(loadShader("textured","sfme/shaders"));
+        
+        return Promise.all(promises);  
+    }
+    
+    function loadShader(name,directory)
+    {
         return new Promise(function(resolve,reject)
         {
-            loadShadersFromFile(["sfme/shaders/standard.vs", "sfme/shaders/standard.fs"],
+            loadShadersFromFile([directory+"/"+name+".vs", directory+"/"+name+".fs"],
                 ["x-shader/x-vertex","x-shader/x-fragment"]).then(
                 function(values)
                 {
-                    log.debug("Shaders loaded");
-                    shaderPrograms["standard"] = createProgram(values[0],values[1]);
-                    useProgram("standard");
-                    enableShader("standard");
-                    log.debug("standard shader:"+activeShader);
+                    log.debug("Shader loaded:"+name);
+                    shaderPrograms[name] = createProgram(values[0],values[1]);
+                    useProgram(shaderPrograms[name]);
 
-                    ready = true;
                     resolve();
                 },
                 function ()
@@ -39,44 +52,15 @@
                     reject();
                 });
         });
-    };
-    
-    function enableShader(id)
-    {
-        activeShader = shaderPrograms[id] || null;
     }
-
-    function getActiveShader()
+    
+    function getShader(id)
     {
-        return activeShader;
+        useProgram(shaderPrograms[id]);
+        return shaderPrograms[id];
     }
-    this.getActiveShader = getActiveShader;
-    
-    function activateVertexShader(obj)
-    {
-        if (activeShader)
-        {
-            gl.vertexAttribPointer(activeShader.vertexPositionAttribute, obj.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-        }
-    };
-    
-    function activateFragmentShader(obj)
-    {
-        if (activeShader)
-        {
-            gl.vertexAttribPointer(activeShader.vertexColorAttribute, obj.vertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
-        }
-    };
+    this.getShader = getShader;
 
-    function setUniforms(pMatrix,mvMatrix)
-    {
-        if (activeShader)
-        {
-            gl.uniformMatrix4fv(activeShader.pMatrixUniform, false, pMatrix);
-            gl.uniformMatrix4fv(activeShader.mvMatrixUniform, false, mvMatrix);
-        }
-    };
- 
     function createProgram(vertexShader,fragmentShader)
     {
         var shaderProgram = gl.createProgram();
@@ -90,9 +74,8 @@
         return shaderProgram;
     }
     
-    function useProgram(programIndex)
+    function useProgram(shaderProgram)
     {
-        var shaderProgram = shaderPrograms[programIndex];
         gl.useProgram(shaderProgram);
         
         if (gl.getAttribLocation(shaderProgram, "aVertexPosition") > -1)
@@ -197,10 +180,5 @@
 
         return createShaderFromSource(shader,sourceCode);
     }
-    
-    this.activateVertexShader = activateVertexShader;
-    this.activateFragmentShader = activateFragmentShader;
-    this.setUniforms = setUniforms;
-
 }
 ).apply(cns("sfme.internals.shaderManager"));

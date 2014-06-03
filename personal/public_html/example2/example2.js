@@ -8,7 +8,6 @@ cns("sfme.userModules").defineUserModule("example2", "main",
         
             this.sfmeAPI.defineScene({
             objects: [
-                /*
                 {
                     id: "triangle",
                     type: "mesh",
@@ -22,8 +21,9 @@ cns("sfme.userModules").defineUserModule("example2", "main",
                         0.0, 1.0, 0.0, 1.0,
                         0.0, 0.0, 1.0, 1.0
                     ],
-                    position: [-1.5, 0.0, -7.0]
-                },*/
+                    position: [-1.5, 0.0, -7.0],
+                    material: "color_pass"
+                },
                 {
                     id: "quad",
                     type: "mesh",
@@ -45,7 +45,8 @@ cns("sfme.userModules").defineUserModule("example2", "main",
                         1.0, 1.0,
                         0.0, 1.0
                     ],
-                    position: [0.5, 0.0, -5.0]
+                    position: [0.5, 0.0, -5.0],
+                    material: "textured"
                 }
         ]});
 

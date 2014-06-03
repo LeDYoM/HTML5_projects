@@ -81,7 +81,6 @@
         checkStoreCapabilities();
 
         webGLStart();
-        initBuffers();
     };
 
     function updateFrame()
@@ -107,69 +106,33 @@
 
     function createObject(obj_)
     {
-        obj_.renderObject = {};
-        obj_.renderObject.numVertex = Math.floor(obj_.vertex.length / 3);
-        obj_.renderObject.vertexPositionBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, obj_.renderObject.vertexPositionBuffer);
+        obj_.numVertex = Math.floor(obj_.vertex.length / 3);
+        obj_.vertexPositionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, obj_.vertexPositionBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(obj_.vertex), gl.STATIC_DRAW);
-        obj_.renderObject.vertexPositionBuffer.itemSize = 3;
-        obj_.renderObject.vertexPositionBuffer.numItems = obj_.renderObject.numVertex;
+        obj_.vertexPositionBuffer.itemSize = 3;
+        obj_.vertexPositionBuffer.numItems = obj_.numVertex;
 
-        obj_.renderObject.vertexColorBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, obj_.renderObject.vertexColorBuffer);
+        obj_.vertexColorBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, obj_.vertexColorBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(obj_.colors), gl.STATIC_DRAW);
-        obj_.renderObject.vertexColorBuffer.itemSize = 4;
-        obj_.renderObject.vertexColorBuffer.numItems = obj_.renderObject.numVertex;
-
-        return obj_.renderObject;
-    }
+        obj_.vertexColorBuffer.itemSize = 4;
+        obj_.vertexColorBuffer.numItems = obj_.numVertex;
+   }
     this.createObject = createObject;
-
-    function initBuffers() 
-    {
-/*
-        scene.push(createObject(3,
-        [
-             0.0,  1.0,  0.0,
-            -1.0, -1.0,  0.0,
-             1.0, -1.0,  0.0
-        ],
-        [
-            1.0, 0.0, 0.0, 1.0,
-            0.0, 1.0, 0.0, 1.0,
-            0.0, 0.0, 1.0, 1.0
-        ]
-        ));
-
-        scene.push(createObject(4,
-        [
-             1.0,  1.0,  0.0,
-            -1.0,  1.0,  0.0,
-             1.0, -1.0,  0.0,
-            -1.0, -1.0,  0.0
-        ],
-        [
-            0.5, 0.5, 1.0, 1.0,
-            0.5, 0.5, 1.0, 1.0,
-            0.5, 0.5, 1.0, 1.0,
-            0.5, 0.5, 1.0, 1.0
-        ]
-        ));
-        */
-    }
 
     function renderObj(obj)
     {
-        gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexPositionBuffer);
-        sManager.activateVertexShader(obj);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexColorBuffer);
-        sManager.activateFragmentShader(obj);
-
-        sManager.setUniforms(pMatrix, mvMatrix);
-
         if (sManager.isReady())
         {
+            gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexPositionBuffer);
+            sManager.activateVertexShader(obj);
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexColorBuffer);
+            sManager.activateFragmentShader(obj);
+
+            sManager.setUniforms(pMatrix, mvMatrix);
+
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, obj.vertexPositionBuffer.numItems);
         }
     }

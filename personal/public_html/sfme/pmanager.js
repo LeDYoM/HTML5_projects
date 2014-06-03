@@ -2,6 +2,7 @@
 {
     var loader = cns("sfme.internals");
     var log = cns("sfme.log");
+    var scnManager = cns("sfme.internals.sceneManager");
     var this_ = this;
     this.ready = false;
     this.currentLoadingMainModule = "";
@@ -29,11 +30,13 @@
                 tempModule.programDir = programDir;
                 tempModule.nameSpace = "sfme.userModules." + this_.currentLoadingMainModule + "." + this_.currentLoadingNameSpace;
                 tempModule.module = cns(tempModule.nameSpace);
-                tempModule.communicationObject = {
-                    scene: []
-                };
+                
+                // Publish public API
+                tempModule.sfmeAPI = {};
+                tempModule.sfmeAPI.defineScene = scnManager.defineScene;
+                
                 this_.modules.push(tempModule);
-                tempModule.module.init(tempModule.communicationObject);
+                tempModule.module.init(tempModule.sfmeAPI);
             });  
         });
     };

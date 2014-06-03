@@ -1,4 +1,3 @@
-
 (function()
 {
     var utils = cns("sfme.utils");
@@ -38,10 +37,13 @@
 
     function updateFrame()
     {
-        wgl.updateFrame();
+        wgl.startRender();
+        scnManager.renderScene();
+        wgl.endRender();
+        
         startFrameLoop();
     }
-    
+
     function startFrameLoop()
     {
         requestId = window.requestAnimationFrame(updateFrame);

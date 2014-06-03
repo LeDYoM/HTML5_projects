@@ -86,9 +86,6 @@
 
     function updateFrame()
     {
-	// Clear the canvas
-        var time = Date.now();
-
         startRender();
         scnManager.renderScene();
         endRender();
@@ -221,11 +218,13 @@
         mat4.translate(mvMatrix, [-1.5, 0.0, -7.0]);
         mat4.translate(mvMatrix, [3.0, 0.0, 0.0]);
     }
+    this.startRender = startRender;
        
     function endRender()
     {
   	gl.flush();
     }
+    this.endRender = endRender;
 }
 ).apply(cns("sfme.internals.webgl"));
 

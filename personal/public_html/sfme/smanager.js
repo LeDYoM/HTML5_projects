@@ -44,7 +44,13 @@
     function enableShader(id)
     {
         activeShader = shaderPrograms[id] || null;
-    };
+    }
+
+    function getActiveShader()
+    {
+        return activeShader;
+    }
+    this.getActiveShader = getActiveShader;
     
     function activateVertexShader(obj)
     {
@@ -88,15 +94,28 @@
     {
         var shaderProgram = shaderPrograms[programIndex];
         gl.useProgram(shaderProgram);
+        
+        if (gl.getAttribLocation(shaderProgram, "aVertexPosition") > -1)
+        {
+            shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
+            gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+        }
 
-        shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
-        gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+        if (gl.getAttribLocation(shaderProgram, "aVertexColor") > -1)
+        {
+            shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
+            gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
+        }
 
-        shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
-        gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
+        if (gl.getAttribLocation(shaderProgram, "aTextureCoord") > -1)
+        {
+            shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
+            gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
+        }
 
         shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
         shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+        shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
     }
     
     function loadShadersFromFile(fNameList,typeList)

@@ -66,6 +66,27 @@
         });
     }
 
+    function handleLoadedTexture(texture) {
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+    }
+
+
+    var neheTexture;
+
+    function initTexture() {
+        neheTexture = gl.createTexture();
+        neheTexture.image = new Image();
+        neheTexture.image.onload = function () {
+            handleLoadedTexture(neheTexture);
+        }
+
+        neheTexture.image.src = "nehe.gif";
+    }
+
     this.init = function(options)
     {
         // Set properties or defaults...
@@ -81,6 +102,7 @@
         checkStoreCapabilities();
 
         webGLStart();
+        initTexture();
     };
 
     function updateFrame()
@@ -117,9 +139,14 @@
         gl.bindBuffer(gl.ARRAY_BUFFER, obj_.vertexColorBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(obj_.colors), gl.STATIC_DRAW);
         obj_.vertexColorBuffer.itemSize = 4;
-        obj_.vertexColorBuffer.numItems = obj_.numVertex
-        
-        // Set some default properties.
+        obj_.vertexColorBuffer.numItems = obj_.numVertex;
+
+        obj_.cubeVertexTextureCoordBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, obj_.cubeVertexTextureCoordBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(obj_.textureCoords), gl.STATIC_DRAW);
+        obj_.cubeVertexTextureCoordBuffer.itemSize = 2;
+        obj_.cubeVertexTextureCoordBuffer.numItems = 4;
+
    }
     this.createObject = createObject;
 
@@ -133,12 +160,22 @@
             {
                 mat4.translate(mvMatrix, obj.position);
             }
+            var shaderProgram = sManager.getActiveShader();
             
             gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexPositionBuffer);
-            sManager.activateVertexShader(obj);
+            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, obj.vertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-            gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexColorBuffer);
-            sManager.activateFragmentShader(obj);
+//            gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexColorBuffer);
+//            gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, obj.vertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+            
+            gl.bindBuffer(gl.ARRAY_BUFFER, obj.cubeVertexTextureCoordBuffer);
+            gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, obj.cubeVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, neheTexture);
+            gl.uniform1i(shaderProgram.samplerUniform, 0);
+
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.cubeVertexIndexBuffer);
 
             sManager.setUniforms(pMatrix, mvMatrix);
 

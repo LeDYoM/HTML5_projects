@@ -26,7 +26,7 @@
         scnManager.init();
         
         pManager.init();
-        pManager.loadProgram("example1","example1.json");
+        pManager.loadProgram("example2","example2.json");
         
         this.ready = true;
         

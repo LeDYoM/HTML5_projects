@@ -117,7 +117,9 @@
         gl.bindBuffer(gl.ARRAY_BUFFER, obj_.vertexColorBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(obj_.colors), gl.STATIC_DRAW);
         obj_.vertexColorBuffer.itemSize = 4;
-        obj_.vertexColorBuffer.numItems = obj_.numVertex;
+        obj_.vertexColorBuffer.numItems = obj_.numVertex
+        
+        // Set some default properties.
    }
     this.createObject = createObject;
 
@@ -125,6 +127,13 @@
     {
         if (sManager.isReady())
         {
+            mvPushMatrix();
+            
+            if (obj.position)
+            {
+                mat4.translate(mvMatrix, obj.position);
+            }
+            
             gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexPositionBuffer);
             sManager.activateVertexShader(obj);
 
@@ -134,9 +143,24 @@
             sManager.setUniforms(pMatrix, mvMatrix);
 
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, obj.vertexPositionBuffer.numItems);
+            mvPopMatrix();
         }
     }
     this.renderObj = renderObj;
+
+    var mvMatrixStack = [];
+    function mvPushMatrix() {
+        var copy = mat4.create();
+        mat4.set(mvMatrix, copy);
+        mvMatrixStack.push(copy);
+    }
+
+    function mvPopMatrix() {
+        if (mvMatrixStack.length === 0) {
+            throw "Invalid popMatrix!";
+        }
+        mvMatrix = mvMatrixStack.pop();
+    }
 
     function startRender()
     {
@@ -146,9 +170,6 @@
         mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
 
         mat4.identity(mvMatrix);
-
-        mat4.translate(mvMatrix, [-1.5, 0.0, -7.0]);
-        mat4.translate(mvMatrix, [3.0, 0.0, 0.0]);
     }
     this.startRender = startRender;
        

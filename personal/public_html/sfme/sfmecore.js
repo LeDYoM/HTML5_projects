@@ -5,6 +5,7 @@
     var wgl = cns("sfme.internals.webgl");
     var pManager = cns("sfme.internals.programmanager");
     var scnManager =cns("sfme.internals.sceneManager");
+    var tManager = cns("sfme.internals.textureManager");
     this.ready = false;
    
     this.init = function(options)
@@ -24,9 +25,11 @@
         }
         
         scnManager.init();
-        
+        tManager.init();
         pManager.init();
-        pManager.loadProgram("example2","example2.json");
+        
+        
+        pManager.loadProgram("example1","example1.json");
         
         this.ready = true;
         

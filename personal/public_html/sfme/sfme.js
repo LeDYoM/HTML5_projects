@@ -167,10 +167,11 @@ function cns(namespace, obj_) {
         if (sCounter === 0)
         {
             cns("sfme.internals").loadScriptLibrary("sfme",["sfmecore.js", "utils.js", 
-                "smanager.js","webglw.js", "pmanager.js", "scnManager.js"],
+                "smanager.js","webglw.js", "pmanager.js", "scnManager.js", "tmanager.js"],
             function (e)
             {
                 e;
+                console.log("sfme loaded. Initializing...");
                 cns("sfme.core").init(options);
             });
         }

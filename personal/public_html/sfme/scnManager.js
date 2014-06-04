@@ -13,7 +13,7 @@
         ready = true;
     };
     
-    function defineScene(sceneDefinition)
+    function defineScene(baseDir,sceneDefinition)
     {
         var newScene = sceneDefinition;
         
@@ -29,7 +29,7 @@
                 {
                     for (var i=0;i<newScene.resources.textures.length;++i)
                     {
-                        tManager.loadTexture(newScene.resources.textures[i]);
+                        tManager.loadTexture(baseDir,newScene.resources.textures[i]);
                     }
                 }
                 else

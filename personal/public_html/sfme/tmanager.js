@@ -9,7 +9,7 @@
         ready = true;
     }
     
-    function loadTexture(tObject)
+    function loadTexture(baseDir,tObject)
     {
         tObject.texture = wgl.createTexture();
         tObject.texture.image = new Image();
@@ -27,7 +27,7 @@
                 reject();
             };
         });
-        tObject.texture.image.src = tObject.src;
+        tObject.texture.image.src = baseDir + tObject.src;
         return pr;
 
     };

@@ -7,6 +7,13 @@ cns("sfme.userModules").defineUserModule("example1", "main",
         this.sfmeAPI = sfmeAPI_;
         
             this.sfmeAPI.defineScene({
+            camera: {
+                type: "perspective",
+                angle: 45.0,
+                ratio: "normal",
+                zNear: 0.1,
+                zFar: 100.0
+            },
             objects: [
                 {
                     id: "triangle",

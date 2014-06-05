@@ -86,13 +86,21 @@
                     }
                     obj.material.textureCoords = textureCoords;
                 }
+                if (obj.material.color)
+                {
+                    var colors = [];
+                    for (var i=0;i<obj.vertex.length;++i)
+                    {
+                        colors = colors.concat(obj.material.color);
+                    }
+                }
                 wgl.createObject(obj);
-                if (obj.texture)
+                if (obj.material.texture)
                 {
                     tManager.getTexture(newScene,obj);
                 }
             }
-            newScene.backgroundColor = newScene.backgroundColor || [1.0, 1.0, 1.0, 1.0];
+            newScene.backgroundColor = newScene.backgroundColor || [0.0, 0.0, 0.0, 1.0];
             if (!activeScene)
             {
                 activeScene = newScene;

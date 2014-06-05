@@ -57,17 +57,12 @@ cns("sfme.userModules").defineUserModule("example3", "main",
                     shapeType: "quad_normal",
                     width: 2.0,
                     height: 2.0,
-                    texture: "testtext",
                     position: [0.5, 0.0, -5.0],
                     material: {
                         name: "textured",
                         textureMode: "attach",
-                        colors: [
-                            1.0, 0.5, 1.0, 1.0,
-                            0.5, 1.0, 1.0, 1.0,
-                            0.5, 0.5, 1.0, 1.0,
-                            0.0, 1.5, 1.0, 1.0
-                        ],
+                        color: [1.0, 0.5, 1.0, 1.0],
+                        texture: "testtext"
                     }
                 }
         ]});

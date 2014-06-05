@@ -79,12 +79,12 @@
     
     function getTexture(globalObject,obj)
     {
-        var id = obj.texture;
+        var id = obj.material.texture;
         for (var i=0;i<globalObject.resources.textures.length;++i)
         {
             if (globalObject.resources.textures[i].id === id)
             {
-                obj.textureObject = globalObject.resources.textures[i].texture;
+                obj.material.textureObject = globalObject.resources.textures[i].texture;
             }
         }
     }

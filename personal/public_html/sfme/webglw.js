@@ -170,12 +170,12 @@
                 gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, obj.vertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
             }
 
-            if (shaderProgram.textureCoordAttribute > -1 && obj.textureObject && obj.textureObject.ready)
+            if (shaderProgram.textureCoordAttribute > -1 && obj.material.textureObject && obj.material.textureObject.ready)
             {
                 gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexTextureCoordBuffer);
                 gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, obj.vertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
                 gl.activeTexture(gl.TEXTURE0);
-                gl.bindTexture(gl.TEXTURE_2D, obj.textureObject);
+                gl.bindTexture(gl.TEXTURE_2D, obj.material.textureObject);
                 gl.uniform1i(shaderProgram.samplerUniform, 0);
             }
 

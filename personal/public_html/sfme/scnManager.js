@@ -89,10 +89,11 @@
                 if (obj.material.color)
                 {
                     var colors = [];
-                    for (var i=0;i<obj.vertex.length;++i)
+                    for (var i=0;i<Math.floor(obj.vertex.length / 3);++i)
                     {
                         colors = colors.concat(obj.material.color);
                     }
+                    obj.material.colors = colors;
                 }
                 wgl.createObject(obj);
                 if (obj.material.texture)

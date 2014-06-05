@@ -38,44 +38,31 @@ cns("sfme.userModules").defineUserModule("example2", "main",
             objects: [
                 {
                     id: "triangle",
-                    type: "mesh",
-                    vertex: [
-                        0.0,  1.0,  0.0,
-                       -1.0, -1.0,  0.0,
-                        1.0, -1.0,  0.0
-                    ],
-                    colors: [
-                        1.0, 1.0, 0.0, 1.0,
-                        0.0, 1.0, 0.0, 1.0,
-                        0.0, 0.0, 1.0, 1.0
-                    ],
+                    shapeType: "triangle_normal",
+                    width: 2.0,
+                    height: 2.0,
                     position: [-1.5, 0.0, -7.0],
-                    material: "color_pass"
+                    material: {
+                        name: "color_pass",
+                        colors: [
+                            1.0, 1.0, 0.0, 1.0,
+                            0.0, 1.0, 0.0, 1.0,
+                            0.0, 0.0, 1.0, 1.0
+                        ]
+                    }
                 },
                 {
                     id: "quad",
-                    type: "mesh",
-                    vertex: [
-                        1.0,  1.0,  0.0,
-                       -1.0,  1.0,  0.0,
-                        1.0, -1.0,  0.0,
-                       -1.0, -1.0,  0.0
-                    ],
-                    colors: [
-                        1.0, 0.5, 1.0, 1.0,
-                        0.5, 1.0, 1.0, 1.0,
-                        0.5, 0.5, 1.0, 1.0,
-                        0.0, 1.5, 1.0, 1.0
-                    ],
-                    textureCoords: [
-                        1.0, 0.0,                        
-                        0.0, 0.0,
-                        1.0, 1.0,
-                        0.0, 1.0
-                    ],
-                    texture: "testtext",
+                    shapeType: "quad_normal",
+                    width: 2.0,
+                    height: 2.0,
                     position: [0.5, 0.0, -5.0],
-                    material: "textured"
+                    material: {
+                        name: "textured",
+                        textureMode: "attach",
+                        color: [1.0, 0.5, 1.0, 1.0],
+                        texture: "test"
+                    }
                 }
         ]});
 

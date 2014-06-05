@@ -6,6 +6,8 @@
     var wgl = cns("sfme.internals.webgl");
     var tManager = cns("sfme.internals.textureManager");
     var log = cns("sfme.log");
+    var _ = cns("sfme.types");
+
     var activeScene = null;
 
     this.init = function()
@@ -44,12 +46,34 @@
 
             for (var i=0;i<newScene.objects.length;++i)
             {
-                wgl.createObject(newScene.objects[i]);
-                if (newScene.objects[i].texture)
+                var obj = newScene.objects[i];
+                var vertex = [];
+                switch (obj.shapeType)
                 {
-                    tManager.getTexture(newScene,newScene.objects[i]);
+                    case "triangle_normal":
+                        var w = obj.width || 1.0;
+                        var h = obj.height || 1.0;
+                        vertex=vertex.concat(_.scale1([0.0,1.0,0.0],h/2));
+                        vertex=vertex.concat(_.scale3v([-1.0,-1.0,0.0],[w/2,h/2,0.0]));
+                        vertex=vertex.concat(_.scale3v([1.0,-1.0,0.0],[w/2,h/2,0.0]));
+                        break;
+                    case "quad_normal":
+                        var w = obj.width || 1.0;
+                        var h = obj.height || 1.0;
+                        vertex=vertex.concat(_.scale3v([1.0,1.0,0.0],[w/2,h/2,0.0]));
+                        vertex=vertex.concat(_.scale3v([-1.0,1.0,0.0],[w/2,h/2,0.0]));
+                        vertex=vertex.concat(_.scale3v([1.0,-1.0,0.0],[w/2,h/2,0.0]));
+                        vertex=vertex.concat(_.scale3v([-1.0,-1.0,0.0],[w/2,h/2,0.0]));
+                        break;
+                }
+                obj.vertex = vertex;
+                wgl.createObject(obj);
+                if (obj.texture)
+                {
+                    tManager.getTexture(newScene,obj);
                 }
             }
+            newScene.backgroundColor = newScene.backgroundColor || [1.0, 1.0, 1.0, 1.0];
             if (!activeScene)
             {
                 activeScene = newScene;
@@ -65,6 +89,8 @@
     {
         if (activeScene)
         {
+            wgl.startRender(activeScene.backgroundColor,activeScene.camera);
+
             for (var i=0;i<activeScene.objects.length;++i)
             {
                 wgl.renderObj(activeScene.objects[i]);

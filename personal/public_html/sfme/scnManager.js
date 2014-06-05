@@ -48,25 +48,44 @@
             {
                 var obj = newScene.objects[i];
                 var vertex = [];
-                switch (obj.shapeType)
+                if (obj.shapeType)
                 {
-                    case "triangle_normal":
-                        var w = obj.width || 1.0;
-                        var h = obj.height || 1.0;
-                        vertex=vertex.concat(_.scale1([0.0,1.0,0.0],h/2));
-                        vertex=vertex.concat(_.scale3v([-1.0,-1.0,0.0],[w/2,h/2,0.0]));
-                        vertex=vertex.concat(_.scale3v([1.0,-1.0,0.0],[w/2,h/2,0.0]));
-                        break;
-                    case "quad_normal":
-                        var w = obj.width || 1.0;
-                        var h = obj.height || 1.0;
-                        vertex=vertex.concat(_.scale3v([1.0,1.0,0.0],[w/2,h/2,0.0]));
-                        vertex=vertex.concat(_.scale3v([-1.0,1.0,0.0],[w/2,h/2,0.0]));
-                        vertex=vertex.concat(_.scale3v([1.0,-1.0,0.0],[w/2,h/2,0.0]));
-                        vertex=vertex.concat(_.scale3v([-1.0,-1.0,0.0],[w/2,h/2,0.0]));
-                        break;
+                    switch (obj.shapeType)
+                    {
+                        case "triangle_normal":
+                            var w = obj.width || 1.0;
+                            var h = obj.height || 1.0;
+                            vertex=vertex.concat(_.scale1([0.0,1.0,0.0],h/2));
+                            vertex=vertex.concat(_.scale3v([-1.0,-1.0,0.0],[w/2,h/2,0.0]));
+                            vertex=vertex.concat(_.scale3v([1.0,-1.0,0.0],[w/2,h/2,0.0]));
+                            break;
+                        case "quad_normal":
+                            var w = obj.width || 1.0;
+                            var h = obj.height || 1.0;
+                            vertex=vertex.concat(_.scale3v([1.0,1.0,0.0],[w/2,h/2,0.0]));
+                            vertex=vertex.concat(_.scale3v([-1.0,1.0,0.0],[w/2,h/2,0.0]));
+                            vertex=vertex.concat(_.scale3v([1.0,-1.0,0.0],[w/2,h/2,0.0]));
+                            vertex=vertex.concat(_.scale3v([-1.0,-1.0,0.0],[w/2,h/2,0.0]));
+                            break;
+                    }
+                    obj.vertex = vertex;
                 }
-                obj.vertex = vertex;
+                if (obj.material.textureMode)
+                {
+                    var textureCoords = [];
+                    switch (obj.material.textureMode)
+                    {
+                        case "attach":
+                            textureCoords = [
+                                1.0, 0.0,                        
+                                0.0, 0.0,
+                                1.0, 1.0,
+                                0.0, 1.0
+                            ];
+                            break;
+                    }
+                    obj.material.textureCoords = textureCoords;
+                }
                 wgl.createObject(obj);
                 if (obj.texture)
                 {

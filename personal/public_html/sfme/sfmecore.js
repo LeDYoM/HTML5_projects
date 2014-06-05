@@ -28,7 +28,7 @@
         tManager.init();
         pManager.init();
 
-        pManager.loadProgram("example2","example2.json");
+        pManager.loadProgram("example3","example3.json");
         
         this.ready = true;
         
@@ -39,7 +39,6 @@
 
     function updateFrame()
     {
-        wgl.startRender();
         scnManager.renderScene();
         wgl.endRender();
         

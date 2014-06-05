@@ -131,7 +131,7 @@
 
         obj_.vertexColorBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, obj_.vertexColorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(obj_.colors), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(obj_.material.colors), gl.STATIC_DRAW);
         obj_.vertexColorBuffer.itemSize = 4;
         obj_.vertexColorBuffer.numItems = obj_.numVertex;
 

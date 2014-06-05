@@ -50,21 +50,35 @@
                     {
                         var tDef = tObject.textDefinition;
                         var ctx = tObject.context;
-                        ctx.font = "25px Georgia";
+                        ctx.save();
+                        ctx.font = tDef.fontSize + "px "+tDef.fontName;
                         ctx.fillStyle = "blue";
                         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                        
+                        var fill = tDef.fillStyle || false;
+                        if (fill)
+                        {
+                            ctx.fillStyle = tDef.fillStyle;
+                        }
+                        
+                        var stroke = tDef.strokeStyle || false;
+                        if (stroke)
+                        {
+                            ctx.strokeStyle = tDef.strokeStyle;
+                            ctx.lineWidth = tDef.lineWidth | 1;
+                        }
+
+                        ctx.textAlign = tDef.textAlign || "center";
+                        ctx.textBaseline = tDef.textAlign || "textBaseline";
 
                         // write white text with black border
                         ctx.fillStyle = "white";
                         ctx.lineWidth = 2.5;
                         ctx.strokeStyle = "black";
-                        ctx.save();
                         ctx.textAlign = "center";
                         ctx.textBaseline = "middle";
-                        var leftOffset = ctx.canvas.width / 2;
-                        var topOffset = ctx.canvas.height / 2;
-                        ctx.strokeText(tDef.text, leftOffset, topOffset);
-                        ctx.fillText(tDef.text, leftOffset, topOffset);
+                        ctx.strokeText(tDef.text, tDef.textPosition[0], tDef.textPosition[1]);
+                        ctx.fillText(tDef.text, tDef.textPosition[0], tDef.textPosition[1]);
                         ctx.restore();
                     }
                     wgl.handleLoadedTexture(tObject.texture,tObject.canvas);

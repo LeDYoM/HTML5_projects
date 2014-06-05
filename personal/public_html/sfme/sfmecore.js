@@ -28,7 +28,7 @@
         tManager.init();
         pManager.init();
 
-        pManager.loadProgram("example1","example1.json");
+        pManager.loadProgram("example3","example3.json");
         
         this.ready = true;
         

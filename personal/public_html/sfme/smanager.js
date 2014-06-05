@@ -119,7 +119,6 @@
         {
             loader.loadFile(fName).then(function(shaderSource)
             {
-                log.debug(shaderSource);
                 var shader = loadShaderFromSource(type,shaderSource);
                 resolve(shader);
             },

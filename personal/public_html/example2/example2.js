@@ -11,10 +11,30 @@ cns("sfme.userModules").defineUserModule("example2", "main",
                 textures: [
                     {
                         id: "test",
+                        type: "image",
                         src: "nehe.gif"
+                    },
+                    {
+                        id: "testtext",
+                        type: "text",
+                        width: 512,
+                        height: 256,
+                        textDefinition:
+                            {
+                                text: "Hello world!"
+                            }
                     }
+
                 ]
             },
+            camera: {
+                type: "perspective",
+                angle: 45.0,
+                ratio: "normal",
+                zNear: 0.1,
+                zFar: 100.0
+            },
+            backgroundColor: [1.0, 1.0, 0.0, 1.0],
             objects: [
                 {
                     id: "triangle",
@@ -53,7 +73,7 @@ cns("sfme.userModules").defineUserModule("example2", "main",
                         1.0, 1.0,
                         0.0, 1.0
                     ],
-                    texture: "test",
+                    texture: "testtext",
                     position: [0.5, 0.0, -5.0],
                     material: "textured"
                 }

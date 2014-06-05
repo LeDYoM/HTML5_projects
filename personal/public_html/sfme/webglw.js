@@ -66,10 +66,10 @@
         });
     }
 
-    function handleLoadedTexture(texture)
+    function handleLoadedTexture(texture,data)
     {
         gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, data);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
         gl.bindTexture(gl.TEXTURE_2D, null);
@@ -137,11 +137,11 @@
 
         if (obj_.textureCoords)
         {
-            obj_.cubeVertexTextureCoordBuffer = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, obj_.cubeVertexTextureCoordBuffer);
+            obj_.vertexTextureCoordBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, obj_.vertexTextureCoordBuffer);
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(obj_.textureCoords), gl.STATIC_DRAW);
-            obj_.cubeVertexTextureCoordBuffer.itemSize = 2;
-            obj_.cubeVertexTextureCoordBuffer.numItems = 4;
+            obj_.vertexTextureCoordBuffer.itemSize = 2;
+            obj_.vertexTextureCoordBuffer.numItems = 4;
         }
    }
     this.createObject = createObject;
@@ -172,13 +172,11 @@
 
             if (shaderProgram.textureCoordAttribute > -1 && obj.textureObject && obj.textureObject.ready)
             {
-                gl.bindBuffer(gl.ARRAY_BUFFER, obj.cubeVertexTextureCoordBuffer);
-                gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, obj.cubeVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+                gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexTextureCoordBuffer);
+                gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, obj.vertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
                 gl.activeTexture(gl.TEXTURE0);
                 gl.bindTexture(gl.TEXTURE_2D, obj.textureObject);
                 gl.uniform1i(shaderProgram.samplerUniform, 0);
-
-                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.cubeVertexIndexBuffer);
             }
 
             gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
@@ -204,14 +202,26 @@
         mvMatrix = mvMatrixStack.pop();
     }
 
-    function startRender()
+    function startRender(backgroundColor,cameraObject)
     {
         gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.clearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
 
-
-        mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+        switch (cameraObject.type)
+        {
+            case "perspective":
+                if (cameraObject.ratio === "normal")
+                {
+                    cameraObject.realRatio = gl.viewportWidth / gl.viewportHeight;
+                }
+                else
+                {
+                    cameraObject.realRatio = cameraObject.ratio;
+                }
+                mat4.perspective(cameraObject.angle, cameraObject.realRatio, cameraObject.zNear, cameraObject.zFar, pMatrix);
+                break;
+        }
 
         mat4.identity(mvMatrix);
     }

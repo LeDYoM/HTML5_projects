@@ -3,12 +3,19 @@
     "use strict";
     var ready = false;
     var wgl = cns("sfme.internals.webgl");
-    
-    this.init = function(gl_)
-    {
-        ready = true;
+    var dummyTextureDefinition = {
+        id: "dummyTexture",
+        type: "canvas",
+        backgroundColor: "white",
+        width: 1,
+        height: 1
     };
     
+    this.init = function()
+    {
+        loadTexture("",dummyTextureDefinition).then(function() { ready=true; });
+    };
+
     function loadTexture(baseDir,tObject)
     {
         var type = tObject.type || "undefined";
@@ -36,29 +43,28 @@
                 tObject.texture.image.src = baseDir + tObject.src;
                 return pr;
                 break;
-            case "canvas":
             case "text":
+            case "canvas":
                 pr = new Promise(function(resolve,reject)
                 {
                     tObject.canvas = document.createElement("canvas");
                     tObject.context = tObject.canvas.getContext("2d");
+                    var ctx = tObject.context;
                     tObject.canvas.width = tObject.width || 1;
                     tObject.canvas.height = tObject.height || 1;
                     tObject.texture = wgl.createTexture();
-                    
+                    if (tObject.backgroundColor)
+                    {
+                        ctx.fillStyle = tObject.backgroundColor;
+                        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                    }
+
                     if (type === "text")
                     {
                         var tDef = tObject.textDefinition;
-                        var ctx = tObject.context;
                         ctx.save();
                         ctx.font = tDef.fontSize + "px "+tDef.fontName;
-                        
-                        if (ctx.backgroundColor)
-                        {
-                            ctx.fillStyle = ctx.backgroundColor;
-                            ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-                        }
-                        
+                       
                         var fill = tDef.fillStyle || false;
                         if (fill)
                         {
@@ -107,5 +113,11 @@
         }
     }
     this.getTexture = getTexture;
+    
+    function getDummyTexture(obj)
+    {
+        obj.material.textureObject = dummyTextureDefinition.texture;
+    }
+    this.getDummyTexture = getDummyTexture;
 }
 ).apply(cns("sfme.internals.textureManager"));

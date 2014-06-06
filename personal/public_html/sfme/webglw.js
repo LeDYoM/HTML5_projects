@@ -122,7 +122,6 @@
 
     function createObject(obj_)
     {
-        obj_.numVertex = Math.floor(obj_.vertex.length / 3);
         obj_.vertexPositionBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, obj_.vertexPositionBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(obj_.vertex), gl.STATIC_DRAW);
@@ -141,7 +140,7 @@
             gl.bindBuffer(gl.ARRAY_BUFFER, obj_.vertexTextureCoordBuffer);
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(obj_.material.textureCoords), gl.STATIC_DRAW);
             obj_.vertexTextureCoordBuffer.itemSize = 2;
-            obj_.vertexTextureCoordBuffer.numItems = 4;
+            obj_.vertexTextureCoordBuffer.numItems = obj_.numVertex;
         }
    }
     this.createObject = createObject;
@@ -187,12 +186,15 @@
                 gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, obj.vertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
             }
 
-            if (shaderProgram.textureCoordAttribute > -1 && obj.material.textureObject && obj.material.textureObject.ready)
+            if (shaderProgram.textureCoordAttribute > -1)
             {
                 gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexTextureCoordBuffer);
                 gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, obj.vertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
-                gl.activeTexture(gl.TEXTURE0);
-                gl.bindTexture(gl.TEXTURE_2D, obj.material.textureObject);
+                if (obj.material.textureObject && obj.material.textureObject.ready)
+                {
+                    gl.activeTexture(gl.TEXTURE0);
+                    gl.bindTexture(gl.TEXTURE_2D, obj.material.textureObject);
+                }
                 gl.uniform1i(shaderProgram.samplerUniform, 0);
             }
 
@@ -201,6 +203,8 @@
             gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
 
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, obj.vertexPositionBuffer.numItems);
+            gl.bindTexture(gl.TEXTURE_2D, null);
+            
             mvPopMatrix();
         }
     }

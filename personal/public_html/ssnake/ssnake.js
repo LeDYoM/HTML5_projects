@@ -1,4 +1,4 @@
-cns("sfme.userModules").defineUserModule("example3", "main", 
+cns("sfme.userModules").defineUserModule("ssnake", "main", 
 (function()
 {
     this.sfmeAPI = null;
@@ -16,7 +16,7 @@ cns("sfme.userModules").defineUserModule("example3", "main",
                         height: 256,
                         textDefinition:
                             {
-                                text: "Hello world!",
+                                text: "Super Snake",
                                 fontSize: 55,
                                 fontName: "Georgia",
                                 fillStyle: "white",
@@ -26,6 +26,7 @@ cns("sfme.userModules").defineUserModule("example3", "main",
                                 textPosition: [512/2,256/2]
                             }
                     }
+
                 ]
             },
             camera: {
@@ -35,23 +36,8 @@ cns("sfme.userModules").defineUserModule("example3", "main",
                 zNear: 0.1,
                 zFar: 100.0
             },
-            backgroundColor: [0.0, 1.0, 0.0, 1.0],
+            backgroundColor: [0.0, 0.0, 0.0, 1.0],
             objects: [
-                {
-                    id: "triangle",
-                    shapeType: "triangle_normal",
-                    width: 2.0,
-                    height: 2.0,
-                    position: [-1.5, 0.0, -7.0],
-                    material: {
-                        name: "textured",
-                        colors: [
-                            1.0, 1.0, 0.0, 1.0,
-                            0.0, 1.0, 0.0, 1.0,
-                            0.0, 0.0, 1.0, 1.0
-                        ]
-                    }
-                }/*,
                 {
                     id: "quad",
                     shapeType: "quad_normal",
@@ -66,7 +52,7 @@ cns("sfme.userModules").defineUserModule("example3", "main",
                         color: [1.0, 0.0, 0.0, 1.0],
                         texture: "testtext"
                     }
-                }*/
+                }
         ]});
 
     };

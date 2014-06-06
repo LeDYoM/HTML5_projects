@@ -70,22 +70,30 @@
                     }
                     obj.vertex = vertex;
                 }
-                if (obj.material.textureMode)
+                obj.numVertex = Math.floor(obj.vertex.length / 3);
+
+                obj.material.textureMode = obj.material.textureMode || "ignore";
+                var textureCoords = [];
+                switch (obj.material.textureMode)
                 {
-                    var textureCoords = [];
-                    switch (obj.material.textureMode)
-                    {
-                        case "attach":
-                            textureCoords = [
-                                1.0, 0.0,                        
-                                0.0, 0.0,
-                                1.0, 1.0,
-                                0.0, 1.0
-                            ];
-                            break;
-                    }
-                    obj.material.textureCoords = textureCoords;
+                    case "attach":
+                        textureCoords = [
+                            1.0, 0.0,
+                            0.0, 0.0,
+                            1.0, 1.0,
+                            0.0, 1.0
+                        ];
+                        break;
+                    case "ignore":
+                        // Fake texture
+                        for (var i=0;i<obj.numVertex;++i)
+                        {
+                            textureCoords = textureCoords.concat([0.0,0.0]);
+                        }
+                        break;
                 }
+                obj.material.textureCoords = textureCoords;
+
                 if (obj.material.color)
                 {
                     var colors = [];
@@ -99,6 +107,10 @@
                 if (obj.material.texture)
                 {
                     tManager.getTexture(newScene,obj);
+                }
+                else
+                {
+                    tManager.getDummyTexture(obj);
                 }
                 obj.material.alpha = obj.material.alpha || 1.0;
             }

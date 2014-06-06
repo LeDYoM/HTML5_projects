@@ -196,6 +196,7 @@
                 gl.uniform1i(shaderProgram.samplerUniform, 0);
             }
 
+            gl.uniform1f(shaderProgram.alphaUniform, obj.material.alpha);
             gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
             gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
 

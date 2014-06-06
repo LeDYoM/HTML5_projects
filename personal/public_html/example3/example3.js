@@ -67,6 +67,7 @@ cns("sfme.userModules").defineUserModule("example3", "main",
                     position: [0.5, 0.0, -5.0],
                     material: {
                         blending: true,
+                        alpha: 0.5,
                         name: "textured",
                         textureMode: "attach",
                         color: [1.0, 0.5, 1.0, 1.0],

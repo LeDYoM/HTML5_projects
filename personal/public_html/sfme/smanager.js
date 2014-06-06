@@ -95,10 +95,12 @@
             shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
             gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
         }
-
+        
         shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
         shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
         shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
+        shaderProgram.alphaUniform = gl.getUniformLocation(shaderProgram, "uAlpha");
+        
     }
     
     function loadShadersFromFile(fNameList,typeList)

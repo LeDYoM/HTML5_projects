@@ -100,6 +100,7 @@
                 {
                     tManager.getTexture(newScene,obj);
                 }
+                obj.material.alpha = obj.material.alpha || 1.0;
             }
             newScene.backgroundColor = newScene.backgroundColor || [0.0, 0.0, 0.0, 1.0];
             if (!activeScene)

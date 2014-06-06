@@ -52,8 +52,12 @@
                         var ctx = tObject.context;
                         ctx.save();
                         ctx.font = tDef.fontSize + "px "+tDef.fontName;
-                        ctx.fillStyle = "blue";
-                        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                        
+                        if (ctx.backgroundColor)
+                        {
+                            ctx.fillStyle = ctx.backgroundColor;
+                            ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                        }
                         
                         var fill = tDef.fillStyle || false;
                         if (fill)

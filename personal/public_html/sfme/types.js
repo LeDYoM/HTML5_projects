@@ -24,7 +24,6 @@
             out_[i]=in_[i]*scale_[i];
         }
         return out_;
-    };
-    
+    };   
 }
 ).apply(cns("sfme.types"));

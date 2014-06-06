@@ -145,6 +145,21 @@
         }
    }
     this.createObject = createObject;
+    
+    function setBlending(value)
+    {
+        if (value)
+        {
+            gl.enable(gl.BLEND);
+            gl.disable(gl.DEPTH_TEST);
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+        }
+        else
+        {
+            gl.disable(gl.BLEND);
+            gl.enable(gl.DEPTH_TEST);            
+        }
+    }
 
     function renderObj(obj)
     {
@@ -157,6 +172,8 @@
                 mat4.translate(mvMatrix, obj.position);
             }
             var shaderProgram = sManager.getShader(obj.material.name);
+            
+            setBlending(obj.material.blending);
            
             if (shaderProgram.vertexPositionAttribute > -1)
             {

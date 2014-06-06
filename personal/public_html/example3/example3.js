@@ -41,7 +41,7 @@ cns("sfme.userModules").defineUserModule("example3", "main",
                 zNear: 0.1,
                 zFar: 100.0
             },
-            backgroundColor: [1.0, 1.0, 0.0, 1.0],
+            backgroundColor: [0.0, 0.0, 0.0, 1.0],
             objects: [
                 {
                     id: "triangle",
@@ -66,6 +66,7 @@ cns("sfme.userModules").defineUserModule("example3", "main",
                     height: 2.0,
                     position: [0.5, 0.0, -5.0],
                     material: {
+                        blending: true,
                         name: "textured",
                         textureMode: "attach",
                         color: [1.0, 0.5, 1.0, 1.0],

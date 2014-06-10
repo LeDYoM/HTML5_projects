@@ -44,9 +44,9 @@
                 log.verbose("No resources in scene");
             }
 
-            for (var i=0;i<newScene.camera.objects.length;++i)
+            for (var i=0;i<newScene.camera.objects3d.length;++i)
             {
-                var obj = newScene.camera.objects[i];
+                var obj = newScene.camera.objects3d[i];
                 var vertex = [];
                 if (obj.shapeType)
                 {
@@ -132,9 +132,9 @@
         {
             wgl.startRender(activeScene.backgroundColor,activeScene.camera);
 
-            for (var i=0;i<activeScene.camera.objects.length;++i)
+            for (var i=0;i<activeScene.camera.objects3d.length;++i)
             {
-                wgl.renderObj(activeScene.camera.objects[i]);
+                wgl.renderObj(activeScene.camera.objects3d[i]);
             }
         }
     }

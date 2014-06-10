@@ -86,7 +86,7 @@
                         break;
                     case "ignore":
                         // Fake texture
-                        for (var i=0;i<obj.numVertex;++i)
+                        for (var j=0;j<obj.numVertex;++j)
                         {
                             textureCoords = textureCoords.concat([0.0,0.0]);
                         }

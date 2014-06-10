@@ -14,6 +14,7 @@ cns("sfme.userModules").defineUserModule("example3", "main",
                         type: "text",
                         width: 512,
                         height: 256,
+                        backgroundColor: "blue",
                         textDefinition:
                             {
                                 text: "Hello world!",
@@ -23,7 +24,7 @@ cns("sfme.userModules").defineUserModule("example3", "main",
                                 strokeStyle: "black",
                                 lineWidth: 2.5,
                                 textBaseLine: "middle",
-                                textPosition: [512/2,256/2]
+                                textPosition: [256,64]
                             }
                     }
                 ]
@@ -34,7 +35,7 @@ cns("sfme.userModules").defineUserModule("example3", "main",
                 ratio: "normal",
                 zNear: 0.1,
                 zFar: 100.0,
-                gui: [-20, 2, -2, 2],
+                gui: [-50, 50, -50, 50],
                 objects3d: [
                     {
                         id: "triangle",
@@ -56,21 +57,21 @@ cns("sfme.userModules").defineUserModule("example3", "main",
                     {
                         id: "quad",
                         shapeType: "quad_normal",
-                        width: 2.0,
-                        height: 2.0,
-                        position: [0.5, 0.0, -5.0],
+                        width: 25.0,
+                        height: 15.0,
+                        position: [0.0, 0.0, -5.0],
                         material: {
-                            blending: true,
-                            alpha: 1.0,
+//                            blending: true,
+//                            alpha: 1.0,
                             name: "textured",
                             textureMode: "attach",
-                            color: [1.0, 0.0, 0.0, 1.0],
+                            color: [1.0, 1.0, 1.0, 1.0],
                             texture: "testtext"
                         }
                     }
                 ]
             },
-            backgroundColor: [0.0, 1.0, 0.0, 1.0],
+            backgroundColor: [0.0, 0.0, 0.0, 1.0],
         });
     };
 }

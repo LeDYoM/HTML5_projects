@@ -53,22 +53,28 @@
                     tObject.canvas.width = tObject.width || 1;
                     tObject.canvas.height = tObject.height || 1;
                     tObject.texture = wgl.createTexture();
+                    ctx.save();
+
                     if (tObject.backgroundColor)
                     {
-                        ctx.fillStyle = tObject.backgroundColor;
+                        ctx.fillStyle = "blue";//tObject.backgroundColor;
                         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
                     }
 
                     if (type === "text")
                     {
                         var tDef = tObject.textDefinition;
-                        ctx.save();
                         ctx.font = tDef.fontSize + "px "+tDef.fontName;
                        
+
+                        ctx.textAlign = tDef.textAlign || "center";
+                        ctx.textBaseline = tDef.textAlign || "textBaseline";
+
                         var fill = tDef.fillStyle || false;
                         if (fill)
                         {
                             ctx.fillStyle = tDef.fillStyle;
+                            ctx.fillText(tDef.text, tDef.textPosition[0], tDef.textPosition[1]);
                         }
                         
                         var stroke = tDef.strokeStyle || false;
@@ -76,21 +82,12 @@
                         {
                             ctx.strokeStyle = tDef.strokeStyle;
                             ctx.lineWidth = tDef.lineWidth | 1;
+                            ctx.strokeText(tDef.text, tDef.textPosition[0], tDef.textPosition[1]);
                         }
 
-                        ctx.textAlign = tDef.textAlign || "center";
-                        ctx.textBaseline = tDef.textAlign || "textBaseline";
-
-                        // write white text with black border
-                        ctx.fillStyle = "white";
-                        ctx.lineWidth = 2.5;
-                        ctx.strokeStyle = "black";
-                        ctx.textAlign = "center";
-                        ctx.textBaseline = "middle";
-                        ctx.strokeText(tDef.text, tDef.textPosition[0], tDef.textPosition[1]);
-                        ctx.fillText(tDef.text, tDef.textPosition[0], tDef.textPosition[1]);
-                        ctx.restore();
                     }
+                    ctx.restore();
+
                     wgl.handleLoadedTexture(tObject.texture,tObject.canvas);
                     tObject.texture.ready = true;
                     resolve(tObject);                    

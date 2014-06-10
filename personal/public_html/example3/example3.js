@@ -51,7 +51,7 @@ cns("sfme.userModules").defineUserModule("example3", "main",
                             0.0, 0.0, 1.0, 1.0
                         ]
                     }
-                }/*,
+                },
                 {
                     id: "quad",
                     shapeType: "quad_normal",
@@ -66,7 +66,7 @@ cns("sfme.userModules").defineUserModule("example3", "main",
                         color: [1.0, 0.0, 0.0, 1.0],
                         texture: "testtext"
                     }
-                }*/
+                }
         ]});
 
     };

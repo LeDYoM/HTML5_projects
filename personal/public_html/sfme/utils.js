@@ -70,5 +70,10 @@
         window.console.log(text);
     };
     
+    this.error =  function(text)
+    {
+        window.console.log(text);        
+    }
+    
 }
 ).apply(cns("sfme.log"));

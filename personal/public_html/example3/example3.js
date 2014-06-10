@@ -34,6 +34,7 @@ cns("sfme.userModules").defineUserModule("example3", "main",
                 ratio: "normal",
                 zNear: 0.1,
                 zFar: 100.0,
+                gui: [-20, 2, -2, 2],
                 objects3d: [
                     {
                         id: "triangle",
@@ -49,7 +50,9 @@ cns("sfme.userModules").defineUserModule("example3", "main",
                                 0.0, 0.0, 1.0, 0.5
                             ]
                         }
-                    },
+                    }
+                ],
+                objects2d: [
                     {
                         id: "quad",
                         shapeType: "quad_normal",

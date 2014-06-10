@@ -224,12 +224,16 @@
         mvMatrix = mvMatrixStack.pop();
     }
 
-    function startRender(backgroundColor,cameraObject)
+    function startRender(backgroundColor)
     {
         gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.clearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
-
+    }
+    this.startRender = startRender;
+    
+    function renderCamera3d(cameraObject)
+    {
         switch (cameraObject.type)
         {
             case "perspective":
@@ -248,8 +252,15 @@
 
         mat4.identity(mvMatrix);
     }
-    this.startRender = startRender;
-       
+    this.renderCamera3d = renderCamera3d;
+
+    function renderCamera2d(cameraObject)
+    {
+        mat4.ortho(cameraObject.gui[0],cameraObject.gui[1],cameraObject.gui[2],cameraObject.gui[3],cameraObject.zNear,cameraObject.zFar, pMatrix);
+        mat4.identity(mvMatrix);
+    }
+    this.renderCamera2d = renderCamera2d;
+
     function endRender()
     {
   	gl.flush();

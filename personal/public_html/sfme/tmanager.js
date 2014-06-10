@@ -101,14 +101,14 @@
     };
     this.loadTexture = loadTexture;
     
-    function getTexture(globalObject,obj)
+    function getTexture(resourceObject,obj)
     {
         var id = obj.material.texture;
-        for (var i=0;i<globalObject.resources.textures.length;++i)
+        for (var i=0;i<resourceObject.textures.length;++i)
         {
-            if (globalObject.resources.textures[i].id === id)
+            if (resourceObject.textures[i].id === id)
             {
-                obj.material.textureObject = globalObject.resources.textures[i].texture;
+                obj.material.textureObject = resourceObject.textures[i].texture;
             }
         }
     }

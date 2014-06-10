@@ -242,6 +242,7 @@
                     cameraObject.realRatio = cameraObject.ratio;
                 }
                 mat4.perspective(cameraObject.angle, cameraObject.realRatio, cameraObject.zNear, cameraObject.zFar, pMatrix);
+                //mat4.ortho(-1,1,-1,1,cameraObject.zNear,cameraObject.zFar, pMatrix);
                 break;
         }
 

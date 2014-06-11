@@ -20,8 +20,8 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                 fontSize: 55,
                                 fontName: "Georgia",
                                 fillStyle: "white",
-                                strokeStyle: "black",
-                                lineWidth: 2.5,
+                                strokeStyle: "#555555",
+                                lineWidth: 1,
                                 textBaseLine: "middle",
                                 textPosition: [512/2,256/2]
                             }
@@ -34,27 +34,28 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                 angle: 45.0,
                 ratio: "normal",
                 zNear: 0.1,
-                zFar: 100.0
-            },
-            backgroundColor: [0.0, 0.0, 0.0, 1.0],
-            objects: [
+                zFar: 100.0,
+                gui: [-50, 50, -50, 50],
+                objects2d: [
                 {
                     id: "quad",
                     shapeType: "quad_normal",
-                    width: 2.0,
-                    height: 2.0,
-                    position: [0.5, 0.0, -5.0],
+                    width: 64.0,
+                    height: 32.0,
+                    position: [0.0, 0.0, -5.0],
                     material: {
-                        blending: true,
-                        alpha: 1.0,
+//                        blending: true,
+//                        alpha: 1.0,
                         name: "textured",
                         textureMode: "attach",
-                        color: [1.0, 0.0, 0.0, 1.0],
+                            color: [1.0, 1.0, 1.0, 1.0],
                         texture: "testtext"
                     }
                 }
-        ]});
-
+        ]
+            },
+            backgroundColor: [0.0, 0.0, 0.0, 1.0],
+        });
     };
 }
 ));

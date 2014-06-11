@@ -27,3 +27,23 @@
     };   
 }
 ).apply(cns("sfme.types"));
+
+(function()
+{
+    var obj=null;
+    this.setObject = function(obj_)
+    {
+        obj=obj_;
+    }
+    this.setPosition = function(v)
+    {
+        for(var i=0;i<3;++i)
+        {
+            if (v[i])
+            {
+                obj.position[i]=v[i];
+            }
+        }
+    }
+}
+).apply(cns("sfme.types.sfmeObject"));

@@ -13,18 +13,18 @@ cns("sfme.userModules").defineUserModule("example3", "main",
                         id: "testtext",
                         type: "text",
                         width: 512,
-                        height: 256,
+                        height: 64,
                         backgroundColor: "blue",
                         textDefinition:
                             {
                                 text: "Hello world!",
-                                fontSize: 55,
+                                fontSize: 32,
                                 fontName: "Georgia",
                                 fillStyle: "white",
                                 strokeStyle: "black",
-                                lineWidth: 2.5,
+                                lineWidth: 1,
                                 textBaseLine: "middle",
-                                textPosition: [256,64]
+                                textPosition: [256,32]
                             }
                     }
                 ]

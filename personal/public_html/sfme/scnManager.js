@@ -15,6 +15,32 @@
         ready = true;
     };
     
+    function updateBoundingBox(object)
+    {
+        var downLeftFront = [];
+        var topRightFar = [];
+        
+        for (var i=0;i<object.vertex.length;++i)
+        {
+            var v=object.vertex[i];
+            for (var j=0;j<3;++j)
+            {
+                if (i===0 || v[j] < downLeftFront[j])
+                {
+                    downLeftFront[j]=v[j];
+                }
+                if (i===0 || v[j] > topRightFar[j])
+                {
+                    topRightFar[j]=v[j];
+                }               
+            }
+        }
+        object.boundingBox = {};
+        object.boundingBox.downLeftFront = downLeftFront;
+        object.boundingBox.topRightFar = topRightFar;
+
+    }
+    
     function createObject(resourceObject,obj)
     {
         var vertex = [];
@@ -41,6 +67,7 @@
             obj.vertex = vertex;
         }
         obj.numVertex = Math.floor(obj.vertex.length / 3);
+        updateBoundingBox(obj);
 
         obj.material.textureMode = obj.material.textureMode || "ignore";
         var textureCoords = [];

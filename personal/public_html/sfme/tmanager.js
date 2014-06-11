@@ -55,36 +55,16 @@
                     tObject.texture = wgl.createTexture();
                     ctx.save();
 
-                    if (tObject.backgroundColor)
+                    if (!tObject.backgroundColor)
                     {
-                        ctx.fillStyle = "blue";//tObject.backgroundColor;
-                        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                        tObject.backgroundColor = "#00000000";
                     }
+                    ctx.fillStyle = tObject.backgroundColor;
+                    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
                     if (type === "text")
                     {
-                        var tDef = tObject.textDefinition;
-                        ctx.font = tDef.fontSize + "px "+tDef.fontName;
-                       
-
-                        ctx.textAlign = tDef.textAlign || "center";
-                        ctx.textBaseline = tDef.textAlign || "textBaseline";
-
-                        var fill = tDef.fillStyle || false;
-                        if (fill)
-                        {
-                            ctx.fillStyle = tDef.fillStyle;
-                            ctx.fillText(tDef.text, tDef.textPosition[0], tDef.textPosition[1]);
-                        }
-                        
-                        var stroke = tDef.strokeStyle || false;
-                        if (stroke)
-                        {
-                            ctx.strokeStyle = tDef.strokeStyle;
-                            ctx.lineWidth = tDef.lineWidth | 1;
-                            ctx.strokeText(tDef.text, tDef.textPosition[0], tDef.textPosition[1]);
-                        }
-
+                        drawText(tObject.textDefinition,ctx);
                     }
                     ctx.restore();
 
@@ -97,6 +77,29 @@
         }
     };
     this.loadTexture = loadTexture;
+    
+    function drawText(tDef,ctx)
+    {
+        ctx.font = tDef.fontSize + "px "+tDef.fontName;
+
+        ctx.textAlign = tDef.textAlign || "center";
+        ctx.textBaseline = tDef.textAlign || "textBaseline";
+
+        var fill = tDef.fillStyle || false;
+        if (fill)
+        {
+            ctx.fillStyle = tDef.fillStyle;
+            ctx.fillText(tDef.text, tDef.textPosition[0], tDef.textPosition[1]);
+        }
+
+        var stroke = tDef.strokeStyle || false;
+        if (stroke)
+        {
+            ctx.strokeStyle = tDef.strokeStyle;
+            ctx.lineWidth = tDef.lineWidth | 1;
+            ctx.strokeText(tDef.text, tDef.textPosition[0], tDef.textPosition[1]);
+        }
+    }
     
     function getTexture(resourceObject,obj)
     {

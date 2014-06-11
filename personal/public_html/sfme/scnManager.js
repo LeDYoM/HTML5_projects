@@ -40,9 +40,8 @@
         object.boundingBox = {};
         object.boundingBox.downLeftFront = downLeftFront;
         object.boundingBox.topRightFar = topRightFar;
-
     }
-    
+   
     function createObject(resourceObject,obj)
     {
         var vertex = [];
@@ -112,15 +111,45 @@
             tManager.getDummyTexture(obj);
         }
         obj.material.alpha = obj.material.alpha || 1.0;
-        
+        subscribeObject2Listeners(obj);
     }
     
+    function subscribe2Listeners(obj,baseName)
+    {
+        if (obj.id)
+        {
+            var count = 0;
+            for (var property in obj)
+            {
+                if (property.indexOf("on") === 0)
+                {
+                    cont++;
+                    var eventName = baseName + "." + property.substr(2);
+                    eManager.subscribe(eventName,obj[property]);
+                }
+            }
+            log.debug("Subscribed object "+obj.id+" to "+count+" events");
+        }
+        else
+        {
+            log.error(" Trying to subscribe in object without id");
+        }
+    }
+ 
+    function subscribeObject2Listeners(obj)
+    {
+        subscribe2Listeners(obj.parentScene.id,obj);
+    }
+    
+    function subscribeScene2Listeners(scene)
+    {
+        subscribe2Listeners("",scene);
+    }
     function defineScene(baseDir,sceneDefinition)
     {
         var newScene = sceneDefinition;
-        
+
         // TODO: Generate sceneId.
-        newScene.sceneId = 0;
         newScene.ready = false;
 
         if (newScene.resources)
@@ -167,6 +196,8 @@
         }
 
         newScene.backgroundColor = newScene.backgroundColor || [0.0, 0.0, 0.0, 1.0];
+        subscribeScene2Listeners(newScene);
+
         if (!activeScene)
         {
             activeScene = newScene;

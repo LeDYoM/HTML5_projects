@@ -27,5 +27,10 @@
         document.dispatchEvent(event);
     }
     this.launchEvent = launchEvent;
+    
+    function subscribeSceneObjects(objects)
+    {
+//        for (vari=0;i<)
+    }
 }
 ).apply(cns("sfme.internal.eventManager"));

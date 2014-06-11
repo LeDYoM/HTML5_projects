@@ -232,34 +232,36 @@
     }
     this.startRender = startRender;
     
-    function renderCamera3d(cameraObject)
+    function renderCamera(cameraObject,typeRender)
     {
-        switch (cameraObject.type)
+        switch (typeRender)
         {
-            case "perspective":
-                if (cameraObject.ratio === "normal")
+            case "objects3d":
+                switch (cameraObject.type)
                 {
-                    cameraObject.realRatio = gl.viewportWidth / gl.viewportHeight;
+                    case "perspective":
+                        if (cameraObject.ratio === "normal")
+                        {
+                            cameraObject.realRatio = gl.viewportWidth / gl.viewportHeight;
+                        }
+                        else
+                        {
+                            cameraObject.realRatio = cameraObject.ratio;
+                        }
+                        mat4.perspective(cameraObject.angle, cameraObject.realRatio, cameraObject.zNear, cameraObject.zFar, pMatrix);
+                        //mat4.ortho(-1,1,-1,1,cameraObject.zNear,cameraObject.zFar, pMatrix);
+                        break;
                 }
-                else
-                {
-                    cameraObject.realRatio = cameraObject.ratio;
-                }
-                mat4.perspective(cameraObject.angle, cameraObject.realRatio, cameraObject.zNear, cameraObject.zFar, pMatrix);
-                //mat4.ortho(-1,1,-1,1,cameraObject.zNear,cameraObject.zFar, pMatrix);
+                break;
+            case "objects2d":
+                mat4.ortho(cameraObject.gui[0],cameraObject.gui[1],cameraObject.gui[2],cameraObject.gui[3],cameraObject.zNear,cameraObject.zFar, pMatrix);
+                mat4.identity(mvMatrix);
                 break;
         }
 
         mat4.identity(mvMatrix);
     }
-    this.renderCamera3d = renderCamera3d;
-
-    function renderCamera2d(cameraObject)
-    {
-        mat4.ortho(cameraObject.gui[0],cameraObject.gui[1],cameraObject.gui[2],cameraObject.gui[3],cameraObject.zNear,cameraObject.zFar, pMatrix);
-        mat4.identity(mvMatrix);
-    }
-    this.renderCamera2d = renderCamera2d;
+    this.renderCamera = renderCamera;
 
     function endRender()
     {

@@ -7,8 +7,10 @@
     var tManager = cns("sfme.internals.textureManager");
     var log = cns("sfme.log");
     var _ = cns("sfme.types");
+    var eManager = cns("sfme.internal.eventManager");
 
     var activeScene = null;
+    var objectTypes = ["objects3d", "objects2d"];
 
     this.init = function()
     {
@@ -142,32 +144,21 @@
 
         if (newScene.camera)
         {
-            var objectTypes = ["objects3d", "objects2d"];
             // TODO: Refractor.
-            if (newScene.camera.objects3d)
+            for (var oti=0;oti<objectTypes.length;++oti)
             {
-                log.verbose("Num 3d objects in scene:"+newScene.camera.objects3d.length);
-                for (var i=0;i<newScene.camera.objects3d.length;++i)
+                if (newScene.camera[objectTypes[oti]])
                 {
-                    createObject(newScene.resources,newScene.camera.objects3d[i]);
+                    log.verbose("Number of "+objectTypes[oti]+" in scene:"+newScene.camera[objectTypes[oti]].length);
+                    for (var i=0;i<newScene.camera[objectTypes[oti]].length;++i)
+                    {
+                        createObject(newScene.resources,newScene.camera[objectTypes[oti]][i]);
+                    }
                 }
-            }
-            else
-            {
-                log.verbose("No 3d objects in scene");
-            }
-
-            if (newScene.camera.objects2d)
-            {
-                log.verbose("Num 2d objects in scene:"+newScene.camera.objects2d.length);
-                for (var i=0;i<newScene.camera.objects2d.length;++i)
+                else
                 {
-                    createObject(newScene.resources,newScene.camera.objects2d[i]);
+                    log.verbose("No "+objectTypes[oti]+" in scene");
                 }
-            }
-            else
-            {
-                log.verbose("No 2d objects in scene");
             }
         }
         else
@@ -189,23 +180,16 @@
         {
             wgl.startRender(activeScene.backgroundColor);
             
-            if (activeScene.camera.objects3d)
+            for (var oti=0;oti<objectTypes.length;++oti)
             {
-                wgl.renderCamera3d(activeScene.camera)
-
-                for (var i=0;i<activeScene.camera.objects3d.length;++i)
+                if (activeScene.camera[objectTypes[oti]])
                 {
-                    wgl.renderObj(activeScene.camera.objects3d[i]);
-                }
-            }
+                    wgl.renderCamera(activeScene.camera,objectTypes[oti])
 
-            if (activeScene.camera.objects2d)
-            {
-                wgl.renderCamera2d(activeScene.camera)
-
-                for (var i=0;i<activeScene.camera.objects2d.length;++i)
-                {
-                    wgl.renderObj(activeScene.camera.objects2d[i]);
+                    for (var i=0;i<activeScene.camera[objectTypes[oti]].length;++i)
+                    {
+                        wgl.renderObj(activeScene.camera[objectTypes[oti]][i]);
+                    }
                 }
             }
         }

@@ -42,8 +42,9 @@
         object.boundingBox.topRightFar = topRightFar;
     }
    
-    function createObject(resourceObject,obj)
+    function createObject(parentScene_,resourceObject,obj)
     {
+        obj.parentScene = parentScene_;
         var vertex = [];
         if (obj.shapeType)
         {
@@ -114,7 +115,7 @@
         subscribeObject2Listeners(obj);
     }
     
-    function subscribe2Listeners(obj,baseName)
+    function subscribe2Listeners(baseName,obj)
     {
         if (obj.id)
         {
@@ -123,7 +124,7 @@
             {
                 if (property.indexOf("on") === 0)
                 {
-                    cont++;
+                    count++;
                     var eventName = baseName + "." + property.substr(2);
                     eManager.subscribe(eventName,obj[property]);
                 }
@@ -139,12 +140,68 @@
     function subscribeObject2Listeners(obj)
     {
         subscribe2Listeners(obj.parentScene.id,obj);
-    }
-    
+    }   
     function subscribeScene2Listeners(scene)
     {
         subscribe2Listeners("",scene);
     }
+    
+    function launchEvent(baseName,eventName,data)
+    {
+        eManager.launchEvent(baseName+"."+eventName,data);
+    }
+    
+    function launchObjectEvent(scene,eventName,data)
+    {
+        launchEvent(scene.id,eventName,data);
+    }
+    
+    function launchSceneEvent(eventName,data)
+    {
+        launchEvent("",eventName,data);
+    }
+    
+    function sceneById(pLogic,scnId)
+    {
+        for (var scnIndex in pLogic.scenes)
+        {
+            if (pLogic.scenes[scnIndex].id)
+            {
+                if (pLogic.scenes[scnIndex].id === scnId)
+                {
+                    return pLogic.scenes[scnIndex];
+                }
+            }
+        }
+    }
+    this.sceneById = sceneById;
+    
+    function setActiveScene(scene)
+    {
+        activeScene = scene;
+        if (activeScene.byStart)
+        {
+            activeScene.byStart();
+        }
+    }
+    this.setActiveScene = setActiveScene;
+    
+    function defineScenes(baseDir,scenesObject)
+    {
+        if (scenesObject.scenes)
+        {
+            for (var scene in scenesObject.scenes)
+            {
+                defineScene(baseDir,scenesObject.scenes[scene]);
+            }
+        }
+        else
+        {
+            log.error("No scenes");
+        }
+    }
+    this.defineScenes = defineScenes;
+   
     function defineScene(baseDir,sceneDefinition)
     {
         var newScene = sceneDefinition;
@@ -173,7 +230,6 @@
 
         if (newScene.camera)
         {
-            // TODO: Refractor.
             for (var oti=0;oti<objectTypes.length;++oti)
             {
                 if (newScene.camera[objectTypes[oti]])
@@ -181,7 +237,7 @@
                     log.verbose("Number of "+objectTypes[oti]+" in scene:"+newScene.camera[objectTypes[oti]].length);
                     for (var i=0;i<newScene.camera[objectTypes[oti]].length;++i)
                     {
-                        createObject(newScene.resources,newScene.camera[objectTypes[oti]][i]);
+                        createObject(newScene,newScene.resources,newScene.camera[objectTypes[oti]][i]);
                     }
                 }
                 else
@@ -197,11 +253,6 @@
 
         newScene.backgroundColor = newScene.backgroundColor || [0.0, 0.0, 0.0, 1.0];
         subscribeScene2Listeners(newScene);
-
-        if (!activeScene)
-        {
-            activeScene = newScene;
-        }
     }
     this.defineScene = defineScene;
 

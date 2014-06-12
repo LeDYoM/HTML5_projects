@@ -6,6 +6,8 @@
     var pManager = cns("sfme.internals.programmanager");
     var scnManager =cns("sfme.internals.sceneManager");
     var tManager = cns("sfme.internals.textureManager");
+    var eManager = cns("sfme.internal.eventManager");
+
     this.ready = false;
    
     this.init = function(options)
@@ -24,6 +26,7 @@
             log.verbose("Error in options.container:"+options.container);
         }
         
+        eManager.init();
         scnManager.init();
         tManager.init();
         pManager.init();

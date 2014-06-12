@@ -33,9 +33,12 @@
                 
                 // Publish public API
                 tempModule.sfmeAPI = {};
-                tempModule.sfmeAPI.defineScene = function(args)
+                tempModule.sfmeAPI.defineScenes = function(args)
                 {
-                    scnManager.defineScene(tempModule.programDir+"/",args);
+                    tempModule.programLogic = args;
+                    scnManager.defineScenes(tempModule.programDir+"/",args);
+                    var nsid = tempModule.programLogic.nextScene();
+                    scnManager.setActiveScene(scnManager.sceneById(tempModule.programLogic,nsid));
                 };
                 
                 this_.modules.push(tempModule);

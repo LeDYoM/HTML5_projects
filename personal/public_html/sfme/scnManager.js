@@ -103,11 +103,7 @@
             obj.material.colors = colors;
         }
         wgl.createObject(obj);
-        if (obj.material.texture)
-        {
-            tManager.getTexture(resourceObject,obj);
-        }
-        else
+        if (!obj.material.textureObject)
         {
             tManager.getDummyTexture(obj);
         }
@@ -160,28 +156,13 @@
     {
         launchEvent("",eventName,data);
     }
-    
-    function sceneById(pLogic,scnId)
-    {
-        for (var scnIndex in pLogic.scenes)
-        {
-            if (pLogic.scenes[scnIndex].id)
-            {
-                if (pLogic.scenes[scnIndex].id === scnId)
-                {
-                    return pLogic.scenes[scnIndex];
-                }
-            }
-        }
-    }
-    this.sceneById = sceneById;
-    
+        
     function setActiveScene(scene)
     {
         activeScene = scene;
-        if (activeScene.byStart)
+        if (activeScene.onStart)
         {
-            activeScene.byStart();
+            activeScene.onStart();
         }
     }
     this.setActiveScene = setActiveScene;
@@ -213,7 +194,7 @@
         {
             if (newScene.resources.textures)
             {
-                for (var i=0;i<newScene.resources.textures.length;++i)
+                for (var i in newScene.resources.textures)
                 {
                     tManager.loadTexture(baseDir,newScene.resources.textures[i]);
                 }
@@ -234,11 +215,34 @@
             {
                 if (newScene.camera[objectTypes[oti]])
                 {
-                    log.verbose("Number of "+objectTypes[oti]+" in scene:"+newScene.camera[objectTypes[oti]].length);
-                    for (var i=0;i<newScene.camera[objectTypes[oti]].length;++i)
+                    var count = 0;
+                    for (var i in newScene.camera[objectTypes[oti]])
                     {
-                        createObject(newScene,newScene.resources,newScene.camera[objectTypes[oti]][i]);
+                        count++;
+                        var obj = newScene.camera[objectTypes[oti]][i];
+                        createObject(newScene,newScene.resources,obj);
+                        if (obj.animations)
+                        {
+                            for (var animIndex in obj.animations)
+                            {
+                                var anim = obj.animations[animIndex];
+                                anim.parentObject = obj;
+                                anim.active = false;
+                                anim.StartAnimation = function()
+                                {
+                                    anim.active = true;
+                                    anim.startTime = new Date().getTime();
+                                }
+                            }
+                        }
+
+                        if (newScene.camera[objectTypes[oti]][i].onCreated)
+                        {
+                            newScene.camera[objectTypes[oti]][i].onCreated();
+                        }
                     }
+                    log.verbose("Number of "+objectTypes[oti]+" in scene:"+count);
+
                 }
                 else
                 {
@@ -268,9 +272,29 @@
                 {
                     wgl.renderCamera(activeScene.camera,objectTypes[oti])
 
-                    for (var i=0;i<activeScene.camera[objectTypes[oti]].length;++i)
+                    for (var i in activeScene.camera[objectTypes[oti]])
                     {
-                        wgl.renderObj(activeScene.camera[objectTypes[oti]][i]);
+                        var obj = activeScene.camera[objectTypes[oti]][i];
+                        if (obj.animations)
+                        {
+                            for (var animIndex in obj.animations)
+                            {
+                                var anim = obj.animations[animIndex];
+                                if (anim.active)
+                                {
+                                    var ret = anim.onUpdateAnimation(new Date().getTime() - anim.startTime);
+                                    if (ret)
+                                    {
+                                        anim.active = false;
+                                        if (anim.onEndAnimation)
+                                        {
+                                            anim.onEndAnimation();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        wgl.renderObj(obj);
                     }
                 }
             }

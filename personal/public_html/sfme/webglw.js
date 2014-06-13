@@ -193,7 +193,7 @@
                 if (obj.material.textureObject && obj.material.textureObject.ready)
                 {
                     gl.activeTexture(gl.TEXTURE0);
-                    gl.bindTexture(gl.TEXTURE_2D, obj.material.textureObject);
+                    gl.bindTexture(gl.TEXTURE_2D, obj.material.textureObject.texture);
                 }
                 gl.uniform1i(shaderProgram.samplerUniform, 0);
             }

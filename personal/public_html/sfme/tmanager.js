@@ -32,7 +32,7 @@
                     tObject.texture.image.onload = function ()
                     {
                         wgl.handleLoadedTexture(tObject.texture,tObject.texture.image);
-                        tObject.texture.ready = true;
+                        tObject.ready = true;
                         resolve(tObject);
                     };
                     tObject.texture.image.onerror = function()
@@ -69,7 +69,7 @@
                     ctx.restore();
 
                     wgl.handleLoadedTexture(tObject.texture,tObject.canvas);
-                    tObject.texture.ready = true;
+                    tObject.ready = true;
                     resolve(tObject);                    
                 });
                 return pr;
@@ -100,20 +100,7 @@
             ctx.strokeText(tDef.text, tDef.textPosition[0], tDef.textPosition[1]);
         }
     }
-    
-    function getTexture(resourceObject,obj)
-    {
-        var id = obj.material.texture;
-        for (var i=0;i<resourceObject.textures.length;++i)
-        {
-            if (resourceObject.textures[i].id === id)
-            {
-                obj.material.textureObject = resourceObject.textures[i].texture;
-            }
-        }
-    }
-    this.getTexture = getTexture;
-    
+        
     function getDummyTexture(obj)
     {
         obj.material.textureObject = dummyTextureDefinition.texture;

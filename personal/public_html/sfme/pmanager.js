@@ -37,8 +37,8 @@
                 {
                     tempModule.programLogic = args;
                     scnManager.defineScenes(tempModule.programDir+"/",args);
-                    var nsid = tempModule.programLogic.nextScene();
-                    scnManager.setActiveScene(scnManager.sceneById(tempModule.programLogic,nsid));
+                    var ns = tempModule.programLogic.nextScene();
+                    scnManager.setActiveScene(ns);
                 };
                 
                 this_.modules.push(tempModule);

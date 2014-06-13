@@ -37,8 +37,6 @@
                 {
                     tempModule.programLogic = args;
                     scnManager.defineScenes(tempModule.programDir+"/",args);
-                    var ns = tempModule.programLogic.nextScene();
-                    scnManager.setActiveScene(ns);
                 };
                 
                 this_.modules.push(tempModule);

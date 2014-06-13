@@ -62,13 +62,13 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                         onUpdateAnimation: function(timePassed)
                                         {
                                             var t = timePassed / this.animTime;
-                                            console.log(t);
                                             this.parentObject.material.alpha = t;
                                             return t > 1.0;
                                         },
                                         onEndAnimation: function()
                                         {
                                             this.parentObject.material.alpha = 1.0;
+                                            this.parentObject.parentScene.finishScene();
                                         }
                                     }
                                 },

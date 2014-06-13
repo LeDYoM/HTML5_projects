@@ -166,9 +166,11 @@
         }
     }
     this.setActiveScene = setActiveScene;
+    var scenesObject = null;
     
-    function defineScenes(baseDir,scenesObject)
+    function defineScenes(baseDir,scenesObject_)
     {
+        scenesObject = scenesObject_;
         if (scenesObject.scenes)
         {
             for (var scene in scenesObject.scenes)
@@ -187,7 +189,6 @@
     {
         var newScene = sceneDefinition;
 
-        // TODO: Generate sceneId.
         newScene.ready = false;
 
         if (newScene.resources)
@@ -256,6 +257,12 @@
         }
 
         newScene.backgroundColor = newScene.backgroundColor || [0.0, 0.0, 0.0, 1.0];
+
+        newScene.finishScene = function()
+        {
+            activeScene = null;
+        }
+
         subscribeScene2Listeners(newScene);
     }
     this.defineScene = defineScene;
@@ -297,6 +304,14 @@
                         wgl.renderObj(obj);
                     }
                 }
+            }
+        }
+        else
+        {
+            if (scenesObject)
+            {
+                var ns = scenesObject.nextScene();
+                setActiveScene(ns);
             }
         }
     }

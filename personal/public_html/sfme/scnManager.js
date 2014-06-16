@@ -48,6 +48,7 @@
         var vertex = [];
         if (obj.shapeType)
         {
+            obj.renderMode = wgl.getRenderModeForObject(obj);
             switch (obj.shapeType)
             {
                 case "triangle_normal":
@@ -65,6 +66,15 @@
                     vertex=vertex.concat(_.scale3v([1.0,-1.0,0.0],[w/2,h/2,0.0]));
                     vertex=vertex.concat(_.scale3v([-1.0,-1.0,0.0],[w/2,h/2,0.0]));
                     break;
+                case "cube":
+                    var w = obj.width || 1.0;
+                    var h = obj.height || 1.0;
+                    vertex=vertex.concat(_.scale3v([1.0,1.0,0.0],[w/2,h/2,0.0]));
+                    vertex=vertex.concat(_.scale3v([-1.0,1.0,0.0],[w/2,h/2,0.0]));
+                    vertex=vertex.concat(_.scale3v([1.0,-1.0,0.0],[w/2,h/2,0.0]));
+                    vertex=vertex.concat(_.scale3v([-1.0,-1.0,0.0],[w/2,h/2,0.0]));
+                    break;
+
             }
             obj.vertex = vertex;
         }
@@ -108,55 +118,8 @@
             tManager.getDummyTexture(obj);
         }
         obj.material.alpha = obj.material.alpha || 1.0;
-        subscribeObject2Listeners(obj);
     }
-    
-    function subscribe2Listeners(baseName,obj)
-    {
-        if (obj.id)
-        {
-            var count = 0;
-            for (var property in obj)
-            {
-                if (property.indexOf("on") === 0)
-                {
-                    count++;
-                    var eventName = baseName + "." + property.substr(2);
-                    eManager.subscribe(eventName,obj[property]);
-                }
-            }
-            log.debug("Subscribed object "+obj.id+" to "+count+" events");
-        }
-        else
-        {
-            log.error(" Trying to subscribe in object without id");
-        }
-    }
- 
-    function subscribeObject2Listeners(obj)
-    {
-        subscribe2Listeners(obj.parentScene.id,obj);
-    }   
-    function subscribeScene2Listeners(scene)
-    {
-        subscribe2Listeners("",scene);
-    }
-    
-    function launchEvent(baseName,eventName,data)
-    {
-        eManager.launchEvent(baseName+"."+eventName,data);
-    }
-    
-    function launchObjectEvent(scene,eventName,data)
-    {
-        launchEvent(scene.id,eventName,data);
-    }
-    
-    function launchSceneEvent(eventName,data)
-    {
-        launchEvent("",eventName,data);
-    }
-        
+
     function setActiveScene(scene)
     {
         activeScene = scene;
@@ -261,9 +224,8 @@
         newScene.finishScene = function()
         {
             activeScene = null;
-        }
+        };
 
-        subscribeScene2Listeners(newScene);
     }
     this.defineScene = defineScene;
 

@@ -202,13 +202,31 @@
             gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
             gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
 
-            gl.drawArrays(gl.TRIANGLE_STRIP, 0, obj.vertexPositionBuffer.numItems);
+            gl.drawArrays(obj.renderMode, 0, obj.vertexPositionBuffer.numItems);
             gl.bindTexture(gl.TEXTURE_2D, null);
             
             mvPopMatrix();
         }
     }
     this.renderObj = renderObj;
+    
+    function getRenderModeForObject(obj)
+    {
+            switch (obj.shapeType)
+            {
+                case "triangle_normal":
+                    return gl.TRIANGLE_STRIP;
+                    break;
+                case "quad_normal":
+                    return gl.TRIANGLE_STRIP;
+                    break;
+                case "cube":
+                    return gl.TRIANGLE_STRIP;
+                    break;
+
+            }
+    }
+    this.getRenderModeForObject = getRenderModeForObject;
 
     var mvMatrixStack = [];
     function mvPushMatrix() {
@@ -237,20 +255,18 @@
         switch (typeRender)
         {
             case "objects3d":
-                switch (cameraObject.type)
+                if (cameraObject.ratio === "normal")
                 {
-                    case "perspective":
-                        if (cameraObject.ratio === "normal")
-                        {
-                            cameraObject.realRatio = gl.viewportWidth / gl.viewportHeight;
-                        }
-                        else
-                        {
-                            cameraObject.realRatio = cameraObject.ratio;
-                        }
-                        mat4.perspective(cameraObject.angle, cameraObject.realRatio, cameraObject.zNear, cameraObject.zFar, pMatrix);
-                        //mat4.ortho(-1,1,-1,1,cameraObject.zNear,cameraObject.zFar, pMatrix);
-                        break;
+                    cameraObject.realRatio = gl.viewportWidth / gl.viewportHeight;
+                }
+                else
+                {
+                    cameraObject.realRatio = cameraObject.ratio;
+                }
+                mat4.perspective(cameraObject.angle, cameraObject.realRatio, cameraObject.zNear, cameraObject.zFar, pMatrix);
+                if (cameraObject.lookAt)
+                {
+                    mat4.lookAt(cameraObject.lookAt.eye,cameraObject.lookAt.center,cameraObject.lookAt.vUp,mvMatrix);
                 }
                 break;
             case "objects2d":
@@ -259,7 +275,6 @@
                 break;
         }
 
-        mat4.identity(mvMatrix);
     }
     this.renderCamera = renderCamera;
 

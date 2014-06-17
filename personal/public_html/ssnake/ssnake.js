@@ -122,9 +122,9 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                         objects3d: {
                             quad: {
                                 shapeType: "cube",
-                                width: 80.0,
-                                height: 40.0,
-                                position: [0.0, 0.0, -77.0],
+                                width: 1.0,
+                                height: 1.0,
+                                position: [0.0, 0.0, -7.0],
 
                                 material: {
                                     name: "textured",

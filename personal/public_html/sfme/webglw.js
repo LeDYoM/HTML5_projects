@@ -124,6 +124,15 @@
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(obj_.material.colors), gl.STATIC_DRAW);
         obj_.vertexColorBuffer.itemSize = 4;
         obj_.vertexColorBuffer.numItems = obj_.numVertex;
+        
+        if (obj_.vertexIndices)
+        {
+            obj_.cubeVertexIndexBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj_.cubeVertexIndexBuffer);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(obj_.vertexIndices), gl.STATIC_DRAW);
+            obj_.cubeVertexIndexBuffer.itemSize = 1;
+            obj_.cubeVertexIndexBuffer.numItems = 36;
+        }
 
         if (obj_.material.textureCoords)
         {
@@ -189,11 +198,21 @@
                 gl.uniform1i(shaderProgram.samplerUniform, 0);
             }
 
-            gl.uniform1f(shaderProgram.alphaUniform, obj.material.alpha);
-            gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
-            gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
-
-            gl.drawArrays(obj.renderMode, 0, obj.vertexPositionBuffer.numItems);
+            if (obj.cubeVertexIndexBuffer)
+            {
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.cubeVertexIndexBuffer);
+                gl.uniform1f(shaderProgram.alphaUniform, obj.material.alpha);
+                gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+                gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+                gl.drawElements(gl.TRIANGLES, obj.cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);               
+            }
+            else
+            {
+                gl.uniform1f(shaderProgram.alphaUniform, obj.material.alpha);
+                gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+                gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+                gl.drawArrays(obj.renderMode, 0, obj.vertexPositionBuffer.numItems);
+            }
             gl.bindTexture(gl.TEXTURE_2D, null);
             
             mvPopMatrix();

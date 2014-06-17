@@ -54,27 +54,27 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                 },
                                 animations: {
                                     showText: {
-                                        animTime: 500,
+                                        animTime: 5000,
                                         onStartAnimation: function()
                                         {
                                             
                                         },
-                                        onUpdateAnimation: function(timePassed)
+                                        onUpdateAnimation: function(parentObject,timePassed)
                                         {
                                             var t = timePassed / this.animTime;
-                                            this.parentObject.material.alpha = t;
+                                            parentObject.material.alpha = t;
                                             return t > 1.0;
                                         },
-                                        onEndAnimation: function()
+                                        onEndAnimation: function(parentObject)
                                         {
-                                            this.parentObject.material.alpha = 1.0;
-                                            this.parentObject.parentScene.finishScene();
+                                            parentObject.material.alpha = 1.0;
+                                            parentObject.parentScene.finishScene();
                                         }
                                     }
                                 },
                                 onCreated: function()
                                 {
-                                    this.material.textureObject = this.parentScene.resources.textures.testtext;
+                                    this.material.texture = this.parentScene.resources.textures.testtext;
                                 }
                             }
                         }
@@ -124,51 +124,75 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                 shapeType: "cube",
                                 width: 80.0,
                                 height: 40.0,
-                                position: [0.0, 0.0, -37.0],
+                                position: [0.0, 0.0, -77.0],
+
                                 material: {
-//                                    blending: true,
-//                                    alpha: 1.0,
                                     name: "textured",
-                                    textureMode: "attach",
-                                    color: [1.0, 1.0, 1.0, 1.0],
-                                },
-                                animations: {
-                                    showText: {
-                                        animTime: 5000,
-                                        onStartAnimation: function()
-                                        {
-                                            
-                                        },
-                                        onUpdateAnimation: function(timePassed)
-                                        {
-                                            var t = timePassed / this.animTime;
-                                            this.parentObject.material.alpha = t;
-                                            return t > 1.0;
-                                        },
-                                        onEndAnimation: function()
-                                        {
-                                            this.parentObject.material.alpha = 1.0;
-                                            this.parentObject.parentScene.finishScene();
-                                        }
-                                    }
-                                },
-                                onCreated: function()
-                                {
-                                    this.material.textureObject = this.parentScene.resources.textures.testtext;
+                                    textureMode: "ignore",
+                                    color: [1.0, 0.0, 0.0, 1.0]
                                 }
                             }
                         }
                     },
-                    backgroundColor: [0.0, 0.0, 0.0, 1.0],
+                    backgroundColor: [0.0, 1.0, 0.0, 1.0],
                     onStart: function()
                     {
                         console.log("Started");
+                    },
+                    inputController: 
+                    {
+                        delta:0.5,
+                        onKeyDown: function(parentObject,e)
+                        {
+                            if (e.keyCode === 65)
+                            {
+                                parentObject.camera.lookAt.eye[0] -= this.delta;
+                            } else if (e.keyCode === 68)
+                            {
+                                parentObject.camera.lookAt.eye[0] += this.delta;
+                            } else if (e.keyCode === 87)
+                            {
+                                parentObject.camera.lookAt.eye[1] += this.delta;
+                            } else if (e.keyCode === 83)
+                            {
+                                parentObject.camera.lookAt.eye[1] -= this.delta;
+                            } else if (e.keyCode === 81)
+                            {
+                                parentObject.camera.lookAt.eye[2] += this.delta;
+                            } else if (e.keyCode === 90)
+                            {
+                                parentObject.camera.lookAt.eye[2] -= this.delta;
+                            } else if (e.keyCode === 70)
+                            {
+                                parentObject.camera.lookAt.center[0] -= this.delta;
+                            } else if (e.keyCode === 72)
+                            {
+                                parentObject.camera.lookAt.center[0] += this.delta;
+                            } else if (e.keyCode === 84)
+                            {
+                                parentObject.camera.lookAt.center[1] += this.delta;
+                            } else if (e.keyCode === 71)
+                            {
+                                parentObject.camera.lookAt.center[1] -= this.delta;
+                            } else if (e.keyCode === 82)
+                            {
+                                parentObject.camera.lookAt.center[2] += this.delta;
+                            } else if (e.keyCode === 86)
+                            {
+                                parentObject.camera.lookAt.center[2] -= this.delta;
+                            }
+                            console.log("eye:"+parentObject.camera.lookAt.eye[0]+","+parentObject.camera.lookAt.eye[1]+","+parentObject.camera.lookAt.eye[2]);
+                            console.log("center:"+parentObject.camera.lookAt.center[0]+","+parentObject.camera.lookAt.center[1]+","+parentObject.camera.lookAt.center[2]);
+
+                        }
                     }
                 }
             },
             state: "init",
             nextScene: function()
             {
+                return this.scenes.game;
+
                 switch (this.state)
                 {
                     case "init":

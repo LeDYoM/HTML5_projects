@@ -7,6 +7,7 @@
     var scnManager =cns("sfme.internals.sceneManager");
     var tManager = cns("sfme.internals.textureManager");
     var eManager = cns("sfme.internal.eventManager");
+    var iManager = cns("sfme.internal.inputManager");
 
     this.ready = false;
    
@@ -26,6 +27,7 @@
             log.verbose("Error in options.container:"+options.container);
         }
         
+        iManager.init();
         eManager.init();
         scnManager.init();
         tManager.init();
@@ -42,8 +44,8 @@
 
     function updateFrame()
     {
-        scnManager.renderScene();
-        wgl.endRender();
+        scnManager.updateFrame();
+        iManager.clearInputBuffers();
         
         startFrameLoop();
     }

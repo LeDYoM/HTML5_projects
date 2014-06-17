@@ -54,7 +54,6 @@
             {
                 if (glActive)
                 {
-                    gl.clearColor(1.0, 0.0, 0.0, 1.0);
                     gl.enable(gl.DEPTH_TEST);
                     resolve();
                 }
@@ -92,15 +91,7 @@
 
         webGLStart();
     };
-
-    function updateFrame()
-    {
-        startRender();
-        scnManager.renderScene();
-        endRender();
-    }
-    this.updateFrame = updateFrame;
-    
+   
     function createCanvas(parent,id_,w_,h_)
     {
         var temp = document.createElement("canvas");
@@ -190,10 +181,10 @@
             {
                 gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexTextureCoordBuffer);
                 gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, obj.vertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
-                if (obj.material.textureObject && obj.material.textureObject.ready)
+                if (obj.material.texture.ready)
                 {
                     gl.activeTexture(gl.TEXTURE0);
-                    gl.bindTexture(gl.TEXTURE_2D, obj.material.textureObject.texture);
+                    gl.bindTexture(gl.TEXTURE_2D, obj.material.texture.textureObject);
                 }
                 gl.uniform1i(shaderProgram.samplerUniform, 0);
             }
@@ -245,8 +236,8 @@
     function startRender(backgroundColor)
     {
         gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.clearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     }
     this.startRender = startRender;
     

@@ -24,23 +24,23 @@
         switch (type)
         {
             case "image":
-                tObject.texture = wgl.createTexture();
-                tObject.texture.image = new Image();
+                tObject.textureObject = wgl.createTexture();
+                tObject.image = new Image();
 
                 pr = new Promise(function(resolve,reject)
                 {
-                    tObject.texture.image.onload = function ()
+                    tObject.image.onload = function ()
                     {
-                        wgl.handleLoadedTexture(tObject.texture,tObject.texture.image);
+                        wgl.handleLoadedTexture(tObject.textureObject,tObject.image);
                         tObject.ready = true;
                         resolve(tObject);
                     };
-                    tObject.texture.image.onerror = function()
+                    tObject.image.onerror = function()
                     {
                         reject();
                     };
                 });
-                tObject.texture.image.src = baseDir + tObject.src;
+                tObject.image.src = baseDir + tObject.src;
                 return pr;
                 break;
             case "text":
@@ -52,7 +52,7 @@
                     var ctx = tObject.context;
                     tObject.canvas.width = tObject.width || 1;
                     tObject.canvas.height = tObject.height || 1;
-                    tObject.texture = wgl.createTexture();
+                    tObject.textureObject = wgl.createTexture();
                     ctx.save();
 
                     if (!tObject.backgroundColor)
@@ -68,7 +68,7 @@
                     }
                     ctx.restore();
 
-                    wgl.handleLoadedTexture(tObject.texture,tObject.canvas);
+                    wgl.handleLoadedTexture(tObject.textureObject,tObject.canvas);
                     tObject.ready = true;
                     resolve(tObject);                    
                 });
@@ -103,7 +103,7 @@
         
     function getDummyTexture(obj)
     {
-        obj.material.textureObject = dummyTextureDefinition.texture;
+        obj.material.texture = dummyTextureDefinition;
     }
     this.getDummyTexture = getDummyTexture;
 }

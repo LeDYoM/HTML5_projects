@@ -8,6 +8,7 @@
     var log = cns("sfme.log");
     var _ = cns("sfme.types");
     var eManager = cns("sfme.internal.eventManager");
+    var iManager = cns("sfme.internal.inputManager");
 
     var activeScene = null;
     var objectTypes = ["objects3d", "objects2d"];
@@ -147,6 +148,31 @@
         }
     }
     this.defineScenes = defineScenes;
+    
+    function defineSubObjects(obj)
+    {
+        if (obj.animations)
+        {
+            for (var animIndex in obj.animations)
+            {
+                var anim = obj.animations[animIndex];
+                anim.active = false;
+                anim.StartAnimation = function()
+                {
+                    anim.active = true;
+                    anim.startTime = new Date().getTime();
+                    if (anim.onStartAnimation)
+                    {
+                        anim.onStartAnimation(obj);
+                    }
+                }
+            }
+        }
+        if (obj.onCreated)
+        {
+            obj.onCreated();
+        }
+    }
    
     function defineScene(baseDir,sceneDefinition)
     {
@@ -185,25 +211,7 @@
                         count++;
                         var obj = newScene.camera[objectTypes[oti]][i];
                         createObject(newScene,newScene.resources,obj);
-                        if (obj.animations)
-                        {
-                            for (var animIndex in obj.animations)
-                            {
-                                var anim = obj.animations[animIndex];
-                                anim.parentObject = obj;
-                                anim.active = false;
-                                anim.StartAnimation = function()
-                                {
-                                    anim.active = true;
-                                    anim.startTime = new Date().getTime();
-                                }
-                            }
-                        }
-
-                        if (newScene.camera[objectTypes[oti]][i].onCreated)
-                        {
-                            newScene.camera[objectTypes[oti]][i].onCreated();
-                        }
+                        defineSubObjects(obj);
                     }
                     log.verbose("Number of "+objectTypes[oti]+" in scene:"+count);
 
@@ -229,44 +237,36 @@
     }
     this.defineScene = defineScene;
 
-    function renderScene()
+    function processEventsAnimations(obj)
     {
-        if (activeScene)
+        iManager.processObject(obj);
+        if (obj.animations)
         {
-            wgl.startRender(activeScene.backgroundColor);
-            
-            for (var oti=0;oti<objectTypes.length;++oti)
+            for (var animIndex in obj.animations)
             {
-                if (activeScene.camera[objectTypes[oti]])
+                var anim = obj.animations[animIndex];
+                if (anim.active)
                 {
-                    wgl.renderCamera(activeScene.camera,objectTypes[oti])
-
-                    for (var i in activeScene.camera[objectTypes[oti]])
+                    var ret = anim.onUpdateAnimation(obj,new Date().getTime() - anim.startTime);
+                    if (ret)
                     {
-                        var obj = activeScene.camera[objectTypes[oti]][i];
-                        if (obj.animations)
+                        anim.active = false;
+                        if (anim.onEndAnimation)
                         {
-                            for (var animIndex in obj.animations)
-                            {
-                                var anim = obj.animations[animIndex];
-                                if (anim.active)
-                                {
-                                    var ret = anim.onUpdateAnimation(new Date().getTime() - anim.startTime);
-                                    if (ret)
-                                    {
-                                        anim.active = false;
-                                        if (anim.onEndAnimation)
-                                        {
-                                            anim.onEndAnimation();
-                                        }
-                                    }
-                                }
-                            }
+                            anim.onEndAnimation(obj);
                         }
-                        wgl.renderObj(obj);
                     }
                 }
             }
+        }       
+    }
+
+    function updateFrame()
+    {
+        if (activeScene)
+        {
+            renderScene(activeScene);
+            wgl.endRender();
         }
         else
         {
@@ -274,6 +274,32 @@
             {
                 var ns = scenesObject.nextScene();
                 setActiveScene(ns);
+            }
+        }
+    }
+    this.updateFrame = updateFrame;
+    
+    function renderScene(activeScene)
+    {
+        if (activeScene)
+        {
+            processEventsAnimations(activeScene);
+            wgl.startRender(activeScene.backgroundColor);
+            
+            for (var oti=0;oti<objectTypes.length;++oti)
+            {
+                if (activeScene.camera[objectTypes[oti]])
+                {
+                    processEventsAnimations(activeScene.camera);
+                    wgl.renderCamera(activeScene.camera,objectTypes[oti])
+
+                    for (var i in activeScene.camera[objectTypes[oti]])
+                    {
+                        var obj = activeScene.camera[objectTypes[oti]][i];
+                        processEventsAnimations(obj);
+                        wgl.renderObj(obj);
+                    }
+                }
             }
         }
     }

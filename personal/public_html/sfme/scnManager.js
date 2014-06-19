@@ -1,13 +1,12 @@
 (function()
 {
     "use strict";
-    var this_ = this;
     var ready = false;
     var wgl = cns("sfme.internals.webgl");
     var tManager = cns("sfme.internals.textureManager");
     var log = cns("sfme.log");
     var _ = cns("sfme.types");
-    var eManager = cns("sfme.internal.eventManager");
+//    var eManager = cns("sfme.internal.eventManager");
     var iManager = cns("sfme.internal.inputManager");
 
     var activeScene = null;
@@ -18,14 +17,49 @@
         ready = true;
     };
     
+    function createsfmeObject(obj)
+    {
+        (function()
+        {
+            this.setPosition = function(v)
+            {
+                this.position=v;
+            };
+            this.setScale = function(v)
+            {
+                this.scale=v;
+            };
+            this.setScaleX = function(v)
+            {
+                this.scale[0]=v;
+            };
+            this.setScaleY = function(v)
+            {
+                this.scale[1]=v;
+            };
+            this.setScaleZ = function(v)
+            {
+                this.scale[2]=v;
+            };
+            this.calculateBoundingBox = function()
+            {
+                updateTransformedBoundBox(this,wgl.getModelViewMatrix());
+            }
+            this.setLeftPosition = function(v)
+            {
+                this.position[0] = this.transormedBoundingBox.downLeftFront[0];
+            }
+        }).apply(obj);
+    }
+
     function updateBoundingBox(object)
     {
-        var downLeftFront = [];
-        var topRightFar = [];
+        var downLeftFront = vec3.create();
+        var topRightFar = vec3.create();
         
-        for (var i=0;i<object.vertex.length;++i)
+        for (var i=0;i<object.vertexArray.length;++i)
         {
-            var v=object.vertex[i];
+            var v=object.vertexArray[i];
             for (var j=0;j<3;++j)
             {
                 if (i===0 || v[j] < downLeftFront[j])
@@ -35,21 +69,59 @@
                 if (i===0 || v[j] > topRightFar[j])
                 {
                     topRightFar[j]=v[j];
-                }               
+                }
             }
         }
         object.boundingBox = {};
         object.boundingBox.downLeftFront = downLeftFront;
         object.boundingBox.topRightFar = topRightFar;
     }
-   
+    
+    function updateTransformedBoundBox(object,mvMatrix)
+    {
+        var downLeftFront = vec3.create();
+        var topRightFar = vec3.create();
+        
+        for (var i=0;i<object.vertexArray.length;++i)
+        {
+            var v=object.vertexArray[i];
+            mat4.multiplyVec3(mvMatrix,v);
+            for (var j=0;j<3;++j)
+            {
+                if (i===0 || v[j] < downLeftFront[j])
+                {
+                    downLeftFront[j]=v[j];
+                }
+                if (i===0 || v[j] > topRightFar[j])
+                {
+                    topRightFar[j]=v[j];
+                }
+            }
+        }
+        object.TransformedBoundingBox = {};
+        object.TransformedBoundingBox.downLeftFront = downLeftFront;
+        object.TransformedBoundingBox.topRightFar = topRightFar;
+    }
+
+    function createVertexArray(obj)
+    {
+        obj.vertexArray = [];
+        for (var i=0;i<obj.vertex.length;i+=3)
+        {
+            var v=vec3.create();
+            v[0]=obj.vertex[i];
+            v[1]=obj.vertex[i+1];
+            v[2]=obj.vertex[i+2];
+            obj.vertexArray.push(v);
+        }
+    }
     function createObject(parentScene_,resourceObject,obj)
     {
         obj.parentScene = parentScene_;
         var vertex = [];
+        var vertexIndices = [];
         if (obj.shapeType)
         {
-            obj.renderMode = wgl.getRenderModeForObject(obj);
             switch (obj.shapeType)
             {
                 case "triangle_normal":
@@ -58,14 +130,16 @@
                     vertex=vertex.concat(_.scale1([0.0,1.0,0.0],h/2));
                     vertex=vertex.concat(_.scale3v([-1.0,-1.0,0.0],[w/2,h/2,0.0]));
                     vertex=vertex.concat(_.scale3v([1.0,-1.0,0.0],[w/2,h/2,0.0]));
+                    vertexIndices = [0, 1, 2];
                     break;
                 case "quad_normal":
                     var w = obj.width || 1.0;
                     var h = obj.height || 1.0;
+                    vertex=vertex.concat(_.scale3v([-1.0,-1.0,0.0],[w/2,h/2,0.0]));
+                    vertex=vertex.concat(_.scale3v([1.0,-1.0,0.0],[w/2,h/2,0.0]));
                     vertex=vertex.concat(_.scale3v([1.0,1.0,0.0],[w/2,h/2,0.0]));
                     vertex=vertex.concat(_.scale3v([-1.0,1.0,0.0],[w/2,h/2,0.0]));
-                    vertex=vertex.concat(_.scale3v([1.0,-1.0,0.0],[w/2,h/2,0.0]));
-                    vertex=vertex.concat(_.scale3v([-1.0,-1.0,0.0],[w/2,h/2,0.0]));
+                    vertexIndices = [0, 1, 2, 0,2,3];
                     break;
                 case "cube":
                     var w = obj.width || 1.0;
@@ -103,7 +177,7 @@
                     vertex=vertex.concat(_.scale3v([-1.0,1.0,1.0],[w/2,h/2,p/2]));
                     vertex=vertex.concat(_.scale3v([-1.0,1.0,-1.0],[w/2,h/2,p/2]));
 
-                    obj.vertexIndices = [
+                    vertexIndices = [
                         0, 1, 2,      0, 2, 3,    // Front face
                         4, 5, 6,      4, 6, 7,    // Back face
                         8, 9, 10,     8, 10, 11,  // Top face
@@ -114,8 +188,11 @@
                     break;
             }
             obj.vertex = vertex;
+            obj.vertexIndices = vertexIndices;
+            obj.numIndices = obj.vertexIndices.length;
         }
         obj.numVertex = Math.floor(obj.vertex.length / 3);
+        createVertexArray(obj);
         updateBoundingBox(obj);
 
         obj.material.textureMode = obj.material.textureMode || "ignore";
@@ -124,10 +201,15 @@
         {
             case "attach":
                 textureCoords = [
+          0.0, 0.0,
+          1.0, 0.0,
+          1.0, 1.0,
+          0.0, 1.0
+/*
                     1.0, 0.0,
                     0.0, 0.0,
                     1.0, 1.0,
-                    0.0, 1.0
+                    0.0, 1.0*/
                 ];
                 break;
             case "ignore":
@@ -155,6 +237,7 @@
             tManager.getDummyTexture(obj);
         }
         obj.material.alpha = obj.material.alpha || 1.0;
+        createsfmeObject(obj);
     }
 
     function setActiveScene(scene)
@@ -273,7 +356,7 @@
     }
     this.defineScene = defineScene;
 
-    function processEventsAnimations(obj)
+    function processEventsAnimations(obj,globalTiming)
     {
         iManager.processObject(obj);
         if (obj.animations)
@@ -283,7 +366,7 @@
                 var anim = obj.animations[animIndex];
                 if (anim.active)
                 {
-                    var ret = anim.onUpdateAnimation(obj,new Date().getTime() - anim.startTime);
+                    var ret = anim.onUpdateAnimation(obj,globalTiming.currentTime - anim.startTime);
                     if (ret)
                     {
                         anim.active = false;
@@ -294,14 +377,18 @@
                     }
                 }
             }
-        }       
+        }
+        if (obj.onUpdate)
+        {
+            obj.onUpdate(globalTiming);
+        }
     }
 
-    function updateFrame()
+    function updateFrame(globalTiming)
     {
         if (activeScene)
         {
-            renderScene(activeScene);
+            renderScene(activeScene,globalTiming);
             wgl.endRender();
         }
         else
@@ -315,24 +402,24 @@
     }
     this.updateFrame = updateFrame;
     
-    function renderScene(activeScene)
+    function renderScene(activeScene,globalTiming)
     {
         if (activeScene)
         {
-            processEventsAnimations(activeScene);
+            processEventsAnimations(activeScene,globalTiming);
             wgl.startRender(activeScene.backgroundColor);
             
             for (var oti=0;oti<objectTypes.length;++oti)
             {
                 if (activeScene.camera[objectTypes[oti]])
                 {
-                    processEventsAnimations(activeScene.camera);
+                    processEventsAnimations(activeScene.camera,globalTiming);
                     wgl.renderCamera(activeScene.camera,objectTypes[oti])
 
                     for (var i in activeScene.camera[objectTypes[oti]])
                     {
                         var obj = activeScene.camera[objectTypes[oti]][i];
-                        processEventsAnimations(obj);
+                        processEventsAnimations(obj,globalTiming);
                         wgl.renderObj(obj);
                     }
                 }

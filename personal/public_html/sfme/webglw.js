@@ -68,6 +68,7 @@
     function handleLoadedTexture(texture,data)
     {
         gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, data);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
@@ -127,11 +128,11 @@
         
         if (obj_.vertexIndices)
         {
-            obj_.cubeVertexIndexBuffer = gl.createBuffer();
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj_.cubeVertexIndexBuffer);
+            obj_.vertexIndexBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj_.vertexIndexBuffer);
             gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(obj_.vertexIndices), gl.STATIC_DRAW);
-            obj_.cubeVertexIndexBuffer.itemSize = 1;
-            obj_.cubeVertexIndexBuffer.numItems = 36;
+            obj_.vertexIndexBuffer.itemSize = 1;
+            obj_.vertexIndexBuffer.numItems = obj_.numIndices;
         }
 
         if (obj_.material.textureCoords)
@@ -159,6 +160,12 @@
             gl.enable(gl.DEPTH_TEST);            
         }
     }
+    
+    function getModelViewMatrix()
+    {
+        return mvMatrix;
+    }
+    this.getModelViewMatrix = getModelViewMatrix;
 
     function renderObj(obj)
     {
@@ -169,6 +176,10 @@
             if (obj.position)
             {
                 mat4.translate(mvMatrix, obj.position);
+            }
+            if (obj.scale)
+            {
+                mat4.scale(mvMatrix, obj.scale);
             }
             var shaderProgram = sManager.getShader(obj.material.name);
             
@@ -198,45 +209,25 @@
                 gl.uniform1i(shaderProgram.samplerUniform, 0);
             }
 
-            if (obj.cubeVertexIndexBuffer)
+            gl.uniform1f(shaderProgram.alphaUniform, obj.material.alpha);
+            gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+            gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+
+            if (obj.vertexIndexBuffer)
             {
-                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.cubeVertexIndexBuffer);
-                gl.uniform1f(shaderProgram.alphaUniform, obj.material.alpha);
-                gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
-                gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
-                gl.drawElements(gl.TRIANGLES, obj.cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);               
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.vertexIndexBuffer);
+                gl.drawElements(gl.TRIANGLES, obj.vertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);               
             }
             else
             {
-                gl.uniform1f(shaderProgram.alphaUniform, obj.material.alpha);
-                gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
-                gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
-                gl.drawArrays(obj.renderMode, 0, obj.vertexPositionBuffer.numItems);
+                gl.drawArrays(obj.TRIANGLES, 0, obj.vertexPositionBuffer.numItems);
             }
             gl.bindTexture(gl.TEXTURE_2D, null);
             
             mvPopMatrix();
         }
     }
-    this.renderObj = renderObj;
-    
-    function getRenderModeForObject(obj)
-    {
-            switch (obj.shapeType)
-            {
-                case "triangle_normal":
-                    return gl.TRIANGLE_STRIP;
-                    break;
-                case "quad_normal":
-                    return gl.TRIANGLE_STRIP;
-                    break;
-                case "cube":
-                    return gl.TRIANGLE_STRIP;
-                    break;
-
-            }
-    }
-    this.getRenderModeForObject = getRenderModeForObject;
+    this.renderObj = renderObj;   
 
     var mvMatrixStack = [];
     function mvPushMatrix() {

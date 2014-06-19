@@ -36,15 +36,25 @@
         pManager.loadProgram("ssnake","ssnake.json");
         
         this.ready = true;
+        startTime = new Date().getTime();
         
         startFrameLoop();
     };
     
     var requestId = 0;
+    var globalTiming = {
+        startTime:0,
+        lastFrame:0,
+        ellapsed:0,
+        currentTime:0
+    }
 
     function updateFrame()
     {
-        scnManager.updateFrame();
+        globalTiming.currentTime = new Date().getTime();
+        globalTiming.ellapsed = globalTiming.currentTime - globalTiming.lastFrame;
+        globalTiming.lastFrame = globalTiming.currentTime;
+        scnManager.updateFrame(globalTiming);
         iManager.clearInputBuffers();
         
         startFrameLoop();

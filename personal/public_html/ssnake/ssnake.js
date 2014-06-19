@@ -125,11 +125,18 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                 width: 1.0,
                                 height: 1.0,
                                 position: [0.0, 0.0, -7.0],
+                                scale: [1.0,1.0,1.0],
 
                                 material: {
                                     name: "textured",
                                     textureMode: "ignore",
                                     color: [1.0, 0.0, 0.0, 1.0]
+                                },
+                                onUpdate: function(globalTiming)
+                                {
+                                    this.scale[0] *= globalTiming.ellapsed / 16;
+                                    this.calculateBoundingBox();
+                                    console.log("Updating. "+globalTiming.currentTime+" "+globalTiming.ellapsed);
                                 }
                             }
                         }

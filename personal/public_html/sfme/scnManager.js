@@ -8,6 +8,7 @@
     var _ = cns("sfme.types");
 //    var eManager = cns("sfme.internal.eventManager");
     var iManager = cns("sfme.internal.inputManager");
+    var utils = cns("sfme.utils");
 
     var activeScene = null;
     var objectTypes = ["objects3d", "objects2d"];
@@ -41,80 +42,96 @@
             {
                 this.scale[2]=v;
             };
-            this.calculateBoundingBox = function()
+            this.updateMvMatrixForObject = function()
             {
-                updateTransformedBoundBox(this,wgl.getModelViewMatrix());
-            }
-            this.setLeftPosition = function(v)
+                if (!this.mvMatrix)
+                {
+                    this.mvMatrix = mat4.create();
+                }
+                mat4.identity(this.mvMatrix);
+                if (this.position)
+                {
+                    mat4.translate(this.mvMatrix, this.position);
+                }
+                if (this.scale)
+                {
+                    mat4.scale(this.mvMatrix, this.scale);
+                }
+            };
+            this.leftDownFront = function()
             {
-                this.position[0] = this.transormedBoundingBox.downLeftFront[0];
-            }
+                return this.boundingBox.leftDownFront;
+            };
+            this.rightTopFar = function()
+            {
+                return this.boundingBox.rightTopFar;
+            };
+            this.distance = function()
+            {
+                return this.boundingBox.distance;
+            };
+            this.clone = function()
+            {
+                return utils.cloneObject(this);
+            };
+            this.addClone = function(name)
+            {
+                var tmp = this.clone();
+                
+                if (name instanceof String)
+                {
+//                    this.parentScene
+                }
+            };
+            this.isObject3d = function()
+            {
+                for (var obj in this.parentScene.camera.objects3d)
+                {
+                    if (obj === this)
+                    {
+                        return true;
+                    }
+                }
+            };
+            this.isObject2d = function()
+            {
+                for (var obj in this.parentScene.camera.objects3d)
+                {
+                    if (obj === this)
+                    {
+                        return true;
+                    }
+                }
+            };            
         }).apply(obj);
     }
 
     function updateBoundingBox(object)
     {
-        var downLeftFront = vec3.create();
-        var topRightFar = vec3.create();
+        var leftDownFront = vec3.create();
+        var rightTopFar = vec3.create();
         
-        for (var i=0;i<object.vertexArray.length;++i)
+        for (var i=0;i<object.vertex.length;++i)
         {
-            var v=object.vertexArray[i];
+            var v=[object.vertex[i],object.vertex[++i],object.vertex[++i]];
             for (var j=0;j<3;++j)
             {
-                if (i===0 || v[j] < downLeftFront[j])
+                if (i===0 || v[j] < leftDownFront[j])
                 {
-                    downLeftFront[j]=v[j];
+                    leftDownFront[j]=v[j];
                 }
-                if (i===0 || v[j] > topRightFar[j])
+                if (i===0 || v[j] > rightTopFar[j])
                 {
-                    topRightFar[j]=v[j];
+                    rightTopFar[j]=v[j];
                 }
             }
         }
         object.boundingBox = {};
-        object.boundingBox.downLeftFront = downLeftFront;
-        object.boundingBox.topRightFar = topRightFar;
+        object.boundingBox.leftDownFront = leftDownFront;
+        object.boundingBox.rightTopFar = rightTopFar;
+        object.boundingBox.distance = vec3.subtract(object.boundingBox.rightTopFar,object.boundingBox.leftDownFront,vec3.create());
     }
     
-    function updateTransformedBoundBox(object,mvMatrix)
-    {
-        var downLeftFront = vec3.create();
-        var topRightFar = vec3.create();
-        
-        for (var i=0;i<object.vertexArray.length;++i)
-        {
-            var v=object.vertexArray[i];
-            mat4.multiplyVec3(mvMatrix,v);
-            for (var j=0;j<3;++j)
-            {
-                if (i===0 || v[j] < downLeftFront[j])
-                {
-                    downLeftFront[j]=v[j];
-                }
-                if (i===0 || v[j] > topRightFar[j])
-                {
-                    topRightFar[j]=v[j];
-                }
-            }
-        }
-        object.TransformedBoundingBox = {};
-        object.TransformedBoundingBox.downLeftFront = downLeftFront;
-        object.TransformedBoundingBox.topRightFar = topRightFar;
-    }
-
-    function createVertexArray(obj)
-    {
-        obj.vertexArray = [];
-        for (var i=0;i<obj.vertex.length;i+=3)
-        {
-            var v=vec3.create();
-            v[0]=obj.vertex[i];
-            v[1]=obj.vertex[i+1];
-            v[2]=obj.vertex[i+2];
-            obj.vertexArray.push(v);
-        }
-    }
     function createObject(parentScene_,resourceObject,obj)
     {
         obj.parentScene = parentScene_;
@@ -192,7 +209,6 @@
             obj.numIndices = obj.vertexIndices.length;
         }
         obj.numVertex = Math.floor(obj.vertex.length / 3);
-        createVertexArray(obj);
         updateBoundingBox(obj);
 
         obj.material.textureMode = obj.material.textureMode || "ignore";
@@ -237,7 +253,9 @@
             tManager.getDummyTexture(obj);
         }
         obj.material.alpha = obj.material.alpha || 1.0;
+
         createsfmeObject(obj);
+        obj.updateMvMatrixForObject();
     }
 
     function setActiveScene(scene)

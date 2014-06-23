@@ -134,9 +134,14 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                 },
                                 onUpdate: function(globalTiming)
                                 {
-                                    this.scale[0] *= globalTiming.ellapsed / 16;
-                                    this.calculateBoundingBox();
+                                    this.scale[0] = (globalTiming.currentTime - globalTiming.startTime) / 5000;
+                                    this.position[0] = this.initialPosition[0] + (this.distance()[0] *this.scale[0] * 0.5);
                                     console.log("Updating. "+globalTiming.currentTime+" "+globalTiming.ellapsed);
+                                    console.log("POsition:"+this.position[0]+","+this.position[1]+","+this.position[2]);
+                                },
+                                onCreated: function()
+                                {
+                                    console.log("asd");
                                 }
                             }
                         }
@@ -145,6 +150,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                     onStart: function()
                     {
                         console.log("Started");
+                        this.camera.objects3d.quad.initialPosition = vec3.create(this.camera.objects3d.quad.leftDownFront());
                     },
                     inputController: 
                     {

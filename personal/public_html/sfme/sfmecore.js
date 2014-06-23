@@ -36,7 +36,7 @@
         pManager.loadProgram("ssnake","ssnake.json");
         
         this.ready = true;
-        startTime = new Date().getTime();
+        globalTiming.startTime = new Date().getTime();
         
         startFrameLoop();
     };

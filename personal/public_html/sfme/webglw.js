@@ -173,14 +173,8 @@
         {
             mvPushMatrix();
             
-            if (obj.position)
-            {
-                mat4.translate(mvMatrix, obj.position);
-            }
-            if (obj.scale)
-            {
-                mat4.scale(mvMatrix, obj.scale);
-            }
+            obj.updateMvMatrixForObject();
+            mat4.multiply(mvMatrix,obj.mvMatrix,mvMatrix);
             var shaderProgram = sManager.getShader(obj.material.name);
             
             setBlending(obj.material.blending);

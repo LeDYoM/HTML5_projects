@@ -245,11 +245,11 @@
     }
     this.startRender = startRender;
     
-    function renderCamera(cameraObject,typeRender)
+    function renderCamera(cameraObject)
     {
-        switch (typeRender)
+        switch (cameraObject.type)
         {
-            case "objects3d":
+            case "perspective":
                 if (cameraObject.ratio === "normal")
                 {
                     cameraObject.realRatio = gl.viewportWidth / gl.viewportHeight;
@@ -264,7 +264,7 @@
                     mat4.lookAt(cameraObject.lookAt.eye,cameraObject.lookAt.center,cameraObject.lookAt.vUp,mvMatrix);
                 }
                 break;
-            case "objects2d":
+            case "ortho":
                 mat4.ortho(cameraObject.gui[0],cameraObject.gui[1],cameraObject.gui[2],cameraObject.gui[3],cameraObject.zNear,cameraObject.zFar, pMatrix);
                 mat4.identity(mvMatrix);
                 break;

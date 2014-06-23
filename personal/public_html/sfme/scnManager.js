@@ -11,7 +11,6 @@
     var utils = cns("sfme.utils");
 
     var activeScene = null;
-    var objectTypes = ["objects3d", "objects2d"];
 
     this.init = function()
     {
@@ -83,26 +82,6 @@
 //                    this.parentScene
                 }
             };
-            this.isObject3d = function()
-            {
-                for (var obj in this.parentScene.camera.objects3d)
-                {
-                    if (obj === this)
-                    {
-                        return true;
-                    }
-                }
-            };
-            this.isObject2d = function()
-            {
-                for (var obj in this.parentScene.camera.objects3d)
-                {
-                    if (obj === this)
-                    {
-                        return true;
-                    }
-                }
-            };            
         }).apply(obj);
     }
 
@@ -336,26 +315,26 @@
             log.verbose("No resources in scene");
         }
 
-        if (newScene.camera)
+        if (newScene.cameras)
         {
-            for (var oti=0;oti<objectTypes.length;++oti)
+            for (var camera in newScene.cameras)
             {
-                if (newScene.camera[objectTypes[oti]])
+                if (newScene.cameras[camera].objects)
                 {
                     var count = 0;
-                    for (var i in newScene.camera[objectTypes[oti]])
+                    for (var i in newScene.cameras[camera].objects)
                     {
                         count++;
-                        var obj = newScene.camera[objectTypes[oti]][i];
+                        var obj = newScene.cameras[camera].objects[i];
                         createObject(newScene,newScene.resources,obj);
                         defineSubObjects(obj);
                     }
-                    log.verbose("Number of "+objectTypes[oti]+" in scene:"+count);
+                    log.verbose("Number of objects in scene:"+count);
 
                 }
                 else
                 {
-                    log.verbose("No "+objectTypes[oti]+" in scene");
+                    log.verbose("No objects in scene");
                 }
             }
         }
@@ -426,19 +405,22 @@
         {
             processEventsAnimations(activeScene,globalTiming);
             wgl.startRender(activeScene.backgroundColor);
-            
-            for (var oti=0;oti<objectTypes.length;++oti)
-            {
-                if (activeScene.camera[objectTypes[oti]])
-                {
-                    processEventsAnimations(activeScene.camera,globalTiming);
-                    wgl.renderCamera(activeScene.camera,objectTypes[oti])
 
-                    for (var i in activeScene.camera[objectTypes[oti]])
+            if (activeScene.cameras)
+            {
+                for (var camera in activeScene.cameras)
+                {
+                    if (activeScene.cameras[camera].objects)
                     {
-                        var obj = activeScene.camera[objectTypes[oti]][i];
-                        processEventsAnimations(obj,globalTiming);
-                        wgl.renderObj(obj);
+                        processEventsAnimations(activeScene.cameras[camera],globalTiming);
+                        wgl.renderCamera(activeScene.cameras[camera])
+
+                        for (var i in activeScene.cameras[camera].objects)
+                        {
+                            var obj = activeScene.cameras[camera].objects[i];
+                            processEventsAnimations(obj,globalTiming);
+                            wgl.renderObj(obj);
+                        }
                     }
                 }
             }

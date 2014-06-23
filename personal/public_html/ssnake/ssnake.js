@@ -32,49 +32,51 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                             }
                         }
                     },
-                    camera: {
-                        type: "perspective",
-                        angle: 45.0,
-                        ratio: "normal",
-                        zNear: 0.1,
-                        zFar: 100.0,
-                        gui: [-50, 50, -50, 50],
-                        objects2d: {
-                            quad: {
-                                shapeType: "quad_normal",
-                                width: 64.0,
-                                height: 32.0,
-                                position: [0.0, 0.0, -5.0],
-                                material: {
-                                    blending: true,
-                                    alpha: 1.0,
-                                    name: "textured",
-                                    textureMode: "attach",
-                                    color: [1.0, 1.0, 1.0, 1.0],
-                                },
-                                animations: {
-                                    showText: {
-                                        animTime: 5000,
-                                        onStartAnimation: function()
-                                        {
-                                            
-                                        },
-                                        onUpdateAnimation: function(parentObject,timePassed)
-                                        {
-                                            var t = timePassed / this.animTime;
-                                            parentObject.material.alpha = t;
-                                            return t > 1.0;
-                                        },
-                                        onEndAnimation: function(parentObject)
-                                        {
-                                            parentObject.material.alpha = 1.0;
-                                            parentObject.parentScene.finishScene();
+                    cameras: {
+                        camera: {
+                            type: "perspective",
+                            angle: 45.0,
+                            ratio: "normal",
+                            zNear: 0.1,
+                            zFar: 100.0,
+                            gui: [-50, 50, -50, 50],
+                            objects2d: {
+                                quad: {
+                                    shapeType: "quad_normal",
+                                    width: 64.0,
+                                    height: 32.0,
+                                    position: [0.0, 0.0, -5.0],
+                                    material: {
+                                        blending: true,
+                                        alpha: 1.0,
+                                        name: "textured",
+                                        textureMode: "attach",
+                                        color: [1.0, 1.0, 1.0, 1.0],
+                                    },
+                                    animations: {
+                                        showText: {
+                                            animTime: 5000,
+                                            onStartAnimation: function()
+                                            {
+
+                                            },
+                                            onUpdateAnimation: function(parentObject,timePassed)
+                                            {
+                                                var t = timePassed / this.animTime;
+                                                parentObject.material.alpha = t;
+                                                return t > 1.0;
+                                            },
+                                            onEndAnimation: function(parentObject)
+                                            {
+                                                parentObject.material.alpha = 1.0;
+                                                parentObject.parentScene.finishScene();
+                                            }
                                         }
+                                    },
+                                    onCreated: function()
+                                    {
+                                        this.material.texture = this.parentScene.resources.textures.testtext;
                                     }
-                                },
-                                onCreated: function()
-                                {
-                                    this.material.texture = this.parentScene.resources.textures.testtext;
                                 }
                             }
                         }
@@ -108,40 +110,44 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                             }
                         }
                     },
-                    camera: {
-                        lookAt: {
-                            eye: [0.0, 0.0, 0.1],
-                            center: [0.0, 0.0, -100.0],
-                            vUp: [0.0, 1.0, 0.0]                
-                        },
-                        angle: 45.0,
-                        ratio: "normal",
-                        zNear: 0.1,
-                        zFar: 100.0,
-                        gui: [-50, 50, -50, 50],
-                        objects3d: {
-                            quad: {
-                                shapeType: "cube",
-                                width: 1.0,
-                                height: 1.0,
-                                position: [0.0, 0.0, -7.0],
-                                scale: [1.0,1.0,1.0],
+                    cameras: {
+                        camera: {
+                            type: "perspective",
+                            lookAt: {
+                                eye: [0.0, 0.0, 0.1],
+                                center: [0.0, 0.0, -100.0],
+                                vUp: [0.0, 1.0, 0.0]                
+                            },
+                            angle: 45.0,
+                            ratio: "normal",
+                            zNear: 0.1,
+                            zFar: 100.0,
+                            gui: [-50, 50, -50, 50],
+                            objects: {
+                                quad: {
+                                    shapeType: "cube",
+                                    width: 1.0,
+                                    height: 1.0,
+                                    position: [0.0, 0.0, -7.0],
+                                    scale: [1.0,1.0,1.0],
+                                    isGUI: false,
 
-                                material: {
-                                    name: "textured",
-                                    textureMode: "ignore",
-                                    color: [1.0, 0.0, 0.0, 1.0]
-                                },
-                                onUpdate: function(globalTiming)
-                                {
-                                    this.scale[0] = (globalTiming.currentTime - globalTiming.startTime) / 5000;
-                                    this.position[0] = this.initialPosition[0] + (this.distance()[0] *this.scale[0] * 0.5);
-                                    console.log("Updating. "+globalTiming.currentTime+" "+globalTiming.ellapsed);
-                                    console.log("POsition:"+this.position[0]+","+this.position[1]+","+this.position[2]);
-                                },
-                                onCreated: function()
-                                {
-                                    console.log("asd");
+                                    material: {
+                                        name: "textured",
+                                        textureMode: "ignore",
+                                        color: [1.0, 0.0, 0.0, 1.0]
+                                    },
+                                    onUpdate: function(globalTiming)
+                                    {
+                                        this.scale[0] = (globalTiming.currentTime - globalTiming.startTime) / 5000;
+                                        this.position[0] = this.initialPosition[0] + (this.distance()[0] *this.scale[0] * 0.5);
+                                        console.log("Updating. "+globalTiming.currentTime+" "+globalTiming.ellapsed);
+                                        console.log("POsition:"+this.position[0]+","+this.position[1]+","+this.position[2]);
+                                    },
+                                    onCreated: function()
+                                    {
+                                        console.log("asd");
+                                    }
                                 }
                             }
                         }
@@ -150,52 +156,53 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                     onStart: function()
                     {
                         console.log("Started");
-                        this.camera.objects3d.quad.initialPosition = vec3.create(this.camera.objects3d.quad.leftDownFront());
+                        this.cameras.camera.objects.quad.initialPosition = vec3.create(this.cameras.camera.objects.quad.leftDownFront());
                     },
                     inputController: 
                     {
                         delta:0.5,
                         onKeyDown: function(parentObject,e)
                         {
+                            var camera = parentObject.cameras.camera.lookAt;
                             if (e.keyCode === 65)
                             {
-                                parentObject.camera.lookAt.eye[0] -= this.delta;
+                                camera.eye[0] -= this.delta;
                             } else if (e.keyCode === 68)
                             {
-                                parentObject.camera.lookAt.eye[0] += this.delta;
+                                camera.eye[0] += this.delta;
                             } else if (e.keyCode === 87)
                             {
-                                parentObject.camera.lookAt.eye[1] += this.delta;
+                                camera.eye[1] += this.delta;
                             } else if (e.keyCode === 83)
                             {
-                                parentObject.camera.lookAt.eye[1] -= this.delta;
+                                camera.lookAt.eye[1] -= this.delta;
                             } else if (e.keyCode === 81)
                             {
-                                parentObject.camera.lookAt.eye[2] += this.delta;
+                                camera.eye[2] += this.delta;
                             } else if (e.keyCode === 90)
                             {
-                                parentObject.camera.lookAt.eye[2] -= this.delta;
+                                camera.eye[2] -= this.delta;
                             } else if (e.keyCode === 70)
                             {
-                                parentObject.camera.lookAt.center[0] -= this.delta;
+                                camera.center[0] -= this.delta;
                             } else if (e.keyCode === 72)
                             {
-                                parentObject.camera.lookAt.center[0] += this.delta;
+                                camera.center[0] += this.delta;
                             } else if (e.keyCode === 84)
                             {
-                                parentObject.camera.lookAt.center[1] += this.delta;
+                                camera.center[1] += this.delta;
                             } else if (e.keyCode === 71)
                             {
-                                parentObject.camera.lookAt.center[1] -= this.delta;
+                                camera.center[1] -= this.delta;
                             } else if (e.keyCode === 82)
                             {
-                                parentObject.camera.lookAt.center[2] += this.delta;
+                                camera.center[2] += this.delta;
                             } else if (e.keyCode === 86)
                             {
-                                parentObject.camera.lookAt.center[2] -= this.delta;
+                                camera.center[2] -= this.delta;
                             }
-                            console.log("eye:"+parentObject.camera.lookAt.eye[0]+","+parentObject.camera.lookAt.eye[1]+","+parentObject.camera.lookAt.eye[2]);
-                            console.log("center:"+parentObject.camera.lookAt.center[0]+","+parentObject.camera.lookAt.center[1]+","+parentObject.camera.lookAt.center[2]);
+                            console.log("eye:"+camera.eye[0]+","+camera.eye[1]+","+camera.eye[2]);
+                            console.log("center:"+camera.center[0]+","+camera.center[1]+","+camera.center[2]);
 
                         }
                     }

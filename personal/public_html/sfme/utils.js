@@ -93,7 +93,6 @@
                     }
                     else
                     {
-                        console.log("attr:"+attr);
                         copy[attr] = this.cloneObject(obj[attr]);
                     }
                 }

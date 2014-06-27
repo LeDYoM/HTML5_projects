@@ -29,7 +29,7 @@
         
         iManager.init();
         eManager.init();
-        scnManager.init();
+        scnManager.init(globalTiming);
         tManager.init();
         pManager.init();
 

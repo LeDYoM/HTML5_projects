@@ -13,11 +13,13 @@
     
     function handleKeyDown(event)
     {
+        event.preventDefault();
         inputEvents.push({type:"KeyDown",evt: event});
     }
 
     function handleKeyUp(event)
     {
+        event.preventDefault();
         inputEvents.push({type:"KeyUp",evt: event});
     }
 

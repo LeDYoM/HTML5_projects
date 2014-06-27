@@ -56,8 +56,8 @@
         return this.typeName(obj) === typeName;
     };
     this.cloneObject = function(obj)
-    {
-        if (null === obj || "object" !== typeof obj) return obj;
+    {   
+        if (obj === null || typeof obj !== "object") return obj;
 
         // Handle Date
         if (obj instanceof Date)
@@ -73,7 +73,7 @@
             var copy = [];
             for (var i = 0, len = obj.length; i < len; i++)
             {
-                copy[i] = clone(obj[i]);
+                copy[i] = this.cloneObject(obj[i]);
             }
             return copy;
         }
@@ -85,7 +85,18 @@
             for (var attr in obj)
             {
 //                if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
-                copy[attr] = clone(obj[attr]);
+                if (obj.hasOwnProperty(attr))
+                {
+                    if (attr === "parentObject" || attr === "parentScene" || attr === "canvas" || attr === "parentCamera" || attr === "texture")
+                    {
+                        copy[attr] = obj[attr];
+                    }
+                    else
+                    {
+                        console.log("attr:"+attr);
+                        copy[attr] = this.cloneObject(obj[attr]);
+                    }
+                }
             }
             return copy;
         }

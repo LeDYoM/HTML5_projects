@@ -9,12 +9,14 @@
 //    var eManager = cns("sfme.internal.eventManager");
     var iManager = cns("sfme.internal.inputManager");
     var utils = cns("sfme.utils");
+    var globalTiming = null;
 
     var activeScene = null;
 
-    this.init = function()
+    this.init = function(globalTiming_)
     {
         ready = true;
+        globalTiming = globalTiming_;
     };
     
     function createsfmeObject(obj)
@@ -75,11 +77,16 @@
             };
             this.addClone = function(name)
             {
-                var tmp = this.clone();
-                
-                if (name instanceof String)
+                if (this.parentCamera)
                 {
-//                    this.parentScene
+                    var tmp = this.clone();
+                    createObject(this.parentScene,tmp);
+                    this.parentCamera.objects[name] = tmp;
+                    return tmp;
+                }
+                else
+                {
+                    log.error("No camera no put the clone on");
                 }
             };
         }).apply(obj);
@@ -111,7 +118,7 @@
         object.boundingBox.distance = vec3.subtract(object.boundingBox.rightTopFar,object.boundingBox.leftDownFront,vec3.create());
     }
     
-    function createObject(parentScene_,resourceObject,obj)
+    function createObject(parentScene_,obj)
     {
         obj.parentScene = parentScene_;
         var vertex = [];
@@ -235,6 +242,8 @@
 
         createsfmeObject(obj);
         obj.updateMvMatrixForObject();
+        obj.creationTime = globalTiming.currentTime;
+        defineSubObjects(obj);
     }
 
     function setActiveScene(scene)
@@ -286,7 +295,7 @@
         }
         if (obj.onCreated)
         {
-            obj.onCreated();
+            obj.onCreated(globalTiming);
         }
     }
    
@@ -321,13 +330,22 @@
             {
                 if (newScene.cameras[camera].objects)
                 {
+                    newScene.cameras[camera].findObject = function(str)
+                    {
+                        for (var on in this.objects)
+                        {
+                            if (this.objects[str])
+                            {
+                                return this.objects[str];
+                            }
+                        }
+                    }
                     var count = 0;
                     for (var i in newScene.cameras[camera].objects)
                     {
                         count++;
                         var obj = newScene.cameras[camera].objects[i];
-                        createObject(newScene,newScene.resources,obj);
-                        defineSubObjects(obj);
+                        createObject(newScene,obj);
                     }
                     log.verbose("Number of objects in scene:"+count);
 
@@ -353,7 +371,7 @@
     }
     this.defineScene = defineScene;
 
-    function processEventsAnimations(obj,globalTiming)
+    function processEventsAnimations(obj)
     {
         iManager.processObject(obj);
         if (obj.animations)
@@ -381,11 +399,11 @@
         }
     }
 
-    function updateFrame(globalTiming)
+    function updateFrame()
     {
         if (activeScene)
         {
-            renderScene(activeScene,globalTiming);
+            renderScene(activeScene);
             wgl.endRender();
         }
         else
@@ -399,11 +417,11 @@
     }
     this.updateFrame = updateFrame;
     
-    function renderScene(activeScene,globalTiming)
+    function renderScene(activeScene)
     {
         if (activeScene)
         {
-            processEventsAnimations(activeScene,globalTiming);
+            processEventsAnimations(activeScene);
             wgl.startRender(activeScene.backgroundColor);
 
             if (activeScene.cameras)
@@ -412,13 +430,14 @@
                 {
                     if (activeScene.cameras[camera].objects)
                     {
-                        processEventsAnimations(activeScene.cameras[camera],globalTiming);
+                        processEventsAnimations(activeScene.cameras[camera]);
                         wgl.renderCamera(activeScene.cameras[camera])
 
                         for (var i in activeScene.cameras[camera].objects)
                         {
                             var obj = activeScene.cameras[camera].objects[i];
-                            processEventsAnimations(obj,globalTiming);
+                            obj.parentCamera = activeScene.cameras[camera];
+                            processEventsAnimations(obj);
                             wgl.renderObj(obj);
                         }
                     }

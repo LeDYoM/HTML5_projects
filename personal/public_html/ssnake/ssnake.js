@@ -110,6 +110,58 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                             }
                         }
                     },
+                    directionStr: function(direction)
+                    {
+                        if (direction[0]<0)
+                        {
+                            return "left";
+                        } else if (direction[0]>0)
+                        {
+                            return "right";
+                        } else if (direction[1]<0)
+                        {
+                            return "up";
+                        } else if (direction[1]>0)
+                        {
+                            return "down";
+                        } else
+                        {
+                            return "stopped";
+                        }
+                    },
+                    setDirection: function(obj,str)
+                    {
+                        obj.direction = vec3.create();
+                        switch (str)
+                        {
+                            case "left":
+                                obj.direction[0] = -1;
+                                obj.direction[1] = 0;
+                                obj.direction[2] = 0;
+                                break;
+                            case "right":
+                                obj.direction[0] = 1;
+                                obj.direction[1] = 0;
+                                obj.direction[2] = 0;
+                                break;
+                            case "up":
+                                obj.direction[0] = 0;
+                                obj.direction[1] = 1;
+                                obj.direction[2] = 0;
+                                break;
+                            case "down":
+                                obj.direction[0] = 0;
+                                obj.direction[1] = -1;
+                                obj.direction[2] = 0;
+                                break;
+                            case "stopped":
+                            default:
+                                obj.direction[0] = 0;
+                                obj.direction[1] = 0;
+                                obj.direction[2] = 0;
+                        }
+                    },
+                    startingPosition: [0.0,0.0,-7.0],
                     cameras: {
                         camera: {
                             type: "perspective",
@@ -123,14 +175,14 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                             zNear: 0.1,
                             zFar: 100.0,
                             gui: [-50, 50, -50, 50],
+                            lastIndexPart: 0,
                             objects: {
-                                quad: {
+                                part_0: {
                                     shapeType: "cube",
                                     width: 1.0,
                                     height: 1.0,
                                     position: [0.0, 0.0, -7.0],
                                     scale: [1.0,1.0,1.0],
-                                    isGUI: false,
 
                                     material: {
                                         name: "textured",
@@ -139,15 +191,28 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     },
                                     onUpdate: function(globalTiming)
                                     {
-                                        this.scale[0] = (globalTiming.currentTime - globalTiming.startTime) / 5000;
-                                        this.position[0] = this.initialPosition[0] + (this.distance()[0] *this.scale[0] * 0.5);
-                                        console.log("Updating. "+globalTiming.currentTime+" "+globalTiming.ellapsed);
-                                        console.log("POsition:"+this.position[0]+","+this.position[1]+","+this.position[2]);
+                                        var scaleIndex = this.direction[0] !== 0 ? 0 : 1;
+                                        this.scale[scaleIndex] = 1.0 + (globalTiming.currentTime - this.creationTime) / 2000;
+                                        var scaleDelta = this.scale[scaleIndex] - 1.0;
+                                        this.position[scaleIndex] = this.initialPosition[scaleIndex] + (scaleDelta * 0.5 * this.direction[scaleIndex]);
+                                        //console.log("Updating. "+globalTiming.currentTime+" "+globalTiming.ellapsed);
+//                                        console.log("Position:"+this.position[0]+","+this.position[1]+","+this.position[2]);
                                     },
-                                    onCreated: function()
+                                    getHead: function()
                                     {
-                                        console.log("asd");
-                                    }
+                                        var factorN = vec3.negate(this.direction,vec3.create());
+
+                                        /* var r = [this.position[0]+((this.scale[0]+(1.0*factorN[0]))*this.direction[0]),
+                                            this.position[1]+((this.scale[1]+(1.0*factorN[1]))*this.direction[1]),
+                                            this.position[2]+((this.scale[2]+(1.0*factorN[2]))*this.direction[2])];
+                                        */
+                                        var rTemp = [(this.scale[0] - 1.0)/2, (this.scale[1] - 1.0)/2, (this.scale[2] - 1.0)/2];
+                                        var r = [this.position[0]+(rTemp[0]*this.direction[0]),
+                                            this.position[1]+(rTemp[1]*this.direction[1]),
+                                            this.position[2]+(rTemp[2]*this.direction[2])];
+                                        
+                                        return r;
+                                    },
                                 }
                             }
                         }
@@ -156,7 +221,12 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                     onStart: function()
                     {
                         console.log("Started");
-                        this.cameras.camera.objects.quad.initialPosition = vec3.create(this.cameras.camera.objects.quad.leftDownFront());
+                          this.cameras.camera.objects.part_0.initialPosition = vec3.create(this.startingPosition);
+                          this.setDirection(this.cameras.camera.objects.part_0,"right");
+//                        this.cameras.camera.objects.part_0.initialPosition = vec3.create(this.cameras.camera.objects.part_0.leftDownFront());
+//                        vec3.add(this.cameras.camera.objects.part_0.initialPosition,
+//                                    this.startingPosition);
+
                     },
                     inputController: 
                     {
@@ -175,7 +245,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                 camera.eye[1] += this.delta;
                             } else if (e.keyCode === 83)
                             {
-                                camera.lookAt.eye[1] -= this.delta;
+                                camera.eye[1] -= this.delta;
                             } else if (e.keyCode === 81)
                             {
                                 camera.eye[2] += this.delta;
@@ -201,9 +271,42 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                             {
                                 camera.center[2] -= this.delta;
                             }
-                            console.log("eye:"+camera.eye[0]+","+camera.eye[1]+","+camera.eye[2]);
-                            console.log("center:"+camera.center[0]+","+camera.center[1]+","+camera.center[2]);
 
+//                            console.log("eye:"+camera.eye[0]+","+camera.eye[1]+","+camera.eye[2]);
+//                            console.log("center:"+camera.center[0]+","+camera.center[1]+","+camera.center[2]);
+
+                            var camera = parentObject.cameras.camera;
+                            var lastPart = camera.findObject("part_"+camera.lastIndexPart);
+                            var dir = lastPart.direction;
+                            var directionStr = parentObject.directionStr(dir);
+
+                            if (e.keyCode === 37 && directionStr !== "right")
+                            {
+                                var newPart = this.createNewPart(lastPart,camera,dir);
+                                parentObject.setDirection(newPart,"left");
+                            } else if (e.keyCode === 39 && directionStr !== "left")
+                            {
+                                var newPart = this.createNewPart(lastPart,camera,dir);
+                                parentObject.setDirection(newPart,"right");
+                            } else if (e.keyCode === 38 && directionStr !== "down")
+                            {
+                                var newPart = this.createNewPart(lastPart,camera,dir);
+                                parentObject.setDirection(newPart,"up");
+                            } else if (e.keyCode === 40 && directionStr !== "up")
+                            {
+                                var newPart = this.createNewPart(lastPart,camera,dir);
+                                parentObject.setDirection(newPart,"down");
+                            }
+                        },
+                        createNewPart: function(lastPart,camera,dir)
+                        {
+                            var newPart = lastPart.addClone("part_"+(camera.lastIndexPart+1));
+                            lastPart.onUpdate = null;
+                            camera.lastIndexPart++;
+                            newPart.setPosition(lastPart.getHead());
+                            newPart.initialPosition = vec3.create(newPart.position);
+                            newPart.setScale([1.0,1.0,1.0]);
+                            return newPart;
                         }
                     }
                 }

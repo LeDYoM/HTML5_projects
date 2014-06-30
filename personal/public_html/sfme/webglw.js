@@ -265,7 +265,7 @@
                 }
                 break;
             case "ortho":
-                mat4.ortho(cameraObject.gui[0],cameraObject.gui[1],cameraObject.gui[2],cameraObject.gui[3],cameraObject.zNear,cameraObject.zFar, pMatrix);
+                mat4.ortho(cameraObject.left,cameraObject.right,cameraObject.bottom,cameraObject.top,cameraObject.zNear,cameraObject.zFar, pMatrix);
                 mat4.identity(mvMatrix);
                 break;
         }

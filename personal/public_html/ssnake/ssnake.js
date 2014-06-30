@@ -34,13 +34,16 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                     },
                     cameras: {
                         camera: {
-                            type: "perspective",
+                            type: "ortho",
                             angle: 45.0,
                             ratio: "normal",
                             zNear: 0.1,
                             zFar: 100.0,
-                            gui: [-50, 50, -50, 50],
-                            objects2d: {
+                            left: -50.0,
+                            right: 50.0,
+                            top: 50,
+                            bottom: -50.0,
+                            objects: {
                                 quad: {
                                     shapeType: "quad_normal",
                                     width: 64.0,
@@ -85,7 +88,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                     onStart: function()
                     {
                         console.log("Started");
-                        this.camera.objects2d.quad.animations.showText.StartAnimation();
+                        this.cameras.camera.objects.quad.animations.showText.StartAnimation();
                     }
                 },
                 game: {
@@ -110,59 +113,34 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                             }
                         }
                     },
-                    directionStr: function(direction)
+                    boardModel:
                     {
-                        if (direction[0]<0)
+                        getPositionForCell: function(vec)
                         {
-                            return "left";
-                        } else if (direction[0]>0)
+                            // TODO: Implement real boards.
+                            return [vec[0] * 1, vec[1]  * 1 , -7.0 + (vec[2] * 1)];
+                        },
+                        getNextCell: function(obj)
                         {
-                            return "right";
-                        } else if (direction[1]<0)
+                            return [obj.boardCell[0] + obj.nextDirection[0],
+                                    obj.boardCell[1] + obj.nextDirection[1],
+                                    obj.boardCell[2] + obj.nextDirection[2]];
+                        },
+                        setNextCell: function(obj)
                         {
-                            return "up";
-                        } else if (direction[1]>0)
-                        {
-                            return "down";
-                        } else
-                        {
-                            return "stopped";
+                            obj.boardCell = this.getNextCell(obj);
                         }
                     },
-                    setDirection: function(obj,str)
-                    {
-                        obj.direction = vec3.create();
-                        switch (str)
-                        {
-                            case "left":
-                                obj.direction[0] = -1;
-                                obj.direction[1] = 0;
-                                obj.direction[2] = 0;
-                                break;
-                            case "right":
-                                obj.direction[0] = 1;
-                                obj.direction[1] = 0;
-                                obj.direction[2] = 0;
-                                break;
-                            case "up":
-                                obj.direction[0] = 0;
-                                obj.direction[1] = 1;
-                                obj.direction[2] = 0;
-                                break;
-                            case "down":
-                                obj.direction[0] = 0;
-                                obj.direction[1] = -1;
-                                obj.direction[2] = 0;
-                                break;
-                            case "stopped":
-                            default:
-                                obj.direction[0] = 0;
-                                obj.direction[1] = 0;
-                                obj.direction[2] = 0;
-                        }
-                    },
-                    startingPosition: [0.0,0.0,-7.0],
                     cameras: {
+                        camera2d: {
+                            type: "ortho",
+                            zNear: 0.1,
+                            zFar: 100.0,
+                            left: -50.0,
+                            right: 50.0,
+                            top: 50,
+                            bottom: -50.0
+                        },
                         camera: {
                             type: "perspective",
                             lookAt: {
@@ -191,28 +169,49 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     },
                                     onUpdate: function(globalTiming)
                                     {
+                                        this.partScale = [1.0,1.0,1.0];
                                         var scaleIndex = this.direction[0] !== 0 ? 0 : 1;
-                                        this.scale[scaleIndex] = 1.0 + (globalTiming.currentTime - this.creationTime) / 2000;
-                                        var scaleDelta = this.scale[scaleIndex] - 1.0;
-                                        this.position[scaleIndex] = this.initialPosition[scaleIndex] + (scaleDelta * 0.5 * this.direction[scaleIndex]);
-                                        //console.log("Updating. "+globalTiming.currentTime+" "+globalTiming.ellapsed);
-//                                        console.log("Position:"+this.position[0]+","+this.position[1]+","+this.position[2]);
-                                    },
-                                    getHead: function()
-                                    {
-                                        var factorN = vec3.negate(this.direction,vec3.create());
+                                        this.partScale[scaleIndex] = (globalTiming.currentTime - this.creationTime) / 2000;
+                                        var createNew = this.partScale[scaleIndex] >= 1.00;
+                                        if (createNew)
+                                        {
+                                            var remanent = this.partScale[scaleIndex] - 1.00;
+                                            this.scale = [1.0, 1.0, 1.0];
+                                            this.position = this.parentScene.boardModel.getPositionForCell(this.boardCell); 
 
-                                        /* var r = [this.position[0]+((this.scale[0]+(1.0*factorN[0]))*this.direction[0]),
-                                            this.position[1]+((this.scale[1]+(1.0*factorN[1]))*this.direction[1]),
-                                            this.position[2]+((this.scale[2]+(1.0*factorN[2]))*this.direction[2])];
-                                        */
-                                        var rTemp = [(this.scale[0] - 1.0)/2, (this.scale[1] - 1.0)/2, (this.scale[2] - 1.0)/2];
-                                        var r = [this.position[0]+(rTemp[0]*this.direction[0]),
-                                            this.position[1]+(rTemp[1]*this.direction[1]),
-                                            this.position[2]+(rTemp[2]*this.direction[2])];
-                                        
-                                        return r;
+                                            var newPart = this.createNewPart();
+                                            
+                                            newPart.partScale = [1.0,1.0,1.0];
+                                            newPart.direction = vec3.create(newPart.nextDirection);
+                                            this.parentScene.boardModel.setNextCell(newPart);
+                                            newPart.partScale[scaleIndex] = remanent;
+                                            newPart.setFinalPosition();
+                                        }
+                                        this.setFinalPosition();
                                     },
+                                    setFinalPosition: function()
+                                    {
+                                        var iPosition = this.parentScene.boardModel.getPositionForCell(this.boardCell);
+                                        var inp = [
+                                            iPosition[0] - (this.direction[0] / 2.0),
+                                            iPosition[1] - (this.direction[1] / 2.0),
+                                            iPosition[2] - (this.direction[2] / 2.0)
+                                        ];
+                                        var fp = [inp[0] + ((this.partScale[0] * this.direction[0]) / 2.0),
+                                            inp[1] + ((this.partScale[1] * this.direction[1]) / 2.0),
+                                            inp[2] + ((this.partScale[2] * this.direction[2]) / 2.0)];
+                                        this.scale = vec3.create(this.partScale);
+                                        this.position = fp;
+                                    },
+                                    createNewPart: function()
+                                    {
+                                        var camera = this.parentCamera;
+                                        var newPart = this.addClone("part_"+(camera.lastIndexPart+1));
+                                        this.onUpdate = null;
+                                        camera.lastIndexPart++;
+                                        newPart.setScale([1.0,1.0,1.0]);
+                                        return newPart;
+                                    }
                                 }
                             }
                         }
@@ -221,12 +220,9 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                     onStart: function()
                     {
                         console.log("Started");
-                          this.cameras.camera.objects.part_0.initialPosition = vec3.create(this.startingPosition);
-                          this.setDirection(this.cameras.camera.objects.part_0,"right");
-//                        this.cameras.camera.objects.part_0.initialPosition = vec3.create(this.cameras.camera.objects.part_0.leftDownFront());
-//                        vec3.add(this.cameras.camera.objects.part_0.initialPosition,
-//                                    this.startingPosition);
-
+                        this.cameras.camera.objects.part_0.boardCell = [0,0,0];// = this.boardModel.getPositionForCell([0,0,0]);
+                        this.cameras.camera.objects.part_0.direction = [1,0,0];
+                        this.cameras.camera.objects.part_0.nextDirection = [1,0,0];                        
                     },
                     inputController: 
                     {
@@ -277,44 +273,28 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
 
                             var camera = parentObject.cameras.camera;
                             var lastPart = camera.findObject("part_"+camera.lastIndexPart);
-                            var dir = lastPart.direction;
-                            var directionStr = parentObject.directionStr(dir);
 
-                            if (e.keyCode === 37 && directionStr !== "right")
+                            if (e.keyCode === 37)
                             {
-                                var newPart = this.createNewPart(lastPart,camera,dir);
-                                parentObject.setDirection(newPart,"left");
-                            } else if (e.keyCode === 39 && directionStr !== "left")
+                                lastPart.nextDirection = [-1.0, 0.0, 0.0];
+                            } else if (e.keyCode === 39)
                             {
-                                var newPart = this.createNewPart(lastPart,camera,dir);
-                                parentObject.setDirection(newPart,"right");
-                            } else if (e.keyCode === 38 && directionStr !== "down")
+                                lastPart.nextDirection = [1.0, 0.0, 0.0];
+                            } else if (e.keyCode === 38)
                             {
-                                var newPart = this.createNewPart(lastPart,camera,dir);
-                                parentObject.setDirection(newPart,"up");
-                            } else if (e.keyCode === 40 && directionStr !== "up")
+                                lastPart.nextDirection = [0.0, 1.0, 0.0];
+                            } else if (e.keyCode === 40)
                             {
-                                var newPart = this.createNewPart(lastPart,camera,dir);
-                                parentObject.setDirection(newPart,"down");
+                                lastPart.nextDirection = [0.0, -1.0, 0.0];
                             }
                         },
-                        createNewPart: function(lastPart,camera,dir)
-                        {
-                            var newPart = lastPart.addClone("part_"+(camera.lastIndexPart+1));
-                            lastPart.onUpdate = null;
-                            camera.lastIndexPart++;
-                            newPart.setPosition(lastPart.getHead());
-                            newPart.initialPosition = vec3.create(newPart.position);
-                            newPart.setScale([1.0,1.0,1.0]);
-                            return newPart;
-                        }
                     }
                 }
             },
             state: "init",
             nextScene: function()
             {
-                return this.scenes.game;
+//                return this.scenes.game;
 
                 switch (this.state)
                 {

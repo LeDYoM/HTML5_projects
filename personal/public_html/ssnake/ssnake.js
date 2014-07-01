@@ -101,7 +101,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                 height: 256,
                                 textDefinition:
                                 {
-                                    text: "Super Snake",
+                                    text: "Score:",
                                     fontSize: 55,
                                     fontName: "Georgia",
                                     fillStyle: "white",
@@ -132,14 +132,36 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                         }
                     },
                     cameras: {
-                        camera2d: {
+                        camera2d:
+                        {
                             type: "ortho",
+                            angle: 45.0,
+                            ratio: "normal",
                             zNear: 0.1,
                             zFar: 100.0,
                             left: -50.0,
                             right: 50.0,
                             top: 50,
-                            bottom: -50.0
+                            bottom: -50.0,
+                            objects: {
+                                quad: {
+                                    shapeType: "quad_normal",
+                                    width: 64.0,
+                                    height: 32.0,
+                                    position: [0.0, 0.0, -5.0],
+                                    material: {
+//                                        blending: true,
+//                                        alpha: 1.0,
+                                        name: "textured",
+                                        textureMode: "attach",
+                                        color: [1.0, 1.0, 1.0, 1.0],
+                                    },
+                                    onCreated: function()
+                                    {
+                                        this.material.texture = this.parentScene.resources.textures.testtext;
+                                    }
+                                }
+                            }
                         },
                         camera: {
                             type: "perspective",
@@ -217,12 +239,13 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                         }
                     },
                     backgroundColor: [0.0, 1.0, 0.0, 1.0],
-                    onStart: function()
+                    onStart: function(globalTiming)
                     {
                         console.log("Started");
                         this.cameras.camera.objects.part_0.boardCell = [0,0,0];// = this.boardModel.getPositionForCell([0,0,0]);
                         this.cameras.camera.objects.part_0.direction = [1,0,0];
-                        this.cameras.camera.objects.part_0.nextDirection = [1,0,0];                        
+                        this.cameras.camera.objects.part_0.nextDirection = [1,0,0];  
+                        this.cameras.camera.objects.part_0.creationTime = this.startedTime;
                     },
                     inputController: 
                     {
@@ -294,7 +317,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
             state: "init",
             nextScene: function()
             {
-//                return this.scenes.game;
+                return this.scenes.game;
 
                 switch (this.state)
                 {

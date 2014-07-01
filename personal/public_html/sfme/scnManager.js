@@ -188,6 +188,7 @@
                         16, 17, 18,   16, 18, 19, // Right face
                         20, 21, 22,   20, 22, 23  // Left face
                     ];
+                    
                     break;
             }
             obj.vertex = vertex;
@@ -203,15 +204,10 @@
         {
             case "attach":
                 textureCoords = [
-          0.0, 0.0,
-          1.0, 0.0,
-          1.0, 1.0,
-          0.0, 1.0
-/*
-                    1.0, 0.0,
                     0.0, 0.0,
+                    1.0, 0.0,
                     1.0, 1.0,
-                    0.0, 1.0*/
+                    0.0, 1.0
                 ];
                 break;
             case "ignore":
@@ -251,7 +247,8 @@
         activeScene = scene;
         if (activeScene.onStart)
         {
-            activeScene.onStart();
+            activeScene.startedTime = globalTiming.currentTime;
+            activeScene.onStart(globalTiming);
         }
     }
     this.setActiveScene = setActiveScene;

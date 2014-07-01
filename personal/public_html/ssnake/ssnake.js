@@ -97,8 +97,8 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                             testtext: {
                                 id: "testtext",
                                 type: "text",
-                                width: 512,
-                                height: 256,
+                                width: 256,
+                                height: 64,
                                 textDefinition:
                                 {
                                     text: "Score:",
@@ -107,8 +107,9 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     fillStyle: "white",
                                     strokeStyle: "#555555",
                                     lineWidth: 1,
-                                    textBaseLine: "middle",
-                                    textPosition: [512/2,256/2]
+                                    textBaseLine: "top",
+                                    textAlign: "left",
+                                    textPosition: [0,0]
                                 }
                             }
                         }

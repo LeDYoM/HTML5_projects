@@ -49,10 +49,10 @@
                 {
                     tObject.canvas = document.createElement("canvas");
                     tObject.context = tObject.canvas.getContext("2d");
-                    var ctx = tObject.context;
                     tObject.canvas.width = tObject.width || 1;
                     tObject.canvas.height = tObject.height || 1;
-                    tObject.textureObject = wgl.createTexture();
+                    var ctx = tObject.context;
+
                     ctx.save();
 
                     if (!tObject.backgroundColor)
@@ -67,7 +67,7 @@
                         drawText(tObject.textDefinition,ctx);
                     }
                     ctx.restore();
-
+                    tObject.textureObject = wgl.createTexture();
                     wgl.handleLoadedTexture(tObject.textureObject,tObject.canvas);
                     tObject.ready = true;
                     resolve(tObject);                    
@@ -83,7 +83,7 @@
         ctx.font = tDef.fontSize + "px "+tDef.fontName;
 
         ctx.textAlign = tDef.textAlign || "center";
-        ctx.textBaseline = tDef.textAlign || "textBaseline";
+        ctx.textBaseline = tDef.textBaseLine || "middle";
 
         var fill = tDef.fillStyle || false;
         if (fill)

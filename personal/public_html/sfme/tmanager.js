@@ -83,7 +83,7 @@
         ctx.font = tDef.fontSize + "px "+tDef.fontName;
 
         ctx.textAlign = tDef.textAlign || "center";
-        ctx.textBaseline = tDef.textBaseLine || "middle";
+        ctx.textBaseline = tDef.textBaseline || "middle";
 
         var fill = tDef.fillStyle || false;
         if (fill)

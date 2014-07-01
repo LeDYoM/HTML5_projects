@@ -26,7 +26,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     fillStyle: "white",
                                     strokeStyle: "#555555",
                                     lineWidth: 1,
-                                    textBaseLine: "middle",
+                                    textBaseline: "middle",
                                     textPosition: [512/2,256/2]
                                 }
                             }
@@ -97,7 +97,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                             testtext: {
                                 id: "testtext",
                                 type: "text",
-                                width: 256,
+                                width: 512,
                                 height: 64,
                                 textDefinition:
                                 {
@@ -107,7 +107,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     fillStyle: "white",
                                     strokeStyle: "#555555",
                                     lineWidth: 1,
-                                    textBaseLine: "top",
+                                    textBaseline: "top",
                                     textAlign: "left",
                                     textPosition: [0,0]
                                 }

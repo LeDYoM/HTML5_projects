@@ -161,6 +161,8 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                         }
                     },
                     lastIndexPart: 0,
+                    firstIndexPart: 0,
+                    speedFactor: 1000,
                     cameras: {
                         camera2d:
                         {
@@ -236,7 +238,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     {
                                         this.partScale = [1.0,1.0,1.0];
                                         var scaleIndex = this.direction[0] !== 0 ? 0 : 1;
-                                        this.partScale[scaleIndex] = (globalTiming.currentTime - this.creationTime) / 1000;
+                                        this.partScale[scaleIndex] = (globalTiming.currentTime - this.creationTime) / this.parentScene.speedFactor;
                                         var createNew = this.partScale[scaleIndex] >= 1.00;
                                         if (createNew)
                                         {

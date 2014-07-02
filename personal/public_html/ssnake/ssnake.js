@@ -163,6 +163,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                     lastIndexPart: 0,
                     firstIndexPart: 0,
                     speedFactor: 1000,
+                    maxSnakeSize: 2,
                     cameras: {
                         camera2d:
                         {
@@ -234,27 +235,58 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                         textureMode: "ignore",
                                         color: [1.0, 0.0, 0.0, 1.0]
                                     },
+                                    state: 0,
                                     onUpdate: function(globalTiming)
                                     {
-                                        this.partScale = [1.0,1.0,1.0];
-                                        var scaleIndex = this.direction[0] !== 0 ? 0 : 1;
-                                        this.partScale[scaleIndex] = (globalTiming.currentTime - this.creationTime) / this.parentScene.speedFactor;
-                                        var createNew = this.partScale[scaleIndex] >= 1.00;
-                                        if (createNew)
+                                        if (this.state === 1)
                                         {
-                                            var remanent = this.partScale[scaleIndex] - 1.00;
-                                            this.scale = [1.0, 1.0, 1.0];
-                                            this.position = this.parentScene.boardModel.getPositionForCell(this.boardCell); 
-
-                                            var newPart = this.createNewPart();
-                                            
-                                            newPart.partScale = [1.0,1.0,1.0];
-                                            newPart.direction = vec3.create(newPart.nextDirection);
-                                            this.parentScene.boardModel.setNextCell(newPart);
-                                            newPart.partScale[scaleIndex] = remanent;
-                                            newPart.setFinalPosition();
+                                            return;
                                         }
-                                        this.setFinalPosition();
+                                        if (this.state === 0)
+                                        {
+                                            this.partScale = [1.0,1.0,1.0];
+                                            var scaleIndex = this.direction[0] !== 0 ? 0 : 1;
+                                            this.partScale[scaleIndex] = (globalTiming.currentTime - this.creationTime) / this.parentScene.speedFactor;
+                                            var createNew = this.partScale[scaleIndex] >= 1.00;
+                                            if (createNew)
+                                            {
+                                                var remanent = this.partScale[scaleIndex] - 1.00;
+                                                this.scale = [1.0, 1.0, 1.0];
+                                                this.position = this.parentScene.boardModel.getPositionForCell(this.boardCell); 
+
+                                                var newPart = this.createNewPart();
+
+                                                newPart.partScale = [1.0,1.0,1.0];
+                                                newPart.direction = vec3.create(newPart.nextDirection);
+                                                this.parentScene.boardModel.setNextCell(newPart);
+                                                newPart.partScale[scaleIndex] = remanent;
+                                                newPart.setFinalPosition();
+                                                this.state = 1;
+
+                                                if (this.parentScene.lastIndexPart - this.parentScene.firstIndexPart > this.parentScene.maxSnakeSize)
+                                                {
+                                                    var firstPart = this.parentCamera.findObject("part_"+this.parentScene.firstIndexPart);
+                                                    firstPart.state = 2;
+                                                    firstPart.creationTime = globalTiming.currentTime;
+                                                    vec3.negate(firstPart.direction);
+                                                    this.parentScene.firstIndexPart++;
+                                                }
+                                            }
+                                            this.setFinalPosition();
+                                        }
+                                        else if (this.state === 2)
+                                        {
+                                            this.partScale = [1.0,1.0,1.0];
+                                            var scaleIndex = this.direction[0] !== 0 ? 0 : 1;
+                                            this.partScale[scaleIndex] = 1.0 - (globalTiming.currentTime - this.creationTime) / this.parentScene.speedFactor;
+                                            var disapeared = this.partScale[scaleIndex] <= 0.00;
+                                            this.setFinalPosition();                 
+                                            if (disapeared)
+                                            {
+                                                this.onUpdate = null;
+                                                this.parentCamera.deleteObject("part_"+(this.parentScene.firstIndexPart-1));
+                                            }
+                                        }
                                     },
                                     setFinalPosition: function()
                                     {
@@ -273,7 +305,6 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     createNewPart: function()
                                     {
                                         var newPart = this.addClone("part_"+(this.parentScene.lastIndexPart+1));
-                                        this.onUpdate = null;
                                         this.parentScene.lastIndexPart++;
                                         newPart.setScale([1.0,1.0,1.0]);
                                         return newPart;

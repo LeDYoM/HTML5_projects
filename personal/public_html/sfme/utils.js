@@ -55,6 +55,19 @@
     {
         return this.typeName(obj) === typeName;
     };
+    this.valueOrResult = function(obj,propName)
+    {
+        var prop = obj[propName];
+        
+        if (typeof prop === "function")
+        {
+            return prop.call(obj);
+        }
+        else
+        {
+            return prop;
+        }
+    }
     this.cloneObject = function(obj)
     {   
         if (obj === null || typeof obj !== "object") return obj;

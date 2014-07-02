@@ -14,7 +14,6 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                     resources: {
                         textures: {
                             testtext: {
-                                id: "testtext",
                                 type: "text",
                                 width: 512,
                                 height: 256,
@@ -111,6 +110,35 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     textAlign: "left",
                                     textPosition: [0,0]
                                 }
+                            },
+                            hudBackground: {
+                                type: "canvas",
+                                backgroundColor:    function()
+                                                    {
+                                                        var context = this.context;
+                                                        // add linear gradient
+                                                        var grd = context.createLinearGradient(0, 0, 1, context.canvas.height);
+                                                        grd.addColorStop(0, "#555555");
+                                                        grd.addColorStop(0.5, "#222222");
+                                                        grd.addColorStop(1, "#555555");
+                                                        return grd;
+
+                                                    },
+                                width: 1,
+                                height: 32,
+                                /*
+                                onDraw: function(context)
+                                {
+                                    // add linear gradient
+                                    var grd = context.createLinearGradient(0, 0, context.canvas.width, context.canvas.height);
+                                    // light blue
+                                    grd.addColorStop(0, '#8ED6FF');   
+                                    // dark blue
+                                    grd.addColorStop(1, '#004CB3');
+                                    context.fillStyle = grd;
+                                    context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+                                }
+                                   */
                             }
                         }
                     },
@@ -119,7 +147,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                         getPositionForCell: function(vec)
                         {
                             // TODO: Implement real boards.
-                            return [vec[0] * 1, vec[1]  * 1 , -7.0 + (vec[2] * 1)];
+                            return [vec[0] * 1, vec[1]  * 1 , -15.0 + (vec[2] * 1)];
                         },
                         getNextCell: function(obj)
                         {
@@ -132,6 +160,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                             obj.boardCell = this.getNextCell(obj);
                         }
                     },
+                    lastIndexPart: 0,
                     cameras: {
                         camera2d:
                         {
@@ -145,14 +174,31 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                             top: 50,
                             bottom: -50.0,
                             objects: {
-                                quad: {
+                                hudBackgroundObject: {
                                     shapeType: "quad_normal",
-                                    width: 64.0,
-                                    height: 32.0,
-                                    position: [0.0, 0.0, -5.0],
+                                    width: 200.0,
+                                    height: 10.0,
+                                    position: [0.0, 45.0, -5.0],
+                                    
                                     material: {
-//                                        blending: true,
-//                                        alpha: 1.0,
+                                        name: "textured",
+                                        textureMode: "attach",
+                                        color: [1.0, 1.0, 1.0, 1.0],
+                                    },
+                                    onCreated: function()
+                                    {
+                                        this.material.texture = this.parentScene.resources.textures.hudBackground;
+                                    }
+                                },
+                                scoreText: {
+                                    shapeType: "quad_normal",
+                                    width: 25.0,
+                                    height: 10.0,
+                                    position: [-37.5, 45.0, -4.0],
+                                    
+                                    material: {
+                                        blending: true,
+                                        alpha: 1.0,
                                         name: "textured",
                                         textureMode: "attach",
                                         color: [1.0, 1.0, 1.0, 1.0],
@@ -161,7 +207,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     {
                                         this.material.texture = this.parentScene.resources.textures.testtext;
                                     }
-                                }
+                                },
                             }
                         },
                         camera: {
@@ -175,15 +221,11 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                             ratio: "normal",
                             zNear: 0.1,
                             zFar: 100.0,
-                            gui: [-50, 50, -50, 50],
-                            lastIndexPart: 0,
                             objects: {
                                 part_0: {
                                     shapeType: "cube",
                                     width: 1.0,
                                     height: 1.0,
-                                    position: [0.0, 0.0, -7.0],
-                                    scale: [1.0,1.0,1.0],
 
                                     material: {
                                         name: "textured",
@@ -194,7 +236,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     {
                                         this.partScale = [1.0,1.0,1.0];
                                         var scaleIndex = this.direction[0] !== 0 ? 0 : 1;
-                                        this.partScale[scaleIndex] = (globalTiming.currentTime - this.creationTime) / 2000;
+                                        this.partScale[scaleIndex] = (globalTiming.currentTime - this.creationTime) / 1000;
                                         var createNew = this.partScale[scaleIndex] >= 1.00;
                                         if (createNew)
                                         {
@@ -228,10 +270,9 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     },
                                     createNewPart: function()
                                     {
-                                        var camera = this.parentCamera;
-                                        var newPart = this.addClone("part_"+(camera.lastIndexPart+1));
+                                        var newPart = this.addClone("part_"+(this.parentScene.lastIndexPart+1));
                                         this.onUpdate = null;
-                                        camera.lastIndexPart++;
+                                        this.parentScene.lastIndexPart++;
                                         newPart.setScale([1.0,1.0,1.0]);
                                         return newPart;
                                     }
@@ -246,7 +287,12 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                         this.cameras.camera.objects.part_0.boardCell = [0,0,0];// = this.boardModel.getPositionForCell([0,0,0]);
                         this.cameras.camera.objects.part_0.direction = [1,0,0];
                         this.cameras.camera.objects.part_0.nextDirection = [1,0,0];  
-                        this.cameras.camera.objects.part_0.creationTime = this.startedTime;
+                        this.cameras.camera.objects.part_0.creationTime = globalTiming.currentTime;
+                        this.score = 0;
+                    },
+                    onUpdate: function(globalTiminig)
+                    {
+                        this.resources.textures.testtext.textDefinition.setText("Score: "+this.score);
                     },
                     inputController: 
                     {
@@ -296,7 +342,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
 //                            console.log("center:"+camera.center[0]+","+camera.center[1]+","+camera.center[2]);
 
                             var camera = parentObject.cameras.camera;
-                            var lastPart = camera.findObject("part_"+camera.lastIndexPart);
+                            var lastPart = camera.findObject("part_"+parentObject.lastIndexPart);
 
                             if (e.keyCode === 37)
                             {

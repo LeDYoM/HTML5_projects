@@ -3,6 +3,7 @@
     "use strict";
     var ready = false;
     var wgl = cns("sfme.internals.webgl");
+    var utils = cns("sfme.utils");
     var dummyTextureDefinition = {
         id: "dummyTexture",
         type: "canvas",
@@ -51,23 +52,30 @@
                     tObject.context = tObject.canvas.getContext("2d");
                     tObject.canvas.width = tObject.width || 1;
                     tObject.canvas.height = tObject.height || 1;
-                    var ctx = tObject.context;
-
-                    ctx.save();
+                    tObject.textureObject = wgl.createTexture();
 
                     if (!tObject.backgroundColor)
                     {
                         tObject.backgroundColor = "#00000000";
                     }
-                    ctx.fillStyle = tObject.backgroundColor;
-                    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
+                    tObject.context.save();
                     if (type === "text")
                     {
-                        drawText(tObject.textDefinition,ctx);
+                        updateText(tObject);
+                        tObject.textDefinition.setText = function(newText)
+                        {
+                            this.text = newText;
+                            updateTextTexture(tObject);
+                        }
+                    } else
+                    {
+                        clearTextureBackground(tObject);
+                        if (tObject.onDraw)
+                        {
+                            tObject.onDraw();
+                        }
                     }
-                    ctx.restore();
-                    tObject.textureObject = wgl.createTexture();
+                    tObject.context.restore();
                     wgl.handleLoadedTexture(tObject.textureObject,tObject.canvas);
                     tObject.ready = true;
                     resolve(tObject);                    
@@ -77,6 +85,26 @@
         }
     };
     this.loadTexture = loadTexture;
+    
+    function updateText(tObject)
+    {
+        clearTextureBackground(tObject);
+        drawText(tObject.textDefinition,tObject.context);
+    }
+    
+    function updateTextTexture(tObject)
+    {
+        tObject.context.save();
+        updateText(tObject);
+        tObject.context.restore();
+        wgl.handleLoadedTexture(tObject.textureObject,tObject.canvas);        
+    }
+    
+    function clearTextureBackground(tObject)
+    {
+        tObject.context.fillStyle = utils.valueOrResult(tObject,"backgroundColor");
+        tObject.context.fillRect(0, 0, tObject.context.canvas.width, tObject.context.canvas.height);        
+    }
     
     function drawText(tDef,ctx)
     {

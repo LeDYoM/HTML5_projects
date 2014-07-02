@@ -247,7 +247,6 @@
         activeScene = scene;
         if (activeScene.onStart)
         {
-            activeScene.startedTime = globalTiming.currentTime;
             activeScene.onStart(globalTiming);
         }
     }

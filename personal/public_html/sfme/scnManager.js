@@ -328,13 +328,11 @@
                 {
                     newScene.cameras[camera].findObject = function(str)
                     {
-                        for (var on in this.objects)
-                        {
-                            if (this.objects[str])
-                            {
-                                return this.objects[str];
-                            }
-                        }
+                        return this.objects[str];
+                    };
+                    newScene.cameras[camera].deleteObject = function(str)
+                    {
+                        delete this.objects[str];
                     }
                     var count = 0;
                     for (var i in newScene.cameras[camera].objects)

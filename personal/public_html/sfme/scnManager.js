@@ -1,21 +1,19 @@
 (function()
 {
     "use strict";
-    var ready = false;
     var wgl = cns("sfme.internals.webgl");
     var tManager = cns("sfme.internals.textureManager");
     var log = cns("sfme.log");
     var _ = cns("sfme.types");
-//    var eManager = cns("sfme.internal.eventManager");
     var iManager = cns("sfme.internal.inputManager");
     var utils = cns("sfme.utils");
     var globalTiming = null;
+    var geometry = cns("sfme.geometry");
 
     var activeScene = null;
 
     this.init = function(globalTiming_)
     {
-        ready = true;
         globalTiming = globalTiming_;
     };
     
@@ -128,67 +126,30 @@
             switch (obj.shapeType)
             {
                 case "triangle_normal":
-                    var w = obj.width || 1.0;
-                    var h = obj.height || 1.0;
-                    vertex=vertex.concat(_.scale1([0.0,1.0,0.0],h/2));
-                    vertex=vertex.concat(_.scale3v([-1.0,-1.0,0.0],[w/2,h/2,0.0]));
-                    vertex=vertex.concat(_.scale3v([1.0,-1.0,0.0],[w/2,h/2,0.0]));
-                    vertexIndices = [0, 1, 2];
+                    var size = [ obj.width || 1.0, obj.height || 1.0, obj.deep || 1.0];
+
+                    vertex = geometry.vertexFor(geometry.MeshType.Triangle,size);
+                    vertexIndices = _.addVertexIndices([0, 1, 2]);
+
                     break;
                 case "quad_normal":
-                    var w = obj.width || 1.0;
-                    var h = obj.height || 1.0;
-                    vertex=vertex.concat(_.scale3v([-1.0,-1.0,0.0],[w/2,h/2,0.0]));
-                    vertex=vertex.concat(_.scale3v([1.0,-1.0,0.0],[w/2,h/2,0.0]));
-                    vertex=vertex.concat(_.scale3v([1.0,1.0,0.0],[w/2,h/2,0.0]));
-                    vertex=vertex.concat(_.scale3v([-1.0,1.0,0.0],[w/2,h/2,0.0]));
-                    vertexIndices = [0, 1, 2, 0,2,3];
+                    var size = [ obj.width || 1.0, obj.height || 1.0, obj.deep || 1.0];
+                    
+                    vertex = geometry.vertexFor(geometry.MeshType.Quad,size);
+                    vertexIndices = _.addVertexIndices([0, 1, 2, 0, 2, 3]);
                     break;
                 case "cube":
-                    var w = obj.width || 1.0;
-                    var h = obj.height || 1.0;
-                    var p = 1.0;
-                    
-                    // Front face
-                    vertex=vertex.concat(_.scale3v([-1.0,-1.0,1.0],[w/2,h/2,p/2]));
-                    vertex=vertex.concat(_.scale3v([1.0,-1.0,1.0],[w/2,h/2,p/2]));
-                    vertex=vertex.concat(_.scale3v([1.0,1.0,1.0],[w/2,h/2,p/2]));
-                    vertex=vertex.concat(_.scale3v([-1.0,1.0,1.0],[w/2,h/2,p/2]));
-                    // Back face
-                    vertex=vertex.concat(_.scale3v([-1.0,-1.0,-1.0],[w/2,h/2,p/2]));
-                    vertex=vertex.concat(_.scale3v([-1.0,1.0,-1.0],[w/2,h/2,p/2]));
-                    vertex=vertex.concat(_.scale3v([1.0,1.0,-1.0],[w/2,h/2,p/2]));
-                    vertex=vertex.concat(_.scale3v([1.0,-1.0,-1.0],[w/2,h/2,p/2]));
-                    // Top face
-                    vertex=vertex.concat(_.scale3v([-1.0,1.0,-1.0],[w/2,h/2,p/2]));
-                    vertex=vertex.concat(_.scale3v([-1.0,1.0,1.0],[w/2,h/2,p/2]));
-                    vertex=vertex.concat(_.scale3v([1.0,1.0,1.0],[w/2,h/2,p/2]));
-                    vertex=vertex.concat(_.scale3v([1.0,1.0,-1.0],[w/2,h/2,p/2]));
-                    // Bottom face
-                    vertex=vertex.concat(_.scale3v([-1.0,-1.0,-1.0],[w/2,h/2,p/2]));
-                    vertex=vertex.concat(_.scale3v([1.0,-1.0,-1.0],[w/2,h/2,p/2]));
-                    vertex=vertex.concat(_.scale3v([1.0,-1.0,1.0],[w/2,h/2,p/2]));
-                    vertex=vertex.concat(_.scale3v([-1.0,-1.0,1.0],[w/2,h/2,p/2]));
-                    // Right face
-                    vertex=vertex.concat(_.scale3v([1.0,-1.0,-1.0],[w/2,h/2,p/2]));
-                    vertex=vertex.concat(_.scale3v([1.0,1.0,-1.0],[w/2,h/2,p/2]));
-                    vertex=vertex.concat(_.scale3v([1.0,1.0,1.0],[w/2,h/2,p/2]));
-                    vertex=vertex.concat(_.scale3v([1.0,-1.0,1.0],[w/2,h/2,p/2]));
-                    // Left face
-                    vertex=vertex.concat(_.scale3v([-1.0,-1.0,-1.0],[w/2,h/2,p/2]));
-                    vertex=vertex.concat(_.scale3v([-1.0,-1.0,1.0],[w/2,h/2,p/2]));
-                    vertex=vertex.concat(_.scale3v([-1.0,1.0,1.0],[w/2,h/2,p/2]));
-                    vertex=vertex.concat(_.scale3v([-1.0,1.0,-1.0],[w/2,h/2,p/2]));
+                    var size = [ obj.width || 1.0, obj.height || 1.0, obj.deep || 1.0];
+                    vertex = geometry.vertexFor(geometry.MeshType.CubeType0,size);
 
-                    vertexIndices = [
+                    vertexIndices = _.addVertexIndices([
                         0, 1, 2,      0, 2, 3,    // Front face
                         4, 5, 6,      4, 6, 7,    // Back face
                         8, 9, 10,     8, 10, 11,  // Top face
                         12, 13, 14,   12, 14, 15, // Bottom face
                         16, 17, 18,   16, 18, 19, // Right face
                         20, 21, 22,   20, 22, 23  // Left face
-                    ];
-                    
+                    ]);
                     break;
             }
             obj.vertex = vertex;

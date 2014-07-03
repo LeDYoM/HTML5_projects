@@ -34,37 +34,39 @@
         {
             case this.MeshType.Quad:
 
-                var qVertex = _.addVertexFaceFromCenter([[-1.0,-1.0,0.0],
-                                                    [1.0,-1.0,0.0],
-                                                    [1.0,1.0,0.0],
-                                                    [-1.0,1.0,0.0]],size);
+                var qVertex = _.addVertexFaceFromCenter([[-1.0,-1.0,1.0],
+                                                    [1.0,-1.0,1.0],
+                                                    [1.0,1.0,1.0],
+                                                    [-1.0,1.0,1.0]],size);
                                                     
                     var matrix = mat4.identity(mat4.create());
-                    mat4.rotate(matrix,Math.PI,[0,1,0],matrix);
+//                    mat4.rotate(matrix,Math.PI,[0,1,0],matrix);
                     vertex = transformVertexArray(matrix,qVertex);
 
                 break;
             case this.MeshType.Triangle:
-                vertex = _.addVertexFaceFromCenter([[0.0,1.0,0.0],
-                                                [-1.0,-1.0,0.0],
-                                                [1.0,-1.0,0.0]],size);
+                vertex = _.addVertexFaceFromCenter([[0.0,1.0,1.0],
+                                                [-1.0,-1.0,1.0],
+                                                [1.0,-1.0,1.0]],size);
                 break;
             case this.MeshType.CubeType0:
+                    var qVertex = _.addVertexFaceFromCenter([[-1.0,-1.0,1.0], [1.0,-1.0,1.0], [1.0,1.0,1.0], [-1.0,1.0,1.0]],size);
                     // Front face
-                    vertex = _.addVertexFaceFromCenter([[-1.0,-1.0,0.0], [1.0,-1.0,0.0], [1.0,1.0,0.0], [-1.0,1.0,0.0]],size);
                     var matrix = mat4.identity(mat4.create());
-                    mat4.rotate(matrix,Math.PI,[0,1,0],matrix);
-                    var tva = transformVertexArray(matrix,[[-0.5,-0.5,0.0], [0.5,-0.5,0.0], [0.5,0.5,0.0], [-0.5,0.5,0.0]]);
-                    for (var i=0;i<tva.length;++i)
-                    {
-//                        vertex = vertex.concat(tva[i]);
-                    }
+//                    mat4.rotate(matrix,Math.PI,[0,1,0],matrix);
+                    vertex = vertex.concat(transformVertexArray(matrix,qVertex));
                     // Back face
-                    
-                    vertex=vertex.concat(_.addVertexFaceFromCenter([[-1.0,-1.0,-1.0],
+                    matrix = mat4.identity(mat4.create());
+                    mat4.rotate(matrix,Math.PI,[0,1,0],matrix);
+//                    mat4.translate(matrix,[2.0,2.0,0.0],matrix);
+                    vertex = vertex.concat(transformVertexArray(matrix,qVertex));
+/*
+                vertex=vertex.concat(_.addVertexFaceFromCenter([[-1.0,-1.0,-1.0],
                                                         [-1.0,1.0,-1.0],
                                                         [1.0,1.0,-1.0],
                                                         [1.0,-1.0,-1.0]],size));
+*/
+                                                       /*
                     // Top face
                     vertex=vertex.concat(_.addVertexFaceFromCenter([[-1.0,1.0,-1.0],
                                                         [-1.0,1.0,1.0],
@@ -86,6 +88,7 @@
                                                         [-1.0,-1.0,1.0],
                                                         [-1.0,1.0,1.0],
                                                         [-1.0,1.0,-1.0]],size));
+                                                    */
                 break;
         }
         return vertex;

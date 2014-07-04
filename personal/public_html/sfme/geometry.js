@@ -26,6 +26,24 @@
         return result;
     }
     
+    function rotationMatrix(params)
+    {
+        var matrix = mat4.identity(mat4.create());
+        mat4.rotate(matrix,params.angle,params.axis,matrix);
+        return matrix;
+    }
+    
+    function processVertex(transformMatrixFunc,parameters,originalFace)
+    {
+        var vertex = [];
+        for (var params in parameters)
+        {
+            var matrix = transformMatrixFunc(parameters[params]);
+            vertex = vertex.concat(transformVertexArray(matrix,originalFace));
+        }
+        return vertex;
+    }
+    
     this.vertexFor = function(meshType,size)
     {
         var vertex = [];
@@ -39,56 +57,50 @@
                                                     [1.0,1.0,1.0],
                                                     [-1.0,1.0,1.0]],size);
                                                     
-                    var matrix = mat4.identity(mat4.create());
-//                    mat4.rotate(matrix,Math.PI,[0,1,0],matrix);
-                    vertex = transformVertexArray(matrix,qVertex);
-
+                var matrix = mat4.identity(mat4.create());
+                vertex = transformVertexArray(matrix,qVertex);
                 break;
             case this.MeshType.Triangle:
                 vertex = _.addVertexFaceFromCenter([[0.0,1.0,1.0],
                                                 [-1.0,-1.0,1.0],
                                                 [1.0,-1.0,1.0]],size);
+                var matrix = mat4.identity(mat4.create());
+                vertex = transformVertexArray(matrix,qVertex);
                 break;
             case this.MeshType.CubeType0:
-                    var qVertex = _.addVertexFaceFromCenter([[-1.0,-1.0,1.0], [1.0,-1.0,1.0], [1.0,1.0,1.0], [-1.0,1.0,1.0]],size);
+                var qVertex = _.addVertexFaceFromCenter([[-1.0,-1.0,1.0], [1.0,-1.0,1.0], [1.0,1.0,1.0], [-1.0,1.0,1.0]],size);
+                vertex = processVertex(rotationMatrix,[
                     // Front face
-                    var matrix = mat4.identity(mat4.create());
-//                    mat4.rotate(matrix,Math.PI,[0,1,0],matrix);
-                    vertex = vertex.concat(transformVertexArray(matrix,qVertex));
+                    {
+                        angle: 0,
+                        axis: [0,0,0]
+                    },
                     // Back face
-                    matrix = mat4.identity(mat4.create());
-                    mat4.rotate(matrix,Math.PI,[0,1,0],matrix);
-//                    mat4.translate(matrix,[2.0,2.0,0.0],matrix);
-                    vertex = vertex.concat(transformVertexArray(matrix,qVertex));
-/*
-                vertex=vertex.concat(_.addVertexFaceFromCenter([[-1.0,-1.0,-1.0],
-                                                        [-1.0,1.0,-1.0],
-                                                        [1.0,1.0,-1.0],
-                                                        [1.0,-1.0,-1.0]],size));
-*/
-                                                       /*
+                    {
+                        angle: Math.PI,
+                        axis: [0,1,0]
+                    },
                     // Top face
-                    vertex=vertex.concat(_.addVertexFaceFromCenter([[-1.0,1.0,-1.0],
-                                                        [-1.0,1.0,1.0],
-                                                        [1.0,1.0,1.0],
-                                                        [1.0,-1.0,-1.0]],size));
-                                                    
+                    {
+                        angle: Math.PI/2,
+                        axis: [-1,0,0]
+                    },
                     // Bottom face
-                    vertex=vertex.concat(_.addVertexFaceFromCenter([[-1.0,-1.0,-1.0],
-                                                        [1.0,-1.0,-1.0],
-                                                        [1.0,-1.0,1.0],
-                                                        [-1.0,-1.0,1.0]],size));
+                    {
+                        angle: Math.PI/2,
+                        axis: [1,0,0]
+                    },
                     // Right face
-                    vertex=vertex.concat(_.addVertexFaceFromCenter([[1.0,-1.0,-1.0],
-                                                        [1.0,1.0,-1.0],
-                                                        [1.0,1.0,1.0],
-                                                        [1.0,-1.0,1.0]],size));
+                    {
+                        angle: Math.PI/2,
+                        axis: [0,1,0]
+                    },
                     // Left face
-                    vertex=vertex.concat(_.addVertexFaceFromCenter([[-1.0,-1.0,-1.0],
-                                                        [-1.0,-1.0,1.0],
-                                                        [-1.0,1.0,1.0],
-                                                        [-1.0,1.0,-1.0]],size));
-                                                    */
+                    {
+                        angle: Math.PI/2,
+                        axis: [0,-1,0]
+                    },                    
+                ],qVertex);
                 break;
         }
         return vertex;

@@ -44,9 +44,9 @@
         return vertex;
     }
     
-    this.vertexFor = function(meshType,size)
+    this.vertexFor = function(obj,meshType,size)
     {
-        var vertex = [];
+        obj.vertex = [];
         
         switch (meshType)
         {
@@ -58,18 +58,18 @@
                                                     [-1.0,1.0,1.0]],size);
                                                     
                 var matrix = mat4.identity(mat4.create());
-                vertex = transformVertexArray(matrix,qVertex);
+                obj.vertex = transformVertexArray(matrix,qVertex);
                 break;
             case this.MeshType.Triangle:
-                vertex = _.addVertexFaceFromCenter([[0.0,1.0,1.0],
+                var qVertex = _.addVertexFaceFromCenter([[0.0,1.0,1.0],
                                                 [-1.0,-1.0,1.0],
                                                 [1.0,-1.0,1.0]],size);
                 var matrix = mat4.identity(mat4.create());
-                vertex = transformVertexArray(matrix,qVertex);
+                obj.vertex = transformVertexArray(matrix,qVertex);
                 break;
             case this.MeshType.CubeType0:
                 var qVertex = _.addVertexFaceFromCenter([[-1.0,-1.0,1.0], [1.0,-1.0,1.0], [1.0,1.0,1.0], [-1.0,1.0,1.0]],size);
-                vertex = processVertex(rotationMatrix,[
+                obj.vertex = processVertex(rotationMatrix,[
                     // Front face
                     {
                         angle: 0,
@@ -103,7 +103,6 @@
                 ],qVertex);
                 break;
         }
-        return vertex;
     };
 }
 ).apply(cns("sfme.geometry"));

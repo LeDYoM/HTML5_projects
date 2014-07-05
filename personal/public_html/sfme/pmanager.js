@@ -3,6 +3,11 @@
     var loader = cns("sfme.internals");
     var log = cns("sfme.log");
     var scnManager = cns("sfme.internals.sceneManager");
+    var _ = cns("sfme.types");
+    var iManager = cns("sfme.internal.inputManager");
+    var utils = cns("sfme.utils");
+    var globalTiming = null;
+    var geometry = cns("sfme.geometry");
     var this_ = this;
     this.ready = false;
     this.currentLoadingMainModule = "";
@@ -33,6 +38,8 @@
                 
                 // Publish public API
                 tempModule.sfmeAPI = {};
+                tempModule.sfmeAPI.enums = {};
+                tempModule.sfmeAPI.enums.MeshType = geometry.MeshType;
                 tempModule.sfmeAPI.defineScenes = function(args)
                 {
                     tempModule.programLogic = args;

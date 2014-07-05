@@ -125,22 +125,22 @@
         {
             switch (obj.shapeType)
             {
-                case "triangle_normal":
+                case geometry.MeshType.Triangle:
                     var size = [ obj.width || 1.0, obj.height || 1.0, obj.deep || 1.0];
 
-                    vertex = geometry.vertexFor(geometry.MeshType.Triangle,size);
+                    geometry.vertexFor(obj,geometry.MeshType.Triangle,size);
                     vertexIndices = _.addVertexIndices([0, 1, 2]);
 
                     break;
-                case "quad_normal":
+                case geometry.MeshType.Quad:
                     var size = [ obj.width || 1.0, obj.height || 1.0, obj.deep || 1.0];
                     
-                    vertex = geometry.vertexFor(geometry.MeshType.Quad,size);
+                    geometry.vertexFor(obj,geometry.MeshType.Quad,size);
                     vertexIndices = _.addVertexIndices([0, 1, 2, 0, 2, 3]);
                     break;
-                case "cube":
+                case geometry.MeshType.CubeType0:
                     var size = [ obj.width || 1.0, obj.height || 1.0, obj.deep || 1.0];
-                    vertex = geometry.vertexFor(geometry.MeshType.CubeType0,size);
+                    geometry.vertexFor(obj,geometry.MeshType.CubeType0,size);
 
                     vertexIndices = _.addVertexIndices([
                         0, 1, 2,      0, 2, 3,    // Front face
@@ -152,7 +152,6 @@
                     ]);
                     break;
             }
-            obj.vertex = vertex;
             obj.vertexIndices = vertexIndices;
             obj.numIndices = obj.vertexIndices.length;
         }

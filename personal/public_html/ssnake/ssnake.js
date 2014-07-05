@@ -5,6 +5,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
     this.init = function(sfmeAPI_)
     {
         this.sfmeAPI = sfmeAPI_;
+        var enums = this.sfmeAPI.enums;
         
         this.sfmeAPI.defineScenes(
         {
@@ -44,7 +45,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                             bottom: -50.0,
                             objects: {
                                 quad: {
-                                    shapeType: "quad_normal",
+                                    shapeType: enums.MeshType.Quad,
                                     width: 64.0,
                                     height: 32.0,
                                     position: [0.0, 0.0, -5.0],
@@ -178,7 +179,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                             bottom: -50.0,
                             objects: {
                                 hudBackgroundObject: {
-                                    shapeType: "quad_normal",
+                                    shapeType: enums.MeshType.Quad,
                                     width: 200.0,
                                     height: 10.0,
                                     position: [0.0, 45.0, -5.0],
@@ -194,7 +195,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     }
                                 },
                                 scoreText: {
-                                    shapeType: "quad_normal",
+                                    shapeType: enums.MeshType.Quad,
                                     width: 25.0,
                                     height: 10.0,
                                     position: [-37.5, 45.0, -4.0],
@@ -226,7 +227,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                             zFar: 100.0,
                             objects: {
                                 part_0: {
-                                    shapeType: "cube",
+                                    shapeType: enums.MeshType.CubeType0,
                                     width: 1.0,
                                     height: 1.0,
 

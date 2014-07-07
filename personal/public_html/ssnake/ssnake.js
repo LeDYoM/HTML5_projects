@@ -14,7 +14,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                 intro: {
                     resources: {
                         textures: {
-                            testtext: {
+                            starttext: {
                                 type: "text",
                                 width: 512,
                                 height: 256,
@@ -29,7 +29,29 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     textBaseline: "middle",
                                     textPosition: [512/2,256/2]
                                 }
+                            },
+                            testtext2: {
+                                type: "text",
+                                width: 32,
+                                height: 64,
+                                backgroundColor: "white",
+                                textDefinition:
+                                {
+                                    text: "1",
+                                    fontSize: 55,
+                                    fontName: "Georgia",
+                                    fillStyle: "white",
+                                    strokeStyle: "#555555",
+                                    lineWidth: 1,
+                                    textBaseline: "middle",
+                                    textPosition: [16,32]
+                                },
+                                onDraw: function()
+                                {
+                                    
+                                }
                             }
+
                         }
                     },
                     cameras: {
@@ -78,7 +100,9 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     },
                                     onCreated: function()
                                     {
-                                        this.material.texture = this.parentScene.resources.textures.testtext;
+//                                        this.material.texture = this.parentScene.resources.textures.starttext;
+                                        this.material.texture = this.parentScene.resources.textures.testtext2;
+
                                     }
                                 }
                             }
@@ -126,20 +150,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
 
                                                     },
                                 width: 1,
-                                height: 32,
-                                /*
-                                onDraw: function(context)
-                                {
-                                    // add linear gradient
-                                    var grd = context.createLinearGradient(0, 0, context.canvas.width, context.canvas.height);
-                                    // light blue
-                                    grd.addColorStop(0, '#8ED6FF');   
-                                    // dark blue
-                                    grd.addColorStop(1, '#004CB3');
-                                    context.fillStyle = grd;
-                                    context.fillRect(0, 0, context.canvas.width, context.canvas.height);
-                                }
-                                   */
+                                height: 32
                             }
                         }
                     },
@@ -310,6 +321,19 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                         newPart.setScale([1.0,1.0,1.0]);
                                         return newPart;
                                     }
+                                },
+                                scoreNode:
+                                {
+                                    shapeType: enums.MeshType.CubeType0,
+                                    width: 1.0,
+                                    height: 1.0,
+                                    position: [0.0, 0.0, -7.0],
+
+                                    material: {
+                                        name: "textured",
+                                        textureMode: "ignore",
+                                        color: [1.0, 1.0, 1.0, 1.0]
+                                    },
                                 }
                             }
                         }

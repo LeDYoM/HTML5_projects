@@ -40,6 +40,36 @@
             }
             return ind;
         };
+        
+        obj.mesh.getNumVertexForFace = function(face)
+        {
+            return this.faces[face].vertex.length;
+        };
+
+        obj.mesh.getNumVertex = function()
+        {
+            var nv = 0;
+            for (var i=0;i<this.faces.length;++i)
+            {
+                nv += this.getNumVertexForFace(i);
+            }
+            return nv;
+        };
+    
+        obj.mesh.getNumIndicesForFace = function(face)
+        {
+            return this.faces[face].indices.length;
+        };
+
+        obj.mesh.getNumIndices = function()
+        {
+            var nv = 0;
+            for (var i=0;i<this.faces.length;++i)
+            {
+                nv += this.getNumIndicesForFace(i);
+            }
+            return nv;
+        };
 
     };
 

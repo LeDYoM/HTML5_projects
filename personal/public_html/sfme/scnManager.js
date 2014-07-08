@@ -152,7 +152,7 @@
                     ]);
                     break;
             }
-            obj.vertexIndices = vertexIndices;
+//            obj.vertexIndices = vertexIndices;
             obj.numIndices = obj.vertexIndices.length;
         }
         obj.numVertex = Math.floor(obj.vertex.length / 3);

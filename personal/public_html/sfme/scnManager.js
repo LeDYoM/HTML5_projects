@@ -129,27 +129,16 @@
                     var size = [ obj.width || 1.0, obj.height || 1.0, obj.deep || 1.0];
 
                     geometry.vertexFor(obj,geometry.MeshType.Triangle,size);
-                    vertexIndices = _.addVertexIndices([0, 1, 2]);
 
                     break;
                 case geometry.MeshType.Quad:
                     var size = [ obj.width || 1.0, obj.height || 1.0, obj.deep || 1.0];
                     
                     geometry.vertexFor(obj,geometry.MeshType.Quad,size);
-                    vertexIndices = _.addVertexIndices([0, 1, 2, 0, 2, 3]);
                     break;
                 case geometry.MeshType.CubeType0:
                     var size = [ obj.width || 1.0, obj.height || 1.0, obj.deep || 1.0];
                     geometry.vertexFor(obj,geometry.MeshType.CubeType0,size);
-
-                    vertexIndices = _.addVertexIndices([
-                        0, 1, 2,      0, 2, 3,    // Front face
-                        4, 5, 6,      4, 6, 7,    // Back face
-                        8, 9, 10,     8, 10, 11,  // Top face
-                        12, 13, 14,   12, 14, 15, // Bottom face
-                        16, 17, 18,   16, 18, 19, // Right face
-                        20, 21, 22,   20, 22, 23  // Left face
-                    ]);
                     break;
             }
 //            obj.vertexIndices = vertexIndices;

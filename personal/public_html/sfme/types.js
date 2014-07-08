@@ -61,7 +61,8 @@
         for (var i=0;i<vertexArray.length;++i)
         {
             var temp = this.scale1(this.scale3v(vertexArray[i],size),0.5);
-            v=v.concat(temp);
+//            v=v.concat(temp);
+            v.push(temp);
         }
         return v;        
     }

@@ -119,28 +119,13 @@
     function createObject(parentScene_,obj)
     {
         obj.parentScene = parentScene_;
-        var vertex = [];
-        var vertexIndices = [];
+        obj.material.color = obj.material.color || [1.0,1.0,1.0,1.0];
+
         if (obj.shapeType)
         {
-            switch (obj.shapeType)
-            {
-                case geometry.MeshType.Triangle:
-                    var size = [ obj.width || 1.0, obj.height || 1.0, obj.deep || 1.0];
+            var size = [ obj.width || 1.0, obj.height || 1.0, obj.deep || 1.0];
 
-                    geometry.vertexFor(obj,geometry.MeshType.Triangle,size);
-
-                    break;
-                case geometry.MeshType.Quad:
-                    var size = [ obj.width || 1.0, obj.height || 1.0, obj.deep || 1.0];
-                    
-                    geometry.vertexFor(obj,geometry.MeshType.Quad,size);
-                    break;
-                case geometry.MeshType.CubeType0:
-                    var size = [ obj.width || 1.0, obj.height || 1.0, obj.deep || 1.0];
-                    geometry.vertexFor(obj,geometry.MeshType.CubeType0,size);
-                    break;
-            }
+            geometry.vertexFor(obj,obj.shapeType,size);
 //            obj.vertexIndices = vertexIndices;
             obj.numIndices = obj.vertexIndices.length;
         }

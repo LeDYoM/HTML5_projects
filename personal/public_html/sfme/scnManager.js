@@ -125,7 +125,7 @@
         {
             var size = [ obj.width || 1.0, obj.height || 1.0, obj.deep || 1.0];
 
-            geometry.vertexFor(obj,obj.shapeType,size);
+            geometry.createGeometry(obj,obj.shapeType,size,obj.material.color);
 //            obj.vertexIndices = vertexIndices;
             obj.numIndices = obj.vertexIndices.length;
         }
@@ -153,16 +153,6 @@
                 break;
         }
         obj.material.textureCoords = textureCoords;
-
-        if (obj.material.color)
-        {
-            var colors = [];
-            for (var i=0;i<Math.floor(obj.vertex.length / 3);++i)
-            {
-                colors = colors.concat(obj.material.color);
-            }
-            obj.material.colors = colors;
-        }
         wgl.createObject(obj);
         if (!obj.material.textureObject)
         {

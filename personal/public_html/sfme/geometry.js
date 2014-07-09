@@ -1,6 +1,6 @@
 (function()
 {
-    this.addFace = function (obj,vertex,indices)
+    this.addFace = function (obj,vertex,indices,colors)
     {
         obj.mesh = obj.mesh || {};
         obj.mesh.faces = obj.mesh.faces || [];
@@ -11,6 +11,8 @@
         obj.mesh.faces[index].vertex = vertex;
         obj.mesh.faces[index].indices = obj.mesh.faces[index].indices || [];
         obj.mesh.faces[index].indices = indices;
+        obj.mesh.faces[index].colors = obj.mesh.faces[index].colors || [];
+        obj.mesh.faces[index].colors = colors;
 
         obj.mesh.getMeshVertexArray = function()
         {
@@ -23,6 +25,21 @@
                 }
             }
             return v;
+        };
+
+        obj.mesh.getNumVertexForFace = function(face)
+        {
+            return this.faces[face].vertex.length;
+        };
+
+        obj.mesh.getNumVertex = function()
+        {
+            var nv = 0;
+            for (var i=0;i<this.faces.length;++i)
+            {
+                nv += this.getNumVertexForFace(i);
+            }
+            return nv;
         };
 
         obj.mesh.getMeshIndicesArray = function()
@@ -40,22 +57,7 @@
             }
             return ind;
         };
-        
-        obj.mesh.getNumVertexForFace = function(face)
-        {
-            return this.faces[face].vertex.length;
-        };
-
-        obj.mesh.getNumVertex = function()
-        {
-            var nv = 0;
-            for (var i=0;i<this.faces.length;++i)
-            {
-                nv += this.getNumVertexForFace(i);
-            }
-            return nv;
-        };
-    
+            
         obj.mesh.getNumIndicesForFace = function(face)
         {
             return this.faces[face].indices.length;
@@ -71,6 +73,33 @@
             return nv;
         };
 
+        obj.mesh.getMeshColorsArray = function()
+        {
+            var c = [];
+            for (var i=0;i<this.faces.length;++i)
+            {
+                for (var j=0;j<this.faces[i].colors.length;++j)
+                {
+                    c = c.concat(this.faces[i].colors[j]);
+                }
+            }
+            return c;
+        };
+
+        obj.mesh.getNumColorsForFace = function(face)
+        {
+            return this.faces[face].colors.length;
+        };
+
+        obj.mesh.getNumColors = function()
+        {
+            var nc = 0;
+            for (var i=0;i<this.faces.length;++i)
+            {
+                nc += this.getNumColorsForFace(i);
+            }
+            return nc;
+        };
     };
 
     function transformVertex(matrix,v)
@@ -78,7 +107,7 @@
         return mat4.multiplyVec3(matrix,v);
     }
 
-    this.addTransformedFace = function(obj,transformMatrixFunc,parameters,originalFace,indices)
+    this.addTransformedFace = function(obj,transformMatrixFunc,parameters,originalFace,indices,colors)
     {
         var vertex = [];
         var matrix = transformMatrixFunc(parameters);
@@ -86,14 +115,14 @@
         {
             vertex.push(transformVertex(matrix,originalFace[i]));
         }
-        this.addFace(obj,vertex,indices);
+        this.addFace(obj,vertex,indices,colors);
     };
 
-    this.addTransformedFaces = function(obj,transformMatrixFunc,parameters,originalFace,indices)
+    this.addTransformedFaces = function(obj,transformMatrixFunc,parameters,originalFace,indices,colors)
     {
         for (var param in parameters)
         {
-            this.addTransformedFace(obj,transformMatrixFunc,parameters[param],originalFace,indices);
+            this.addTransformedFace(obj,transformMatrixFunc,parameters[param],originalFace,indices,colors);
         }
     };
 }
@@ -116,11 +145,20 @@
         mat4.rotate(matrix,params.angle,params.axis,matrix);
         return matrix;
     }
-   
-    this.vertexFor = function(obj,meshType,size)
+
+    function cloneColors(color,numVertex)
+    {
+        var colors = [];
+        for (var i=0;i<numVertex;++i)
+        {
+            colors.push(color);
+        }
+        return colors;
+    }
+    this.createGeometry = function(obj,meshType,size,color)
     {
         obj.vertex = [];
-        
+       
         switch (meshType)
         {
             case this.MeshType.Quad:
@@ -129,19 +167,22 @@
                                                     [1.0,-1.0,1.0],
                                                     [1.0,1.0,1.0],
                                                     [-1.0,1.0,1.0]],size);
-                mesh.addFace(obj,qVertex,[0,1,2,0,2,3]);
+                var colors = cloneColors(color,qVertex.length);
+
+                mesh.addFace(obj,qVertex,[0,1,2,0,2,3],colors);
                 
                 break;
             case this.MeshType.Triangle:
                 var qVertex = _.addVertexFaceFromCenter([[0.0,1.0,1.0],
                                                 [-1.0,-1.0,1.0],
                                                 [1.0,-1.0,1.0]],size);
-                mesh.addFace(obj,qVertex,[0,1,2]);
+                var colors = cloneColors(color,qVertex.length);
+                mesh.addFace(obj,qVertex,[0,1,2],colors);
 
                 break;
             case this.MeshType.CubeType0:
                 var qVertex = _.addVertexFaceFromCenter([[-1.0,-1.0,1.0], [1.0,-1.0,1.0], [1.0,1.0,1.0], [-1.0,1.0,1.0]],size);
-//                mesh.addFace(obj,qVertex);
+                var colors = cloneColors(color,qVertex.length);
                 mesh.addTransformedFaces(obj,rotationMatrix,[
                     // Front face
                     {
@@ -173,11 +214,12 @@
                         angle: Math.PI/2,
                         axis: [0,-1,0]
                     },                    
-                ],qVertex,[0,1,2,0,2,3]);
+                ],qVertex,[0,1,2,0,2,3],colors);
                 break;
         }
-        obj.vertex = obj.mesh.getMeshVertexArray(obj);
-        obj.vertexIndices = obj.mesh.getMeshIndicesArray(obj);
+        obj.vertex = obj.mesh.getMeshVertexArray();
+        obj.vertexIndices = obj.mesh.getMeshIndicesArray();
+        obj.material.colors = obj.mesh.getMeshColorsArray();
     };
 }
 ).apply(cns("sfme.geometry"));

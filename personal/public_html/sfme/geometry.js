@@ -1,6 +1,6 @@
 (function()
 {
-    this.addFace = function (obj,vertex,indices,colors)
+    this.addFace = function (obj,vertex,indices,colors,textureMode)
     {
         obj.mesh = obj.mesh || {};
         obj.mesh.faces = obj.mesh.faces || [];
@@ -13,6 +13,7 @@
         obj.mesh.faces[index].indices = indices;
         obj.mesh.faces[index].colors = obj.mesh.faces[index].colors || [];
         obj.mesh.faces[index].colors = colors;
+        obj.mesh.faces[index].textureCoords = [[0.0, 0.0],[1.0, 0.0],[1.0, 1.0],[0.0, 1.0]];
 
         obj.mesh.getMeshVertexArray = function()
         {
@@ -100,7 +101,21 @@
             }
             return nc;
         };
+        
+        obj.mesh.getMeshTextureCoordsArray = function()
+        {
+            var tc = [];
+            for (var i=0;i<this.faces.length;++i)
+            {
+                for (var j=0;j<this.faces[i].textureCoords.length;++j)
+                {
+                    tc = tc.concat(this.faces[i].textureCoords[j]);
+                }
+            }
+            return tc;
+        };
     };
+    
 
     function transformVertex(matrix,v)
     {

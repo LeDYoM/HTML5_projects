@@ -132,21 +132,13 @@
         obj_.vertexColorBuffer.itemSize = 4;
         obj_.vertexColorBuffer.numItems = obj_.mesh.getNumVertex();
 
-        if (obj_.material.textureCoords)
-        {
-            obj_.vertexTextureCoordBuffer = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, obj_.vertexTextureCoordBuffer);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(obj_.material.textureCoords), gl.STATIC_DRAW);
-            obj_.vertexTextureCoordBuffer.itemSize = 2;
-            obj_.vertexTextureCoordBuffer.numItems = obj_.numVertex;
-        }
+        obj_.vertexTextureCoordBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, obj_.vertexTextureCoordBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(obj_.mesh.getMeshTextureCoordsArray()), gl.STATIC_DRAW);
+        obj_.vertexTextureCoordBuffer.itemSize = 2;
+        obj_.vertexTextureCoordBuffer.numItems = obj_.numVertex;
    }
     this.createObject = createObject;
-    
-    function createMaterial(material)
-    {
-        
-    }
     
     function setBlending(value)
     {

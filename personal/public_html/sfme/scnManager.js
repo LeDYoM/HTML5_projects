@@ -133,6 +133,7 @@
         updateBoundingBox(obj);
 
         obj.material.textureMode = obj.material.textureMode || "ignore";
+        /*
         var textureCoords = [];
         switch (obj.material.textureMode)
         {
@@ -153,6 +154,7 @@
                 break;
         }
         obj.material.textureCoords = textureCoords;
+        */
         wgl.createObject(obj);
         if (!obj.material.textureObject)
         {

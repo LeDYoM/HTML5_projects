@@ -72,11 +72,11 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     height: 32.0,
                                     position: [0.0, 0.0, -5.0],
                                     color: [1.0, 1.0, 1.0, 1.0],
+                                    textureMode: "attach",
                                     material: {
                                         blending: true,
                                         alpha: 1.0,
-                                        name: "textured",
-                                        textureMode: "attach",
+                                        name: "textured"
                                     },
                                     animations: {
                                         showText: {
@@ -195,10 +195,10 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     height: 10.0,
                                     position: [0.0, 45.0, -5.0],
                                     color: [1.0, 1.0, 1.0, 1.0],
+                                    textureMode: "attach",
                                     
                                     material: {
-                                        name: "textured",
-                                        textureMode: "attach"
+                                        name: "textured"
                                     },
                                     onCreated: function()
                                     {
@@ -211,12 +211,12 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     height: 10.0,
                                     position: [-37.5, 45.0, -4.0],
                                     color: [1.0, 1.0, 1.0, 1.0],
+                                    textureMode: "attach",
                                     
                                     material: {
-                                        blending: true,
-                                        alpha: 1.0,
                                         name: "textured",
-                                        textureMode: "attach"
+                                        blending: true,
+                                        alpha: 1.0
                                     },
                                     onCreated: function()
                                     {
@@ -242,10 +242,10 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     width: 1.0,
                                     height: 1.0,
                                     color: [1.0, 0.0, 0.0, 1.0],
+                                    textureMode: "ignore",
 
                                     material: {
-                                        name: "textured",
-                                        textureMode: "ignore"
+                                        name: "textured"
                                     },
                                     state: 0,
                                     onUpdate: function(globalTiming)
@@ -329,10 +329,10 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     height: 1.0,
                                     position: [0.0, 0.0, -7.0],
                                     color: [1.0, 1.0, 1.0, 1.0],
+                                    textureMode: "ignore",
 
                                     material: {
-                                        name: "textured",
-                                        textureMode: "ignore",
+                                        name: "textured"
                                     },
                                 }
                             }

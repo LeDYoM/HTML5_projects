@@ -124,37 +124,10 @@
         if (obj.shapeType)
         {
             var size = [ obj.width || 1.0, obj.height || 1.0, obj.deep || 1.0];
-
             geometry.createGeometry(obj,obj.shapeType,size,obj.color);
-//            obj.vertexIndices = vertexIndices;
-            obj.numIndices = obj.vertexIndices.length;
         }
-        obj.numVertex = Math.floor(obj.vertex.length / 3);
         updateBoundingBox(obj);
 
-        obj.material.textureMode = obj.material.textureMode || "ignore";
-        /*
-        var textureCoords = [];
-        switch (obj.material.textureMode)
-        {
-            case "attach":
-                textureCoords = [
-                    0.0, 0.0,
-                    1.0, 0.0,
-                    1.0, 1.0,
-                    0.0, 1.0
-                ];
-                break;
-            case "ignore":
-                // Fake texture
-                for (var j=0;j<obj.numVertex;++j)
-                {
-                    textureCoords = textureCoords.concat([0.0,0.0]);
-                }
-                break;
-        }
-        obj.material.textureCoords = textureCoords;
-        */
         wgl.createObject(obj);
         if (!obj.material.textureObject)
         {

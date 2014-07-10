@@ -219,7 +219,7 @@
         }
         obj.vertex = obj.mesh.getMeshVertexArray();
         obj.vertexIndices = obj.mesh.getMeshIndicesArray();
-        obj.material.colors = obj.mesh.getMeshColorsArray();
+        obj.colors = obj.mesh.getMeshColorsArray();
     };
 }
 ).apply(cns("sfme.geometry"));

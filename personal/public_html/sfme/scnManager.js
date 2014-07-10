@@ -119,13 +119,13 @@
     function createObject(parentScene_,obj)
     {
         obj.parentScene = parentScene_;
-        obj.material.color = obj.material.color || [1.0,1.0,1.0,1.0];
+        obj.color = obj.color || [1.0,1.0,1.0,1.0];
 
         if (obj.shapeType)
         {
             var size = [ obj.width || 1.0, obj.height || 1.0, obj.deep || 1.0];
 
-            geometry.createGeometry(obj,obj.shapeType,size,obj.material.color);
+            geometry.createGeometry(obj,obj.shapeType,size,obj.color);
 //            obj.vertexIndices = vertexIndices;
             obj.numIndices = obj.vertexIndices.length;
         }

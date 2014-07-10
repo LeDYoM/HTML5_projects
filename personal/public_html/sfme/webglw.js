@@ -120,20 +120,17 @@
         obj_.vertexPositionBuffer.itemSize = 3;
         obj_.vertexPositionBuffer.numItems = obj_.mesh.getNumVertex();
 
+        obj_.vertexIndexBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj_.vertexIndexBuffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(obj_.mesh.getMeshIndicesArray()), gl.STATIC_DRAW);
+        obj_.vertexIndexBuffer.itemSize = 1;
+        obj_.vertexIndexBuffer.numItems = obj_.mesh.getNumIndices();
+
         obj_.vertexColorBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, obj_.vertexColorBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(obj_.material.colors), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(obj_.mesh.getMeshColorsArray()), gl.STATIC_DRAW);
         obj_.vertexColorBuffer.itemSize = 4;
         obj_.vertexColorBuffer.numItems = obj_.mesh.getNumVertex();
-
-        if (obj_.vertexIndices)
-        {
-            obj_.vertexIndexBuffer = gl.createBuffer();
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj_.vertexIndexBuffer);
-            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(obj_.mesh.getMeshIndicesArray()), gl.STATIC_DRAW);
-            obj_.vertexIndexBuffer.itemSize = 1;
-            obj_.vertexIndexBuffer.numItems = obj_.mesh.getNumIndices();
-        }
 
         if (obj_.material.textureCoords)
         {
@@ -145,6 +142,11 @@
         }
    }
     this.createObject = createObject;
+    
+    function createMaterial(material)
+    {
+        
+    }
     
     function setBlending(value)
     {

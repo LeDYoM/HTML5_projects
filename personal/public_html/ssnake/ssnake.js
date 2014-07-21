@@ -29,29 +29,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     textBaseline: "middle",
                                     textPosition: [512/2,256/2]
                                 }
-                            },
-                            testtext2: {
-                                type: "text",
-                                width: 32,
-                                height: 64,
-                                backgroundColor: "white",
-                                textDefinition:
-                                {
-                                    text: "1",
-                                    fontSize: 55,
-                                    fontName: "Georgia",
-                                    fillStyle: "white",
-                                    strokeStyle: "#555555",
-                                    lineWidth: 1,
-                                    textBaseline: "middle",
-                                    textPosition: [16,32]
-                                },
-                                onDraw: function()
-                                {
-                                    
-                                }
                             }
-
                         }
                     },
                     cameras: {
@@ -100,9 +78,7 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     },
                                     onCreated: function()
                                     {
-//                                        this.material.texture = this.parentScene.resources.textures.starttext;
-                                        this.material.texture = this.parentScene.resources.textures.testtext2;
-
+                                        this.material.texture = this.parentScene.resources.textures.starttext;
                                     }
                                 }
                             }
@@ -151,6 +127,27 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                                     },
                                 width: 1,
                                 height: 32
+                            },
+                            eatTexture: {
+                                type: "text",
+                                width: 32,
+                                height: 64,
+                                backgroundColor: "white",
+                                textDefinition:
+                                {
+                                    text: "2",
+                                    fontSize: 55,
+                                    fontName: "Georgia",
+                                    fillStyle: "white",
+                                    strokeStyle: "#555555",
+                                    lineWidth: 1,
+                                    textBaseline: "middle",
+                                    textPosition: [16,32]
+                                },
+                                onDraw: function()
+                                {
+                                    
+                                }
                             }
                         }
                     },
@@ -170,7 +167,15 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                         setNextCell: function(obj)
                         {
                             obj.boardCell = this.getNextCell(obj);
-                        }
+                        },
+                        getBoardBoundsX: function()
+                        {
+                            return [-10, 10];
+                        },
+                        getBoardBoundsY: function()
+                        {
+                            return [-10, 10];
+                        }                        
                     },
                     lastIndexPart: 0,
                     firstIndexPart: 0,
@@ -329,11 +334,20 @@ cns("sfme.userModules").defineUserModule("ssnake", "main",
                                     height: 1.0,
                                     position: [0.0, 0.0, -7.0],
                                     color: [1.0, 1.0, 1.0, 1.0],
-                                    textureMode: "ignore",
+                                    textureMode: "attach",
 
                                     material: {
                                         name: "textured"
                                     },
+                                    onCreated: function()
+                                    {
+                                        this.material.texture = this.parentScene.resources.textures.eatTexture;
+                                    },
+                                    onUpdate: function()
+                                    {
+                                        console.log("fghhh");
+                                    }
+
                                 }
                             }
                         }

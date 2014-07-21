@@ -14,7 +14,7 @@
         obj.mesh.faces[index].colors = obj.mesh.faces[index].colors || [];
         obj.mesh.faces[index].colors = colors;
         obj.mesh.faces[index].textureCoords = [[0.0, 0.0],[1.0, 0.0],[1.0, 1.0],[0.0, 1.0]];
-
+        
         obj.mesh.getMeshVertexArray = function()
         {
             var v = [];
@@ -119,7 +119,8 @@
 
     function transformVertex(matrix,v)
     {
-        return mat4.multiplyVec3(matrix,v);
+        var t = mat4.multiplyVec3(matrix,v,vec3.create());
+        return [t[0], t[1], t[2]];
     }
 
     this.addTransformedFace = function(obj,transformMatrixFunc,parameters,originalFace,indices,colors)
@@ -204,6 +205,7 @@
                         angle: 0,
                         axis: [0,0,0]
                     },
+                    /*
                     // Back face
                     {
                         angle: Math.PI,
@@ -228,7 +230,7 @@
                     {
                         angle: Math.PI/2,
                         axis: [0,-1,0]
-                    },                    
+                    },*/                
                 ],qVertex,[0,1,2,0,2,3],colors);
                 break;
         }

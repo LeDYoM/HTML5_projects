@@ -100,13 +100,17 @@
 //                if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
                 if (obj.hasOwnProperty(attr))
                 {
-                    if (attr === "parentObject" || attr === "parentScene" || attr === "canvas" || attr === "parentCamera" || attr === "texture")
+                    // mesh will be recreated.
+                    if (attr !== "mesh")
                     {
-                        copy[attr] = obj[attr];
-                    }
-                    else
-                    {
-                        copy[attr] = this.cloneObject(obj[attr]);
+                        if (attr === "parentObject" || attr === "parentScene" || attr === "canvas" || attr === "parentCamera" || attr === "texture" || attr === "mesh")
+                        {
+                            copy[attr] = obj[attr];
+                        }
+                        else
+                        {
+                            copy[attr] = this.cloneObject(obj[attr]);
+                        }
                     }
                 }
             }

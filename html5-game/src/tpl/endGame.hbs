@@ -1,0 +1,16 @@
+<h4><b>Game Over</b></h4>
+<table>
+{{#if competitor}}
+<tr><td colspan="2" id="caption">{{#if isSessionWinner}}You WON{{else}}You LOST{{/if}}</td></tr>
+<tr><td id="caption">player:</td><td><input type="text" class="player" id="playerLogin" value="{{user.login}}"></input></td></tr>
+<tr><td id="caption">you scored:</td><td>{{#if isSessionWinner}}{{roundScore winner_score.result}}{{else}}{{roundScore loser_score.result}}{{/if}}</td></tr>
+<tr><td id="caption">against:</td><td>{{competitor.login}}</td></tr>
+<tr><td id="caption">competitor's score: {{#if isSessionWinner}}</td><td>{{roundScore loser_score.result}}{{else}}</td><td>{{roundScore winner_score.result}}{{/if}}</td></tr>
+{{else}}
+<tr><td id="caption">player:</td><td><input type="text" class="player" id="playerLogin" value="{{user.login}}"></input></td></tr>
+<tr><td id="caption" >your score:</td><td>{{roundScore score}}</td></tr>
+{{/if}}
+</table>
+
+<button id="back" class="centerButton">Main menu</button>
+

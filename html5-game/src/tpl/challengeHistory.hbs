@@ -1,0 +1,20 @@
+<h4>Take Revenge!</h4>
+<table>
+{{!
+  <tr>
+    <th>Competitor</th>
+    <th>Time</th>
+    <th>Result</th>
+    <th>Play</th>
+  </tr>
+}}
+  {{#each challengeHistory}}
+  <tr class={{rowName @index}}>
+    <td id="player">{{competitor.login}}</td>
+    <td id="time">{{timeAgo challenge.updated_at}}</td>
+    <td id="state">{{#if isSessionWinner}}WON{{else}}LOST{{/if}}</td>
+    <td id="action"><button data-competitor-id="{{competitor.id}}">Rematch!</button></td>
+  </tr>
+  {{/each}}
+</table>
+

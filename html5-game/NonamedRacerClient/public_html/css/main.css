@@ -1,0 +1,183 @@
+* {
+    // Prevent scrolling
+    overflow: hidden;
+
+    // Prevent selection
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+body {
+    font-family: Geneva, Arial, sans-serif;
+    font-size: small;
+    height: 100%;
+    padding:0px;
+    margin:0px;
+    margin: 0;
+    padding: 0;
+}
+
+.title {
+    position: relative;
+    left: 18%;
+    width: 64%;
+    height: 80%;
+    padding-top: 1%;
+    font-family: SourceSans;
+    font-weight: bolder;
+    text-align: center;
+    font-size: 12.4vw;
+    color: grey;
+    -webkit-text-stroke-width: 0.01em;
+    -webkit-text-stroke-color: black;
+}
+
+h3 {
+    text-align: center;
+    font-size: 3.5em;
+    margin-bottom: 0.5%; 
+}
+
+h4 {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 0.5%; 
+}
+
+table {
+    border: 1px solid #ccc;
+    border-collapse:collapse;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+td {
+    border: none;
+    margin: 2px;
+    padding-top: 0.3%;
+    padding-bottom: 0.3%;
+}
+
+.resultMessage
+{
+    text-align: center;
+}
+
+td.player {
+    font-size: 0.9em;
+}
+
+td#player {
+    font-size: 0.9em;
+    min-width: 12em;
+}
+
+
+td.score {
+    font-size: 1em;
+}
+
+td.time {
+    font-size: 0.8em;
+    width: 6em;
+}
+
+td#time {
+    font-size: 0.8em;
+    width: 6em;
+}
+
+td.action {
+    width: 0.8em;
+}
+
+td.state {
+    width: 0.9em;
+}
+
+tr.even {
+	
+}
+
+tr.odd {
+    background-color: #eeeeee;
+}
+
+td#caption {
+    text-align:right;
+}
+
+#game {
+    position:absolute;
+    top:0px;
+    left:0px;
+    z-index:1    
+}
+
+#setFullScreen {
+    z-index: 2;    
+    position:absolute;
+    top: 0;
+}
+
+#challenges {
+    z-index: 2;
+    position: relative;
+}
+
+#debugControls {
+    text-align: right;
+}
+
+#createChallenge, #endGame {
+    min-width: 20%;
+    position: relative;   
+    padding: 0;
+    margin: 0 auto;
+}
+
+.centerButton {
+    padding-top: 1.1%;
+    padding-bottom: 1.1%;
+    margin: 0 auto;
+    display:block;
+    margin-top: 0.5%;
+    margin-bottom: 0.5%;
+}
+
+.prominentButton {
+    position: absolute;
+    margin: 0 auto;
+    background-image:url('fScreen_b.png');
+    background-repeat:no-repeat;
+    background-size: 100% 100%;
+    
+    width: 10vw;
+    height: 10vh;
+}
+
+.backButton {
+    min-width: 10em;
+    min-height: 8em;
+    margin-top: 1%;
+}
+
+@font-face {
+  font-family: 'SourceSans';
+  font-style: normal;
+  font-weight: normal;
+  src: local('SourceSans'), url('SourceSansPro-Black.otf') format('opentype');
+}
+
+:-webkit-full-screen {
+  width: 100%;
+  height: 100%;
+}
+
+:-full-screen {
+  width: 100%;
+  height: 100%;
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>HTML5 Racer</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,height=device-height,user-scalable=no,initial-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <link rel="stylesheet" type="text/css" href="css/main.css" />
+    </head>
+    <body onload="initialize();" oncontextmenu="return false;">
+        <div id="game">
+            <canvas id="canvasArea"></canvas>
+        </div>
+        <div id="challenges">
+            <div id="debugControls"></div>
+            <div id="setFullScreen"></div>
+            <div id="gameTitle"></div>
+            <div id="createChallenge"></div>
+            <div id="openChallenges"></div>
+            <div id="challengeHistory"></div>
+            <div id="endGame"></div>
+         </div>
+        <script src="js/gameSingleton.js"></script>    
+        <script src="js/globalCanvas.js"></script>
+        <script src="js/config.js"></script>
+        <script src="js/gameColors.js"></script>
+        <script src="js/utils.js"></script>
+        <script src="js/circuit.js"></script>
+        <script src="js/scrdata.js"></script>     
+        <script src="js/sdk.js"></script>
+        <script src="js/game.js"></script>
+        <script src="js/templates.js"></script>
+        <script src="js/manager.js"></script>
+
+        <script>
+            var service = new ScoreloopService(
+               "https://api-html5-client.scoreloop.com/", 
+               "bf0ebc35-6e59-4fde-ba95-9ef7b5f67c9b", 
+               "Sua6q0mD2SbldTCEvQxrIaDv+a3y6Krn7s8QSXgm09/ErJc+ujy7+g=="
+             );
+
+             function initialize()
+             {
+                document.ontouchmove = function(e) {e.preventDefault();};
+                GameConfig.createHTML();
+                GlobalCanvas = new CanvasContext().bind("canvasArea");
+                GlobalCanvas.cnv.width = window.innerWidth;
+                GlobalCanvas.cnv.height = window.innerHeight;
+                startService();
+
+                updateCanvas();
+            }
+         </script>
+        <script src="js/service.js"></script>
+
+    </body>
+</html>

@@ -1,0 +1,17 @@
+<h4>Take it!</h4>
+<table>
+{{!
+  <tr>
+    <th>Competitor</th>
+    <th>Time</th>
+    <th>Play</th>
+  </tr>
+}}
+  {{#each openChallenges}}
+  <tr class={{rowName @index}}>
+    <td id="player">{{challenge.contender.login}}</td>
+    <td id="time">{{timeAgo challenge.created_at}}</td>
+    <td id="action"><button data-id="{{challenge.id}}">Accept!</button></td>
+  </tr>
+  {{/each}}
+</table>

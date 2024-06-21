@@ -1,0 +1,36 @@
+{
+  "name": "html5game",
+  "version": "0.0.0",
+  "description": " ",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": " "
+  },
+  "keywords": [
+    "grunt",
+    "config"
+  ],
+  "author": "Scoreloop",
+  "dependencies": {
+    "sinon": "latest",
+    "es6-promise": "latest",
+    "session": "latest",
+    "handlebars-browser": "latest"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-simple-mocha": "~0.4.0",
+    "chai": "latest",
+    "grunt-contrib-watch": "~0.4.0",
+    "grunt-jsdoc": "latest",
+    "grunt-contrib-concat": "latest",
+    "grunt-contrib-copy": "latest",
+    "grunt-contrib-clean": "latest",
+    "grunt-ssh": "latest",
+    "grunt-contrib-handlebars": "latest"
+  }
+}

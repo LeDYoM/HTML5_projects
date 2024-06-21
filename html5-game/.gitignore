@@ -1,0 +1,38 @@
+/NonamedRacerClient/nbproject/private/
+
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must ends with two \r.
+Icon
+
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# node modules are managed by npm:
+
+node_modules/
+
+# js files in the template dir get created by handlebar:
+
+src/tpl/*.js
+
+# generated js files
+
+NonamedRacerClient/public_html/js/sdk.js
+NonamedRacerClient/public_html/js/templates.js
+src/tpl/*.js
+
+# grunt distribution path
+
+dist/
+
+# generated doc files
+
+doc/

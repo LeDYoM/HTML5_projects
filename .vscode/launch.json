@@ -7,8 +7,14 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Open index.html",
-            "file": "index.html"
+            "name": "simple game",
+            "file": "simple_game/index.html"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Binary Player",
+            "file": "binplay/index.html"
         }
     ]
 }

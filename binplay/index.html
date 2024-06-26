@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Bowling counter</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            table, td 
+            {
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+        </style>
+    </head>
+    <body>
+        <script type="text/javascript" src="js/constants.js"></script>
+        <script type="text/javascript" src="js/view.js"></script>
+        <script type="text/javascript" src="js/model.js"></script>
+        <script type="text/javascript" src="js/controller.js"></script>
+        <script type="text/javascript" src="js/tests.js"></script>
+
+        <div id="present-results">
+        </div>
+        <table style="width:100%" id="results-table">
+        </table>
+
+        <div id="current-code-selection">
+            Current char <label id="view-current-char"></label>:
+            <div id="input-turn">
+            Launch <label id="view-launch-number"></label>: <input type="number" id="pins-down" min="0" max="10" step="1" value="0"/>
+            <input type="button" id="accept-button" value="Accept" onclick="controller.acceptClicked()"/>
+            </div>
+        </div>
+        <br>
+        <input type="button" id="next-test" value="Next test" onclick="tests.nextTest()"/>
+
+        <script>
+            var controller = new Controller();
+            controller.start();
+
+            var tests = new Tests();
+//            tests.nextTest();
+        </script>
+    </body>
+</html>

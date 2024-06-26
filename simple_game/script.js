@@ -21,8 +21,9 @@ window.onload = function () {
     function draw(_timeStamp) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawBall();
-        const currentDelta = (_timeStamp - previousDelta);
+        let currentDelta = (_timeStamp - previousDelta);
         previousDelta = _timeStamp;
+        currentDelta = 1.0;
         x += (dx * currentDelta);
         y += (dy * 13.3);
 

@@ -1,0 +1,21 @@
+
+
+body {
+    margin: 0;
+/*    display: flex;*/
+    justify-content: center;
+    align-items: center;
+/*    height: 100vh;*/
+    background-color: #000;
+    color: #fff
+}
+
+td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+label {
+/*    display: flex;*/
+    align-items: center;
+}

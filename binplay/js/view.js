@@ -47,34 +47,4 @@ var View = function () {
     this.createTable = function () {
         gebId("results-table").innerHTML = tableTemplateHeader() + tableTemplateBody() + tableTemplateFooter();
     };
-
-    this.setLaunchScore = function (frame, launch, score) {
-        assert(frame >= 0 && frame <= Constants.NumFrames, "Invalid frame index: " + frame);
-        assert(launch >= 0, "Invalid launch index: " + launch);
-
-        var _idStr = "table-points-" + frame + "-" + launch;
-        gebId(_idStr).innerHTML = score;
-    };
-
-    this.setAccumulatedScoreInFrame = function (frame, score) {
-        assert(score >= 0, "Invalid score");
-        assert(frame >= 0 && frame <= Constants.NumFrames, "Invalid frame index");
-        var _idStr = "table-accum-points-" + frame;
-        gebId(_idStr).innerHTML = score;
-    };
-
-    this.resetInputMaxValue = function () {
-        this.setInputMaxValue(Constants.NumBowls);
-    };
-    this.setInputMaxValue = function (mv) {
-        gebId("pins-down").max = mv;
-    };
-
-    this.finishGame = function () {
-        gebId("turn-input-global").style.visibility = "hidden";
-    };
-
-    this.createTable() = function() {
-
-    };
 };

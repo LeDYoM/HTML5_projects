@@ -2,70 +2,74 @@
 <html>
 
 <head>
-    <title>Bowling counter</title>
+  <title>Bowling counter</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <script type="text/javascript" src="js/constants.js"></script>
+  <script type="text/javascript" src="js/view.js"></script>
+  <script type="text/javascript" src="js/model.js"></script>
+  <script type="text/javascript" src="js/controller.js"></script>
+  <script type="text/javascript" src="js/tests.js"></script>
+
+  <div id="present-results">
+  </div>
+  <table style="width:100%" id="results-table">
+  </table>
+
+  <div id="current-code-selection">
+    Current char: <label id="view-current-char"></label>
+    <div class="pull-characters-container">
+      <div class="pull-container">
+        <input type="checkbox" id="pull-character-0">
+        <label class="checkbox-label" for="pull-character-0">Position 0</label>
+      </div>
+      <div class="pull-container">
+        <input type="checkbox" id="pull-character-1">
+        <label class="checkbox-label" for="pull-character-1">Position 1</label>
+      </div>
+    </div>
+    <input type="button" id="accept-button" value="Accept" onclick="controller.acceptClicked()" />
+  </div>
+  <br>
+  <!--        <input type="button" id="next-test" value="Next test" onclick="tests.nextTest()"/> -->
+
+  <script>
+            var controller = new Controller();
+            controller.start();
+
+    //            var tests = new Tests();
+    //            tests.nextTest();
+    /*        <!DOCTYPE html>
+    <html lang="en">
+    <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-    <script type="text/javascript" src="js/constants.js"></script>
-    <script type="text/javascript" src="js/view.js"></script>
-    <script type="text/javascript" src="js/model.js"></script>
-    <script type="text/javascript" src="js/controller.js"></script>
-    <script type="text/javascript" src="js/tests.js"></script>
-
-    <div id="present-results">
+    <title>Centered Checkbox Label</title>
+    <style>
+      .checkbox-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .checkbox-label {
+        text-align: center;
+      }
+    </style>
+    </head>
+    <body>
+    
+    <div class="checkbox-container">
+      <input type="checkbox" id="myCheckbox">
+      <label class="checkbox-label" for="myCheckbox">This is a centered label under the checkbox</label>
     </div>
-    <table style="width:100%" id="results-table">
-    </table>
-
-    <div id="current-code-selection">
-        Current char: <label id="view-current-char"></label>
-        <div id="input-turn">
-            <label>
-                <input type="checkbox" /> Label text
-                <input type="checkbox" /> Label text3
-            </label>
-            <input type="button" id="accept-button" value="Accept" onclick="controller.acceptClicked()" />
-        </div>
-    </div>
-    <br>
-    <!--        <input type="button" id="next-test" value="Next test" onclick="tests.nextTest()"/> -->
-
-    <script>
-        //            var controller = new Controller();
-        //            controller.start();
-
-        //            var tests = new Tests();
-        //            tests.nextTest();
-/*        <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Centered Checkbox Label</title>
-<style>
-  .checkbox-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .checkbox-label {
-    text-align: center;
-  }
-</style>
-</head>
-<body>
-
-<div class="checkbox-container">
-  <input type="checkbox" id="myCheckbox">
-  <label class="checkbox-label" for="myCheckbox">This is a centered label under the checkbox</label>
-</div>
-
-</body>
-</html>*/
-    </script>
+    
+    </body>
+    </html>*/
+  </script>
 </body>
 
 </html>

@@ -15,7 +15,14 @@ td {
     border-collapse: collapse;
 }
 
-label {
-/*    display: flex;*/
+.pull-characters-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.pull-container {
+    display: flex;
+    flex-direction: column;
     align-items: center;
 }

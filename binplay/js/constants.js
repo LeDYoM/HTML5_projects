@@ -1,8 +1,5 @@
-var Constants = {
-    NumFrames: 10,
-    NumTurns: 2,
-    NumExtraTurns: 1,
-    NumBowls: 10
+const Constants = {
+    BitsPerByte: 8
 };
 
 function assert(condition,message)

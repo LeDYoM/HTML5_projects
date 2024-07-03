@@ -6,9 +6,9 @@ var View = function () {
 
     function tableTemplateBody() {
         var result = "";
-        for (var i = 0; i < 1; ++i) {
-            result += "<div class='pull-container'><input type='checkbox' id='pull-character-0'>";
-            result += "<label class='checkbox-label' for='pull-character-0'>Position 0</label></div>";
+        for (var i = 0; i < Constants.BitsPerByte; ++i) {
+            result += "<div class='pull-container'><input type='checkbox' id='pull-character-" + i + "'>";
+            result += "<label class='checkbox-label' for='pull-character-" + i + "'>Position "+ (i + 1) + "</label></div>";
         }
         return result + "</tr>";
     }
@@ -18,7 +18,7 @@ var View = function () {
     }
 
     this.createTable = function () {
-        gebId("results-table").innerHTML = tableTemplateHeader()
+        gebId("pulls-container").innerHTML = tableTemplateHeader()
             + tableTemplateBody() + tableTemplateFooter();
     };
 };

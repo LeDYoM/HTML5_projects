@@ -7,8 +7,9 @@ var View = function () {
     function tableTemplateBody() {
         var result = "";
         for (var i = 0; i < Constants.BitsPerByte; ++i) {
-            result += "<div class='pull-container'><input type='checkbox' id='pull-character-" + i + "'>";
-            result += "<label class='checkbox-label' for='pull-character-" + i + "'>Position "+ (i + 1) + "</label></div>";
+            result += "<div class='pull-container'>";
+            result += "<input type='checkbox' id='pull-character-" + i + "' onchange=controller.pullChanged(" + i + ")>";
+            result += "<label class='checkbox-label' for='pull-character-" + i + "'>Position " + (i + 1) + "</label></div>";
         }
         return result + "</tr>";
     }

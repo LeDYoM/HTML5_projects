@@ -3,7 +3,8 @@ var Controller = function () {
     var _model = new Model();
 
     this.pullChanged = function (pullIndex) {
-        console.log("Hey " + pullIndex)
+        console.log("Pull index " + pullIndex + " changed");
+        _view.
     };
 
     this.start = function () {

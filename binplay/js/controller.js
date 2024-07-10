@@ -4,7 +4,7 @@ var Controller = function () {
 
     this.pullChanged = function (pullIndex) {
         console.log("Pull index " + pullIndex + " changed");
-        _view.
+        console.log(String.fromCharCode(65));
     };
 
     this.start = function () {

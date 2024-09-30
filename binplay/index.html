@@ -1,35 +1,144 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <title>Bowling counter</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Byte Manipulator</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .bits {
+            display: flex;
+            gap: 10px;
+        }
+        .bits input {
+            width: 20px;
+            height: 20px;
+        }
+        .display {
+            display: flex;
+            gap: 20px;
+        }
+        .display div {
+            text-align: center;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .buttons button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        .string-display {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
 </head>
-
 <body>
-  <script type="text/javascript" src="js/constants.js"></script>
-  <script type="text/javascript" src="js/view.js"></script>
-  <script type="text/javascript" src="js/model.js"></script>
-  <script type="text/javascript" src="js/controller.js"></script>
-  <script type="text/javascript" src="js/tests.js"></script>
-
-  <div id="main-sections">
-    <div id="current-code-selection">
-      Current char: <label id="view-current-char"></label>
-      <div class="pulls-container" id="pulls-container">
-      </div>
-      <input type="button" id="accept-button" value="Accept" onclick="controller.acceptClicked()" />
+    <div class="container">
+        <div class="bits">
+            <input type="checkbox" id="bit0">
+            <input type="checkbox" id="bit1">
+            <input type="checkbox" id="bit2">
+            <input type="checkbox" id="bit3">
+            <input type="checkbox" id="bit4">
+            <input type="checkbox" id="bit5">
+            <input type="checkbox" id="bit6">
+            <input type="checkbox" id="bit7">
+        </div>
+        <div class="display">
+            <div>
+                <h3>ASCII Character</h3>
+                <p id="asciiChar"></p>
+            </div>
+            <div>
+                <h3>Integer</h3>
+                <p id="integer"></p>
+            </div>
+            <div>
+                <h3>Binary</h3>
+                <p id="binary"></p>
+            </div>
+        </div>
+        <div class="buttons">
+            <button onclick="addByte()">Add Byte</button>
+            <button onclick="removeLastByte()">Remove Last Byte</button>
+            <button onclick="clearString()">Clear String</button>
+        </div>
+        <div class="string-display">
+            <h3>Current String</h3>
+            <p id="currentString"></p>
+        </div>
     </div>
-  </div>
-  <br>
-  <!--        <input type="button" id="next-test" value="Next test" onclick="tests.nextTest()"/> -->
 
-  <script>
-    var controller = new Controller();
-    controller.start();
-  </script>
+    <script>
+        const checkboxes = document.querySelectorAll('.bits input');
+        const asciiChar = document.getElementById('asciiChar');
+        const integer = document.getElementById('integer');
+        const binary = document.getElementById('binary');
+        const currentString = document.getElementById('currentString');
+
+        function updateDisplay() {
+            let byte = 0;
+            checkboxes.forEach((checkbox, index) => {
+                if (checkbox.checked) {
+                    byte |= (1 << index);
+                }
+            });
+
+            asciiChar.textContent = String.fromCharCode(byte);
+            integer.textContent = byte;
+            binary.textContent = byte.toString(2).padStart(8, '0');
+        }
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateDisplay);
+        });
+
+        let byteString = '';
+
+        function addByte() {
+            let byte = 0;
+            checkboxes.forEach((checkbox, index) => {
+                if (checkbox.checked) {
+                    byte |= (1 << index);
+                }
+            });
+            byteString += String.fromCharCode(byte);
+            currentString.textContent = byteString;
+        }
+
+        function removeLastByte() {
+            if (byteString.length > 0) {
+                byteString = byteString.slice(0, -1);
+                currentString.textContent = byteString;
+            }
+        }
+
+        function clearString() {
+            byteString = '';
+            currentString.textContent = byteString;
+        }
+
+        // Initial display update
+        updateDisplay();
+    </script>
 </body>
-
 </html>
